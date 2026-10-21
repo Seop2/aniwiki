@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- public/og-image.png 원본. 재생성:
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
+    --window-size=1200,630 --virtual-time-budget=5000 \
+    --screenshot=public/og-image.png scripts/og-image.html
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #0f0f13; color: #ececf1;
+    font-family: 'Pretendard Variable', Pretendard, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .frame { position: relative; width: 1056px; height: 486px; padding: 64px 72px; box-sizing: border-box;
+    border: 1px solid #24242c; background: #17171d; display: flex; flex-direction: column; }
+  .frame::after { content: ''; position: absolute; inset: -10px; pointer-events: none;
+    --c: #ececf1; --s: 24px;
+    background:
+      linear-gradient(var(--c),var(--c)) top left / var(--s) 2px no-repeat,
+      linear-gradient(var(--c),var(--c)) top left / 2px var(--s) no-repeat,
+      linear-gradient(var(--c),var(--c)) top right / var(--s) 2px no-repeat,
+      linear-gradient(var(--c),var(--c)) top right / 2px var(--s) no-repeat,
+      linear-gradient(var(--c),var(--c)) bottom left / var(--s) 2px no-repeat,
+      linear-gradient(var(--c),var(--c)) bottom left / 2px var(--s) no-repeat,
+      linear-gradient(var(--c),var(--c)) bottom right / var(--s) 2px no-repeat,
+      linear-gradient(var(--c),var(--c)) bottom right / 2px var(--s) no-repeat; }
+  .brand { display: flex; align-items: center; gap: 16px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 40px; letter-spacing: .04em; }
+  .box { width: 24px; height: 24px; border: 3px solid #8b6dff; }
+  h1 { margin: auto 0 0; font-size: 92px; line-height: 1.08; font-weight: 800; letter-spacing: -.03em; }
+  h1 em { font-style: normal; color: #a48cff; }
+  p { margin: 24px 0 0; font-size: 30px; color: #8d8d99; font-weight: 500; }
+  .tag { position: absolute; right: 72px; top: 64px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px; letter-spacing: .12em; color: #8d8d99; }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="brand"><i class="box"></i>ANIME / INDEX</div>
+    <span class="tag">TV · MOVIE · RANKING</span>
+    <h1>애니메이션 <em>랭킹</em>,<br />한눈에.</h1>
+    <p>평점 · 인기 · 최신순으로 TV 시리즈와 극장판을 찾아보세요</p>
+  </div>
+</body>
+</html>
