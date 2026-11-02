@@ -110,7 +110,7 @@ export async function renderTop10Image({ name, items }) {
   // Pretendard dynamic-subset은 글자별로 폰트 파일을 나눠 받으므로 실제 쓸 글자를 넘겨 미리 받는다
   await Promise.all([
     document.fonts.load(`700 64px ${DISPLAY}`, '0123456789'),
-    document.fonts.load(`600 30px ${DISPLAY}`, 'ANIWIKI MY TOP 10 aniwiki-kappa.vercel.app'),
+    document.fonts.load(`600 30px ${DISPLAY}`, 'ANIWIKI MY TOP 10 aniwiki.link'),
     document.fonts.load(`700 27px ${SANS}`, allText),
     document.fonts.load(`500 22px ${SANS}`, allText),
   ]).catch(() => {});
@@ -152,7 +152,7 @@ export async function renderTop10Image({ name, items }) {
   ctx.textAlign = 'right';
   ctx.fillStyle = C.text;
   ctx.font = `600 28px ${DISPLAY}`;
-  ctx.fillText('aniwiki-kappa.vercel.app', W - PAD, H - 66);
+  ctx.fillText('aniwiki.link', W - PAD, H - 66);
 
   return new Promise((resolve, reject) =>
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('IMAGE_FAILED'))), 'image/png'),

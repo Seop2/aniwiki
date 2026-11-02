@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "aniwiki-kappa.vercel.app" }],
+      "destination": "https://www.aniwiki.link/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -5,7 +5,7 @@ const PREFIX = { tv: 't', movie: 'm' };
 const TYPE_OF = { t: 'tv', m: 'movie' };
 
 // 배포본은 항상 정식 주소로 공유한다(미리보기 배포 URL이 퍼지지 않게). 로컬 개발 중에는 바로 열어볼 수 있게 현재 주소
-const SITE_URL = 'https://aniwiki-kappa.vercel.app';
+const SITE_URL = 'https://www.aniwiki.link';
 const shareOrigin = () => (import.meta.env.DEV ? location.origin : SITE_URL);
 
 export const top10Title = (name) => `${name?.trim() || '나'}의 인생 애니 TOP 10`;
