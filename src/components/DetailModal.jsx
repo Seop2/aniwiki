@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 import { posterUrl } from '../api/tmdb';
 import { useAnimeDetail } from '../hooks/useAnimeDetail';
 
+// TMDB 시청처(JustWatch)에는 라프텔이 없어 검색 결과로 보낸다 — 작품이 있는지는 보장하지 않음
+const laftelSearchUrl = (title) => `https://laftel.net/search?keyword=${encodeURIComponent(title)}`;
+
 function metaOf(type, d) {
   const parts = [d.year];
   if (type === 'tv') {
@@ -133,6 +136,9 @@ export default function DetailModal({ type, item, top10, onClose }) {
             <section className="detail-section">
               <h3>시청 가능 플랫폼</h3>
               <Providers providers={data.providers} />
+              <a className="detail-link" href={laftelSearchUrl(d.title)} target="_blank" rel="noreferrer">
+                라프텔에서 검색 →
+              </a>
             </section>
 
             {data.homepage && (
