@@ -17,6 +17,10 @@ npm run dev
 - "더 보기" 무한 페이지네이션 (`useInfiniteQuery`)
 - 다크 모드 (localStorage 저장, 시스템 설정 기본값)
 - 모바일: 연도/투표수 컬럼을 제목 아래로 이동
+- **나만의 인생 애니 TOP 10**: 상세 모달에서 담고, 헤더 「내 TOP 10」에서 순서 편집 · 닉네임 입력 (localStorage 저장)
+  - 공유 이미지(1080×1350 PNG, Canvas로 직접 그림) 저장 / 모바일은 시스템 공유 시트로 바로 공유
+  - 공유 링크 `/?top10=t1429.m372058&name=…` — 작품 ID만 담고, 받는 쪽에서 TMDB로 불러와 읽기 전용 화면 표시
+  - 링크 복사 · X 공유 · Web Share API, 공유 방식별 `top10_share` 이벤트(Vercel Analytics)
 
 ## 구조
 ```
@@ -24,7 +28,11 @@ src/
 ├── api/tmdb.js            # fetch 래퍼, MEDIA/SORTS 설정, 응답 정규화
 ├── hooks/useAnimeList.js  # useInfiniteQuery 래핑
 ├── hooks/useTheme.js
-├── components/            # Header, SearchBar, Filters, RankingTable, RankingRow
+├── hooks/useMyTop10.js    # 내 TOP 10 (localStorage)
+├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
+├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
+├── components/            # Header, SearchBar, Filters, RankingTable, RankingRow, DetailModal,
+│                          # Top10Modal, SharedTop10, ShareActions
 ├── App.jsx
 └── index.css              # 디자인 토큰(:root / [data-theme=dark])
 ```

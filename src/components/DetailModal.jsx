@@ -41,7 +41,7 @@ function Providers({ providers }) {
   );
 }
 
-export default function DetailModal({ type, item, onClose }) {
+export default function DetailModal({ type, item, top10, onClose }) {
   const ref = useRef(null);
   const { data, isPending, isError } = useAnimeDetail({ type, id: item.id });
   const d = data ?? item; // 상세가 오기 전에는 목록에서 가진 정보로 먼저 그린다
@@ -60,6 +60,7 @@ export default function DetailModal({ type, item, onClose }) {
 
   const src = posterUrl(d.poster, 'w342');
   const showOriginal = d.originalTitle && d.originalTitle !== d.title;
+  const inTop10 = top10.has(type, d.id);
 
   return (
     <dialog
@@ -101,6 +102,17 @@ export default function DetailModal({ type, item, onClose }) {
                 {data.networks.length > 3 && ` 외 ${data.networks.length - 3}곳`}
               </p>
             )}
+            <div className="detail-top10">
+              <button
+                type="button"
+                className={inTop10 ? 'btn-outline' : 'btn-primary'}
+                onClick={() => (inTop10 ? top10.remove(type, d.id) : top10.add(type, d))}
+                disabled={!inTop10 && top10.isFull}
+              >
+                {inTop10 ? 'TOP 10에서 빼기' : '내 TOP 10에 추가'}
+              </button>
+              <span>{!inTop10 && top10.isFull ? 'TOP 10이 가득 찼어요' : `${top10.items.length}/10`}</span>
+            </div>
           </div>
         </div>
 
