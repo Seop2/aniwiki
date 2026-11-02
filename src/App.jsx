@@ -18,6 +18,7 @@ export default function App() {
   const [selected, setSelected] = useState(null); // { type, item }
   const [top10Open, setTop10Open] = useState(false);
   const [shared, setShared] = useState(() => parseShareUrl(location.search)); // 공유 링크로 들어온 경우
+  const [homeKey, setHomeKey] = useState(0); // 바꾸면 SearchBar가 다시 마운트돼 입력값이 비워진다
 
   const top10 = useMyTop10();
   const list = useAnimeList({ type, sort, query });
@@ -25,6 +26,18 @@ export default function App() {
   const leaveShared = () => {
     history.replaceState(null, '', '/');
     setShared(null);
+  };
+
+  /** 로고 클릭 → 검색 · 필터 · 공유 화면을 모두 초기 상태로 */
+  const goHome = (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // 새 탭 열기는 브라우저 기본 동작
+    e.preventDefault();
+    leaveShared();
+    setQuery('');
+    setType('tv');
+    setSort('rating');
+    setHomeKey((k) => k + 1);
+    window.scrollTo({ top: 0 });
   };
 
   const heading = query
@@ -38,9 +51,9 @@ export default function App() {
         <section className="hero">
           <div>
             <p className="eyebrow">TMDB · TOP RATED · ANIMATION</p>
-            <h1 className="logo">ANIWIKI</h1>
+            <h1 className="logo"><a href="/" onClick={goHome}>ANIWIKI</a></h1>
           </div>
-          <SearchBar onSearch={(q) => { leaveShared(); setQuery(q); }} />
+          <SearchBar key={homeKey} onSearch={(q) => { leaveShared(); setQuery(q); }} />
         </section>
 
         <hr className="divider" />

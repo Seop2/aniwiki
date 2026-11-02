@@ -320,3 +320,6 @@ dialog.top10 { width: min(560px, calc(100% - 32px)); }
   .top10-heading { font-size: 20px; }
   .shared-head .btn-primary { width: 100%; justify-content: center; }
 }
+
+.logo a { color: inherit; text-decoration: none; }
+.logo a:hover { color: var(--accent-text); }
