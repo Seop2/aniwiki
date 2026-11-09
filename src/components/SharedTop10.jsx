@@ -1,9 +1,10 @@
 import { useQueries } from '@tanstack/react-query';
 import { fetchAnimeDetail, posterUrl, MEDIA } from '../api/tmdb';
 import { top10Title } from '../lib/share';
+import { detailPath, isPlainClick } from '../lib/router';
 import ShareActions from './ShareActions';
 
-/** 공유 링크(/?top10=...)로 들어왔을 때의 읽기 전용 화면 */
+/** 공유 링크(/top10?top10=...)로 들어왔을 때의 읽기 전용 화면 */
 export default function SharedTop10({ shared, onSelect, onCreate }) {
   // DetailModal(useAnimeDetail)과 같은 queryKey → 항목을 눌러 상세를 열 때 다시 요청하지 않는다
   const results = useQueries({
@@ -40,7 +41,11 @@ export default function SharedTop10({ shared, onSelect, onCreate }) {
                   <td className="col-rank">{i + 1}</td>
                   <td className="col-title">
                     {d ? (
-                      <button type="button" className="title-cell title-button" onClick={() => onSelect({ type, item: d })}>
+                      <a
+                        className="title-cell title-button"
+                        href={detailPath(type, d.id)}
+                        onClick={(e) => { if (isPlainClick(e)) { e.preventDefault(); onSelect({ type, item: d }); } }}
+                      >
                         {d.poster
                           ? <img className="poster" src={posterUrl(d.poster)} alt="" width="36" height="54" />
                           : <div className="poster poster-empty" aria-hidden />}
@@ -48,7 +53,7 @@ export default function SharedTop10({ shared, onSelect, onCreate }) {
                           <strong>{d.title}</strong>
                           <span>{d.year} · {MEDIA[type].label}</span>
                         </div>
-                      </button>
+                      </a>
                     ) : r.isError ? (
                       <span className="shared-missing">작품 정보를 불러오지 못했어요.</span>
                     ) : (

@@ -44,9 +44,10 @@ function Providers({ providers }) {
   );
 }
 
-export default function DetailModal({ type, item, top10, onClose }) {
+/** item: 목록에서 연 경우의 항목. 상세 주소로 바로 들어오면 없다 */
+export default function DetailModal({ type, id, item, top10, onClose }) {
   const ref = useRef(null);
-  const { data, isPending, isError } = useAnimeDetail({ type, id: item.id });
+  const { data, isPending, isError } = useAnimeDetail({ type, id });
   const d = data ?? item; // 상세가 오기 전에는 목록에서 가진 정보로 먼저 그린다
 
   useEffect(() => {
@@ -61,9 +62,16 @@ export default function DetailModal({ type, item, top10, onClose }) {
     };
   }, []);
 
-  const src = posterUrl(d.poster, 'w342');
-  const showOriginal = d.originalTitle && d.originalTitle !== d.title;
-  const inTop10 = top10.has(type, d.id);
+  useEffect(() => {
+    if (!d?.title) return;
+    const prevTitle = document.title;
+    document.title = `${d.title} - ANIWIKI`;
+    return () => { document.title = prevTitle; };
+  }, [d?.title]);
+
+  const src = d && posterUrl(d.poster, 'w342');
+  const showOriginal = d?.originalTitle && d.originalTitle !== d.title;
+  const inTop10 = top10.has(type, id);
 
   return (
     <dialog
@@ -82,6 +90,18 @@ export default function DetailModal({ type, item, top10, onClose }) {
           <div className="detail-backdrop" style={{ backgroundImage: `url(${posterUrl(data.backdrop, 'w780')})` }} aria-hidden />
         )}
 
+        {!d ? (
+          isError
+            ? <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
+            : (
+              <div className="detail-head" aria-hidden>
+                <div className="detail-poster poster-empty" />
+                <div className="skeleton detail-skeleton detail-info">
+                  <i style={{ width: '70%' }} /><i style={{ width: '40%' }} /><i style={{ width: '30%' }} />
+                </div>
+              </div>
+            )
+        ) : (
         <div className="detail-head">
           {src
             ? <img className="detail-poster" src={src} alt="" width="140" height="210" />
@@ -109,7 +129,7 @@ export default function DetailModal({ type, item, top10, onClose }) {
               <button
                 type="button"
                 className={inTop10 ? 'btn-outline' : 'btn-primary'}
-                onClick={() => (inTop10 ? top10.remove(type, d.id) : top10.add(type, d))}
+                onClick={() => (inTop10 ? top10.remove(type, id) : top10.add(type, d))}
                 disabled={!inTop10 && top10.isFull}
               >
                 {inTop10 ? 'TOP 10에서 빼기' : '내 TOP 10에 추가'}
@@ -118,8 +138,9 @@ export default function DetailModal({ type, item, top10, onClose }) {
             </div>
           </div>
         </div>
+        )}
 
-        {isError ? (
+        {!d ? null : isError ? (
           <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
         ) : isPending ? (
           <div className="skeleton detail-skeleton" aria-hidden>

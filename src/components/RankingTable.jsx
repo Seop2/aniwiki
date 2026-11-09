@@ -16,7 +16,7 @@ function SkeletonRows({ count = 8 }) {
   ));
 }
 
-export default function RankingTable({ items, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, onSelect }) {
+export default function RankingTable({ items, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, type, onSelect }) {
   const errorText = error?.message === 'MISSING_TOKEN'
     ? '.env 파일에 VITE_TMDB_TOKEN 또는 VITE_TMDB_API_KEY를 설정해 주세요.'
     : '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
@@ -38,7 +38,7 @@ export default function RankingTable({ items, isPending, isError, error, hasNext
             {isPending && <SkeletonRows />}
             {isError && <Message>{errorText}</Message>}
             {!isPending && !isError && items.length === 0 && <Message>검색 결과가 없습니다.</Message>}
-            {items.map((item, i) => <RankingRow key={item.id} rank={i + 1} item={item} onSelect={onSelect} />)}
+            {items.map((item, i) => <RankingRow key={item.id} rank={i + 1} item={item} type={type} onSelect={onSelect} />)}
             {isFetchingNextPage && <SkeletonRows count={4} />}
           </tbody>
         </table>

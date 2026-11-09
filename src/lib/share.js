@@ -1,6 +1,6 @@
 import { TOP10_MAX } from '../hooks/useMyTop10';
 
-// 공유 링크: /?top10=t1429.m372058&name=닉네임 — 작품 ID만 담고 상세는 받는 쪽에서 TMDB로 불러온다
+// 공유 링크: /top10?top10=t1429.m372058&name=닉네임 — 작품 ID만 담고 상세는 받는 쪽에서 TMDB로 불러온다
 const PREFIX = { tv: 't', movie: 'm' };
 const TYPE_OF = { t: 'tv', m: 'movie' };
 
@@ -13,7 +13,7 @@ export const top10Title = (name) => `${name?.trim() || '나'}의 인생 애니 T
 export function buildShareUrl({ name, items }) {
   const params = new URLSearchParams({ top10: items.map((a) => PREFIX[a.type] + a.id).join('.') });
   if (name?.trim()) params.set('name', name.trim());
-  return `${shareOrigin()}/?${params}`;
+  return `${shareOrigin()}/top10?${params}`;
 }
 
 /** 공유 링크가 아니거나 유효한 항목이 하나도 없으면 null */

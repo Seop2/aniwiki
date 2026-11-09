@@ -195,6 +195,7 @@ td.col-votes { color: var(--muted); }
 /* Title button (행 클릭 → 상세 모달) */
 .title-button {
   width: 100%; padding: 0; border: 0; background: none; text-align: left;
+  color: inherit; text-decoration: none;
 }
 .title-button:hover strong { color: var(--accent-text); }
 .title-button:hover .poster { outline: 1px solid var(--accent); outline-offset: 2px; }

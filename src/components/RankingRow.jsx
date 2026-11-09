@@ -1,6 +1,7 @@
 import { posterUrl } from '../api/tmdb';
+import { detailPath, isPlainClick } from '../lib/router';
 
-export default function RankingRow({ rank, item, onSelect }) {
+export default function RankingRow({ rank, item, type, onSelect }) {
   const src = posterUrl(item.poster);
   const showOriginal = item.originalTitle && item.originalTitle !== item.title;
 
@@ -8,7 +9,11 @@ export default function RankingRow({ rank, item, onSelect }) {
     <tr>
       <td className="col-rank">{rank}</td>
       <td className="col-title">
-        <button type="button" className="title-cell title-button" onClick={() => onSelect(item)}>
+        <a
+          className="title-cell title-button"
+          href={detailPath(type, item.id)}
+          onClick={(e) => { if (isPlainClick(e)) { e.preventDefault(); onSelect(item); } }}
+        >
           {src
             ? <img className="poster" src={src} alt="" loading="lazy" width="36" height="54" />
             : <div className="poster poster-empty" aria-hidden />}
@@ -17,7 +22,7 @@ export default function RankingRow({ rank, item, onSelect }) {
             {showOriginal && <span>{item.originalTitle}</span>}
             <span className="meta-mobile">{item.year} · {item.votes.toLocaleString()}표</span>
           </div>
-        </button>
+        </a>
       </td>
       <td className="col-year">{item.year}</td>
       <td className="col-rating">{item.rating.toFixed(1)}</td>
