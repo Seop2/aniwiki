@@ -11,6 +11,7 @@ import RankingTable from './components/RankingTable';
 import DetailModal from './components/DetailModal';
 import Top10Modal from './components/Top10Modal';
 import SharedTop10 from './components/SharedTop10';
+import Discover from './components/Discover';
 
 export default function App() {
   const { loc, route, navigate } = useRoute();
@@ -43,8 +44,16 @@ export default function App() {
     else navigate('/', { replace: true });
   };
 
-  const leaveShared = () => {
-    if (view.name === 'shared') navigate('/');
+  /** 공유 · 숨은 명작 화면에서 검색하거나 「나도 만들기」를 누르면 랭킹으로 */
+  const leaveToHome = () => {
+    if (view.name !== 'home') navigate('/');
+  };
+
+  const openDiscover = (e) => {
+    if (e && !isPlainClick(e)) return;
+    e?.preventDefault();
+    navigate('/discover');
+    window.scrollTo({ top: 0 });
   };
 
   /** 로고 클릭 → 검색 · 필터 · 공유 화면을 모두 초기 상태로 */
@@ -69,14 +78,14 @@ export default function App() {
 
   return (
     <>
-      <Header top10Count={top10.items.length} onOpenTop10={() => setTop10Open(true)} />
+      <Header top10Count={top10.items.length} onOpenTop10={() => setTop10Open(true)} onOpenDiscover={() => openDiscover()} />
       <main className="container">
         <section className="hero">
           <div>
             <p className="eyebrow">TMDB · TOP RATED · ANIMATION</p>
             <h1 className="logo"><a href="/" onClick={goHome}>ANIWIKI</a></h1>
           </div>
-          <SearchBar key={homeKey} onSearch={(q) => { leaveShared(); setQuery(q); }} />
+          <SearchBar key={homeKey} onSearch={(q) => { leaveToHome(); setQuery(q); }} />
         </section>
 
         <hr className="divider" />
@@ -85,10 +94,21 @@ export default function App() {
           <SharedTop10
             shared={view.shared}
             onSelect={({ type: t, item }) => openDetail(t, item)}
-            onCreate={() => { leaveShared(); setTop10Open(true); }}
+            onCreate={() => { leaveToHome(); setTop10Open(true); }}
+          />
+        ) : view.name === 'discover' ? (
+          <Discover
+            seen={view.seen}
+            navigate={navigate}
+            onSelect={(item) => openDetail('tv', item)}
           />
         ) : (
           <>
+            <a className="discover-cta corners" href="/discover" onClick={openDiscover}>
+              <span className="eyebrow">숨은 명작 찾기</span>
+              <strong>원피스·진격은 봤다면, 다음은 이거 →</strong>
+            </a>
+
             <Filters type={type} onTypeChange={setType} sort={sort} onSortChange={setSort} />
 
             <div className="list-head">

@@ -69,6 +69,8 @@ function normalize(raw, type) {
     votes: raw.vote_count ?? 0,
     popularity: raw.popularity ?? 0,
     poster: raw.poster_path,
+    originalLanguage: raw.original_language,
+    genreIds: raw.genre_ids ?? [],
   };
 }
 
@@ -93,6 +95,12 @@ export async function fetchAnimePage({ type, sort, query, page }) {
     totalPages: Math.min(data.total_pages, 500), // TMDB는 500페이지까지만 허용
     totalResults: data.total_results,
   };
+}
+
+/** 작품별 TMDB 추천 목록 한 페이지(20편) */
+export async function fetchRecommendations({ type, id, page = 1 }) {
+  const data = await request(`/${type}/${id}/recommendations`, { page });
+  return data.results.map((r) => normalize(r, type));
 }
 
 const TV_STATUS = {

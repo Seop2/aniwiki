@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { parseShareUrl } from './share';
+import { parseSeen } from './discover';
 
 // 라이브러리 없는 최소 라우터. 화면마다 주소가 있어야 Vercel Analytics(무료 플랜)에서 페이지별로 집계된다
 //   /                      랭킹
 //   /top10?top10=…&name=…  공유된 TOP 10
 //   /anime/tv/1429         작품 상세(모달)
+//   /discover?seen=…       숨은 명작 찾기
 const DETAIL_RE = /^\/anime\/(tv|movie)\/(\d{1,9})$/;
 
 export const detailPath = (type, id) => `/anime/${type}/${id}`;
@@ -15,6 +17,7 @@ export function parseRoute(pathname, search) {
     const shared = parseShareUrl(search);
     if (shared) return { name: 'shared', shared };
   }
+  if (path === '/discover') return { name: 'discover', seen: parseSeen(search) };
   const m = DETAIL_RE.exec(path);
   if (m) return { name: 'detail', type: m[1], id: Number(m[2]) };
   return { name: 'home' };
@@ -22,7 +25,7 @@ export function parseRoute(pathname, search) {
 
 /** Analytics의 route(같은 화면끼리 묶이는 이름) */
 export const analyticsRoute = (route) =>
-  ({ home: '/', shared: '/top10', detail: '/anime/[type]/[id]' })[route.name];
+  ({ home: '/', shared: '/top10', detail: '/anime/[type]/[id]', discover: '/discover' })[route.name];
 
 /** 새 탭 열기(⌘/Ctrl/Shift 클릭, 휠 클릭)는 브라우저 기본 동작에 맡긴다 */
 export const isPlainClick = (e) => e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
