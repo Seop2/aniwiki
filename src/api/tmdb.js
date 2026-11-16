@@ -13,7 +13,6 @@ export const PROVIDERS = [
   { key: 'netflix', label: '넷플릭스', ids: NETFLIX_PROVIDERS },
   { key: 'disney', label: '디즈니+', ids: [337] },
   { key: 'tving', label: '티빙', ids: [1883] },
-  { key: 'wavve', label: '웨이브', ids: [356] },
   { key: 'watcha', label: '왓챠', ids: [97] },
 ];
 
