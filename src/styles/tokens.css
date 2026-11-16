@@ -1,0 +1,33 @@
+/* 디자인 토큰 — 다크 모드는 useTheme이 <html data-theme>를 바꾼다 */
+
+:root {
+  --bg: #f6f6f8;
+  --surface: #ffffff;
+  --surface-2: #ececf0;
+  --border: #d6d6dc;
+  --line: #e7e7ec;
+  --text: #17171c;
+  --muted: #8a8a94;
+  --accent: #7c5cf6;
+  --accent-text: #6a48f0;
+  --on-accent: #ffffff;
+  --mark: #17171c;
+  --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Pretendard Variable', sans-serif;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0f0f13;
+  --surface: #17171d;
+  --surface-2: #22222a;
+  --border: #2e2e37;
+  --line: #24242c;
+  --text: #ececf1;
+  --muted: #8d8d99;
+  --accent: #8b6dff;
+  --accent-text: #a48cff;
+  --on-accent: #ffffff;
+  --mark: #ececf1;
+  color-scheme: dark;
+}

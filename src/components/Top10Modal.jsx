@@ -3,6 +3,7 @@ import { posterUrl, MEDIA } from '../api/tmdb';
 import { TOP10_MAX } from '../hooks/useMyTop10';
 import { top10Title } from '../lib/share';
 import ShareActions from './ShareActions';
+import './Top10Modal.css';
 
 export default function Top10Modal({ top10, onClose }) {
   const ref = useRef(null);

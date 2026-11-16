@@ -6,6 +6,7 @@ import { detailPath, isPlainClick } from '../lib/router';
 import { useAnimeDetail } from '../hooks/useAnimeDetail';
 import { useHiddenGems } from '../hooks/useHiddenGems';
 import { useDiscoverPicks, useSeen } from '../hooks/useSeen';
+import './Discover.css';
 
 const RECOMMENDED_PICKS = 3;
 

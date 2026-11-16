@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
+import './SearchBar.css';
 
 export default function SearchBar({ onSearch }) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,9 +18,20 @@ export default function SearchBar({ onSearch }) {
         placeholder="작품 제목 검색 (예: 프리렌, 진격의 거인)"
         aria-label="작품 제목 검색"
       />
-      <button type="submit" className="btn-primary corners">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        검색
+      <button type="submit" className="btn-primary corners" aria-label="검색">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          aria-hidden
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <span className="search-label">검색</span>
       </button>
     </form>
   );

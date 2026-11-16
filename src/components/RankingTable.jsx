@@ -1,4 +1,5 @@
 import RankingRow from './RankingRow';
+import './RankingTable.css';
 
 function Message({ children }) {
   return <tr><td colSpan={5} className="message">{children}</td></tr>;

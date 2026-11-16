@@ -56,7 +56,11 @@ src/
 ├── components/            # Header, SearchBar, Filters, RankingTable, RankingRow, DetailModal,
 │                          # Top10Modal, SharedTop10, ShareActions, Discover
 ├── App.jsx
-└── index.css              # 디자인 토큰(:root / [data-theme=dark])
+├── App.css                # 컴포넌트 CSS는 각 컴포넌트 옆(components/Header.css 등)에서 import
+└── styles/                # main.jsx에서 App보다 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
+    ├── tokens.css         # 디자인 토큰(:root / [data-theme=dark])
+    ├── base.css           # 리셋 · body · focus
+    └── ui.css             # 여러 컴포넌트가 함께 쓰는 것(버튼, 크롭 마크, 작품 행, 스켈레톤, 모달 틀)
 scripts/
 ├── tmdb.js                # 빌드 스크립트용 TMDB 요청
 ├── sitemap.js             # 빌드 시 sitemap.xml 생성

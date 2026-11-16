@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { posterUrl } from '../api/tmdb';
 import { useAnimeDetail } from '../hooks/useAnimeDetail';
+import './DetailModal.css';
 
 // TMDB 시청처(JustWatch)에는 라프텔이 없어 검색 결과로 보낸다 — 작품이 있는지는 보장하지 않음
 const laftelSearchUrl = (title) => `https://laftel.net/search?keyword=${encodeURIComponent(title)}`;

@@ -13,6 +13,7 @@ import DetailModal from './components/DetailModal';
 import Top10Modal from './components/Top10Modal';
 import SharedTop10 from './components/SharedTop10';
 import Discover from './components/Discover';
+import './App.css';
 
 export default function App() {
   const { loc, route, navigate } = useRoute();

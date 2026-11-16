@@ -1,0 +1,10 @@
+/* 공유 링크 화면 */
+.shared-head { align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.shared-head .eyebrow { margin-bottom: 6px; }
+.shared-missing { font-size: 13px; color: var(--muted); }
+.shared-share { display: flex; justify-content: center; padding: 32px 0 96px; text-align: center; }
+.shared-share .share-buttons { justify-content: center; }
+
+@media (max-width: 640px) {
+  .shared-head .btn-primary { width: 100%; justify-content: center; }
+}
