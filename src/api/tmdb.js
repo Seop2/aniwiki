@@ -15,7 +15,6 @@ export const PROVIDERS = [
   { key: 'tving', label: '티빙', ids: [1883] },
   { key: 'wavve', label: '웨이브', ids: [356] },
   { key: 'watcha', label: '왓챠', ids: [97] },
-  { key: 'crunchyroll', label: '크런치롤', ids: [283] },
 ];
 
 /** 구독 · 무료로 볼 수 있는 작품만(대여 · 구매 제외). 서비스끼리는 OR */
@@ -112,6 +111,13 @@ const TV_STATUS = {
   Pilot: '파일럿',
 };
 
+// 한국 크런치롤은 대부분 지역 제한으로 재생이 안 되는데 TMDB(JustWatch)에는 볼 수 있다고 나온다
+// (2026-11 확인: 프리렌 · 진격 · 하이큐 등 상위 12편 중 10편 이용 불가) → 표시하지 않는다
+const HIDDEN_PROVIDERS = [283];
+
+// 넷플릭스 광고형 요금제(1796)는 같은 넷플릭스라 일반(8)과 함께 있으면 하나만 보여 준다
+const isDuplicateNetflix = (p, all) => p.provider_id === 1796 && all.some((q) => q.provider_id === 8);
+
 const PROVIDER_GROUPS = [
   ['flatrate', '구독'],
   ['free', '무료'],
@@ -128,7 +134,8 @@ function normalizeProviders(raw) {
   const groups = PROVIDER_GROUPS
     .map(([key, label]) => ({
       label,
-      items: [...(kr[key] ?? [])]
+      items: (kr[key] ?? [])
+        .filter((p, _, all) => !HIDDEN_PROVIDERS.includes(p.provider_id) && !isDuplicateNetflix(p, all))
         .sort((a, b) => a.display_priority - b.display_priority)
         .map((p) => ({ id: p.provider_id, name: p.provider_name, logo: p.logo_path })),
     }))
