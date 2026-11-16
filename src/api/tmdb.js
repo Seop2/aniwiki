@@ -16,12 +16,11 @@ export const PROVIDERS = [
   { key: 'watcha', label: '왓챠', ids: [97] },
 ];
 
-/** 구독 · 무료로 볼 수 있는 작품만(대여 · 구매 제외). 서비스끼리는 OR */
+/** 구독 · 무료로 볼 수 있는 작품만(대여 · 구매 제외). 서비스끼리는 OR. 아무것도 안 고르면 필터의 모든 서비스 */
 function providerParams(keys) {
-  const ids = PROVIDERS.filter((p) => keys.includes(p.key)).flatMap((p) => p.ids);
-  return ids.length
-    ? { watch_region: 'KR', with_watch_providers: ids.join('|'), with_watch_monetization_types: 'flatrate|free|ads' }
-    : {};
+  const picked = PROVIDERS.filter((p) => keys.includes(p.key));
+  const ids = (picked.length ? picked : PROVIDERS).flatMap((p) => p.ids);
+  return { watch_region: 'KR', with_watch_providers: ids.join('|'), with_watch_monetization_types: 'flatrate|free|ads' };
 }
 
 export const posterUrl = (path, size = 'w92') =>
