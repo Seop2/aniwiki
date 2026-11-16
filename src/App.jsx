@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { MEDIA, SORTS } from './api/tmdb';
+import { MEDIA, PROVIDERS, SORTS } from './api/tmdb';
 import { useAnimeList } from './hooks/useAnimeList';
 import { useMyTop10 } from './hooks/useMyTop10';
+import { usePersistedIds } from './hooks/useSeen';
 import { analyticsPath, analyticsRoute, canonicalPath, detailPath, isPlainClick, parseRoute, useRoute } from './lib/router';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
@@ -18,13 +19,16 @@ export default function App() {
   const [type, setType] = useState('tv');
   const [sort, setSort] = useState('rating');
   const [query, setQuery] = useState('');
+  // 내 구독 OTT라서 저장하고 로고 클릭으로도 초기화하지 않는다
+  const [providers, setProviders] = usePersistedIds('aniwiki-providers', (k) => PROVIDERS.some((p) => p.key === k));
+  const [original, setOriginal] = useState(false);
   const [preview, setPreview] = useState(null); // 상세를 연 목록 항목 { type, item } — 상세가 오기 전에 먼저 그린다
   const [top10Open, setTop10Open] = useState(false);
   const [homeKey, setHomeKey] = useState(0); // 바꾸면 SearchBar가 다시 마운트돼 입력값이 비워진다
   const closing = useRef(false); // 닫기 연타로 history.back()이 두 번 불려 사이트를 벗어나지 않게
 
   const top10 = useMyTop10();
-  const list = useAnimeList({ type, sort, query });
+  const list = useAnimeList({ type, sort, query, providers, original });
 
   useEffect(() => { closing.current = false; }, [loc]);
 
@@ -76,13 +80,17 @@ export default function App() {
     setQuery('');
     setType('tv');
     setSort('rating');
+    setOriginal(false);
     setHomeKey((k) => k + 1);
     window.scrollTo({ top: 0 });
   };
 
+  const watchLabel = original
+    ? '넷플릭스 오리지널'
+    : PROVIDERS.filter((p) => providers.includes(p.key)).map((p) => p.label).join('·');
   const heading = query
     ? `“${query}” 검색 결과`
-    : `${MEDIA[type].label} · ${SORTS[sort].label}`;
+    : [MEDIA[type].label, SORTS[sort].label, watchLabel].filter(Boolean).join(' · ');
 
   const detailItem = route.name === 'detail' && preview?.type === route.type && preview.item.id === route.id
     ? preview.item
@@ -121,14 +129,29 @@ export default function App() {
               <strong>원피스·진격은 봤다면, 다음은 이거 →</strong>
             </a>
 
-            <Filters type={type} onTypeChange={setType} sort={sort} onSortChange={setSort} />
+            <Filters
+              type={type}
+              onTypeChange={setType}
+              sort={sort}
+              onSortChange={setSort}
+              providers={providers}
+              onProvidersChange={setProviders}
+              original={original}
+              onOriginalChange={setOriginal}
+              searching={Boolean(query)}
+            />
 
             <div className="list-head">
               <h2>{heading}</h2>
               {!list.isPending && !list.isError && <span className="count">총 {list.total.toLocaleString()}편</span>}
             </div>
 
-            <RankingTable {...list} type={type} onSelect={(item) => openDetail(type, item)} />
+            <RankingTable
+              {...list}
+              type={type}
+              emptyText={query ? '검색 결과가 없습니다.' : '이 조건에 맞는 작품이 없어요. 볼 수 있는 곳을 더 골라 보세요.'}
+              onSelect={(item) => openDetail(type, item)}
+            />
           </>
         )}
       </main>

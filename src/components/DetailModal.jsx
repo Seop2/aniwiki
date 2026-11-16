@@ -123,6 +123,7 @@ export default function DetailModal({ type, id, item, top10, onClose }) {
               <strong>{d.rating.toFixed(1)}</strong>
               <span>{d.votes.toLocaleString()}표</span>
             </p>
+            {data?.netflixOriginal && <span className="badge-netflix">넷플릭스 오리지널</span>}
             {data?.genres.length > 0 && (
               <ul className="genre-list">
                 {data.genres.map((g) => <li key={g}>{g}</li>)}
@@ -169,6 +170,7 @@ export default function DetailModal({ type, id, item, top10, onClose }) {
               <a className="detail-link" href={laftelSearchUrl(d.title)} target="_blank" rel="noreferrer">
                 라프텔에서 검색 →
               </a>
+              <p className="detail-note">시청처는 TMDB(JustWatch) 기준이라 실제와 다를 수 있어요.</p>
             </section>
 
             {data.homepage && (

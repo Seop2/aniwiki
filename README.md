@@ -14,6 +14,11 @@ npm run dev
 - TV 시리즈 / 극장판 전환 (`/discover/{tv|movie}?with_genres=16`)
 - 정렬: 평점순(투표 200표 이상) · 인기순 · 투표수순 · 최신순
 - 제목 검색 (`/search/{tv|movie}` → 애니메이션 장르만 필터, 정렬은 클라이언트)
+- **볼 수 있는 곳**: 넷플릭스 · 디즈니+ · 티빙 · 웨이브 · 왓챠 · 크런치롤 칩으로 한국에서 구독으로 볼 수 있는 작품만 (`watch_region=KR&with_watch_providers=…`, 여러 개는 OR, 선택은 localStorage 저장, 검색에는 미적용). 라프텔은 TMDB에 없음
+- **넷플릭스 오리지널**: 한국 넷플릭스에 있는 오리지널만 모아 보기 + 상세 배지. 판별은 `lib/netflix.js`의 `isNetflixOriginal`
+  - network 213(Netflix)은 "어느 나라든 넷플릭스 방영"이라 쓰지 않는다(예: 타코피의 원죄 — 한국은 라프텔 독점)
+  - TV: 방송사가 넷플릭스 하나뿐 / 극장판: 15개국 이상 "Netflix" 디지털 공개 + 일반 극장 개봉이 그보다 앞서지 않음 / 공통: 넷플릭스 제작사
+  - 상세를 봐야 판별되므로 빌드 때 `scripts/netflixOriginals.js`가 `netflix-originals.json`을 만든다(dev에서는 미들웨어로 제공). 배포할 때마다 갱신
 - "더 보기" 무한 페이지네이션 (`useInfiniteQuery`)
 - 다크 모드 (localStorage 저장, 시스템 설정 기본값)
 - 모바일: 연도/투표수 컬럼을 제목 아래로 이동
@@ -43,6 +48,8 @@ src/
 ├── hooks/useMyTop10.js    # 내 TOP 10 (localStorage)
 ├── data/seeds.js          # /discover에서 고를 수 있는 유명작 16편
 ├── lib/discover.js        # 숨은 명작 필터 · 점수 계산(rankHiddenGems)
+├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize) — 빌드 스크립트와 공유
+├── lib/netflix.js         # 넷플릭스 오리지널 판별
 ├── lib/router.js          # 경로 파싱, history 기반 useRoute
 ├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
 ├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
@@ -50,7 +57,10 @@ src/
 │                          # Top10Modal, SharedTop10, ShareActions, Discover
 ├── App.jsx
 └── index.css              # 디자인 토큰(:root / [data-theme=dark])
-scripts/sitemap.js         # 빌드 시 sitemap.xml 생성
+scripts/
+├── tmdb.js                # 빌드 스크립트용 TMDB 요청
+├── sitemap.js             # 빌드 시 sitemap.xml 생성
+└── netflixOriginals.js    # 빌드 시 netflix-originals.json 생성
 ```
 
 ## 주의

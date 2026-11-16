@@ -1,16 +1,33 @@
+import { MEDIA, normalize } from '../lib/media';
+import { isNetflixOriginal, NETFLIX_PROVIDERS } from '../lib/netflix';
+
 const BASE_URL = 'https://api.themoviedb.org/3';
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY; // v3 API 키 (TOKEN이 없을 때 사용)
 const ANIMATION_GENRE_ID = 16;
 
+export { MEDIA };
+
+/** 「볼 수 있는 곳」 필터 — 한국 TMDB(JustWatch) 시청처 id. 라프텔은 TMDB에 없다 */
+export const PROVIDERS = [
+  { key: 'netflix', label: '넷플릭스', ids: NETFLIX_PROVIDERS },
+  { key: 'disney', label: '디즈니+', ids: [337] },
+  { key: 'tving', label: '티빙', ids: [1883] },
+  { key: 'wavve', label: '웨이브', ids: [356] },
+  { key: 'watcha', label: '왓챠', ids: [97] },
+  { key: 'crunchyroll', label: '크런치롤', ids: [283] },
+];
+
+/** 구독 · 무료로 볼 수 있는 작품만(대여 · 구매 제외). 서비스끼리는 OR */
+function providerParams(keys) {
+  const ids = PROVIDERS.filter((p) => keys.includes(p.key)).flatMap((p) => p.ids);
+  return ids.length
+    ? { watch_region: 'KR', with_watch_providers: ids.join('|'), with_watch_monetization_types: 'flatrate|free|ads' }
+    : {};
+}
+
 export const posterUrl = (path, size = 'w92') =>
   path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
-
-/** TV / 극장판은 필드명이 다르므로 한 곳에서 매핑한다 */
-export const MEDIA = {
-  tv: { label: 'TV 시리즈', title: 'name', original: 'original_name', date: 'first_air_date', dateParam: 'first_air_date' },
-  movie: { label: '극장판', title: 'title', original: 'original_title', date: 'release_date', dateParam: 'primary_release_date' },
-};
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -56,32 +73,15 @@ async function request(path, params = {}) {
   return res.json();
 }
 
-function normalize(raw, type) {
-  const m = MEDIA[type];
-  const date = raw[m.date] || null;
-  return {
-    id: raw.id,
-    title: raw[m.title],
-    originalTitle: raw[m.original],
-    date,
-    year: date ? date.slice(0, 4) : '—',
-    rating: raw.vote_average ?? 0,
-    votes: raw.vote_count ?? 0,
-    popularity: raw.popularity ?? 0,
-    poster: raw.poster_path,
-    originalLanguage: raw.original_language,
-    genreIds: raw.genre_ids ?? [],
-  };
-}
-
 /** 한 페이지(20개)를 가져온다. query가 있으면 검색, 없으면 discover */
-export async function fetchAnimePage({ type, sort, query, page }) {
+export async function fetchAnimePage({ type, sort, query, page, providers = [] }) {
   const data = query
     ? await request(`/search/${type}`, { query, page })
     : await request(`/discover/${type}`, {
         with_genres: ANIMATION_GENRE_ID,
         page,
         ...SORTS[sort].params(type),
+        ...providerParams(providers),
       });
 
   // 검색 API는 장르 필터가 없으므로 애니메이션만 걸러낸다
@@ -139,7 +139,9 @@ function normalizeProviders(raw) {
 
 /** 상세 정보 + 시청 가능 플랫폼을 한 번의 요청으로 가져온다 */
 export async function fetchAnimeDetail({ type, id }) {
-  const raw = await request(`/${type}/${id}`, { append_to_response: 'watch/providers' });
+  // 극장판의 오리지널 판별에는 공개 기록(release_dates)이 필요하다
+  const append = type === 'movie' ? 'watch/providers,release_dates' : 'watch/providers';
+  const raw = await request(`/${type}/${id}`, { append_to_response: append });
 
   return {
     ...normalize(raw, type),
@@ -154,5 +156,13 @@ export async function fetchAnimeDetail({ type, id }) {
     networks: (raw.networks ?? []).map((n) => n.name),
     runtime: raw.runtime,
     providers: normalizeProviders(raw['watch/providers']),
+    netflixOriginal: isNetflixOriginal(raw),
   };
+}
+
+/** 빌드 때 만든 「한국 넷플릭스에서 볼 수 있는 넷플릭스 오리지널」 목록 (scripts/netflixOriginals.js) */
+export async function fetchNetflixOriginals() {
+  const res = await fetch('/netflix-originals.json');
+  if (!res.ok) throw new Error(`netflix-originals ${res.status}`);
+  return res.json();
 }

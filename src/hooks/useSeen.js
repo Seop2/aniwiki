@@ -3,16 +3,17 @@ import { useEffect, useState } from 'react';
 const SEEN_KEY = 'aniwiki-seen';
 const PICKS_KEY = 'aniwiki-discover-picks';
 
-function load(key) {
+function load(key, isValid) {
   try {
     const saved = JSON.parse(localStorage.getItem(key));
-    if (Array.isArray(saved)) return saved.filter(Number.isInteger);
+    if (Array.isArray(saved)) return saved.filter(isValid);
   } catch {}
   return [];
 }
 
-function usePersistedIds(key) {
-  const [ids, setIds] = useState(() => load(key));
+/** localStorage에 저장되는 값 목록. isValid로 저장값을 검증한다(기본: 작품 ID) */
+export function usePersistedIds(key, isValid = Number.isInteger) {
+  const [ids, setIds] = useState(() => load(key, isValid));
   useEffect(() => {
     try { localStorage.setItem(key, JSON.stringify(ids)); } catch {}
   }, [key, ids]);
