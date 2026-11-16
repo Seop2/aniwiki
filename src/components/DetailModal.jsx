@@ -69,6 +69,15 @@ export default function DetailModal({ type, id, item, top10, onClose }) {
     return () => { document.title = prevTitle; };
   }, [d?.title]);
 
+  // 검색 결과에 랭킹 소개 대신 작품 줄거리가 나오도록
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="description"]');
+    if (!meta || !d?.overview) return;
+    const prev = meta.content;
+    meta.content = d.overview.length > 150 ? `${d.overview.slice(0, 150)}…` : d.overview;
+    return () => { meta.content = prev; };
+  }, [d?.overview]);
+
   const src = d && posterUrl(d.poster, 'w342');
   const showOriginal = d?.originalTitle && d.originalTitle !== d.title;
   const inTop10 = top10.has(type, id);

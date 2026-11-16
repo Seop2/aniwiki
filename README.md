@@ -28,8 +28,11 @@ npm run dev
   - 기준값은 `lib/discover.js`의 `GEM` 상수
 - **화면별 주소**: `/`(랭킹) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세 모달) · `/discover?seen=…`(숨은 명작)
   - 라이브러리 없는 최소 라우터(`lib/router.js`)로 `<Analytics route path>`에 페이지뷰를 보내 무료 플랜에서도 화면별로 집계
+  - 숨은 명작 결과(`?seen=…`)는 `/discover/results`로 따로 집계해 고르기 → 결과 전환을 볼 수 있음
+  - canonical은 화면마다 JS로 지정(상세는 자기 주소, 쿼리로 바뀌는 화면은 쿼리 없는 주소)
   - 앱 안에서 연 상세는 뒤로가기로 닫히고, 상세 주소로 바로 들어오면 랭킹 위에 모달이 열림
   - Vercel에서는 `vercel.json` rewrite로 모든 경로를 `index.html`로 보냄(SPA 폴백)
+- **사이트맵**: 빌드할 때 `scripts/sitemap.js`(Vite 플러그인)가 TMDB 평점순 · 인기순 상위 작품과 시드 작품의 상세 주소를 받아 `sitemap.xml`을 만듦. TMDB 요청이 실패하면 고정 주소만 담고 빌드는 계속됨
 
 ## 구조
 ```
@@ -47,6 +50,7 @@ src/
 │                          # Top10Modal, SharedTop10, ShareActions, Discover
 ├── App.jsx
 └── index.css              # 디자인 토큰(:root / [data-theme=dark])
+scripts/sitemap.js         # 빌드 시 sitemap.xml 생성
 ```
 
 ## 주의

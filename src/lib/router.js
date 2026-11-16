@@ -25,7 +25,20 @@ export function parseRoute(pathname, search) {
 
 /** Analytics의 route(같은 화면끼리 묶이는 이름) */
 export const analyticsRoute = (route) =>
-  ({ home: '/', shared: '/top10', detail: '/anime/[type]/[id]', discover: '/discover' })[route.name];
+  route.name === 'discover' && route.seen.length
+    ? '/discover/results'
+    : ({ home: '/', shared: '/top10', detail: '/anime/[type]/[id]', discover: '/discover' })[route.name];
+
+/** Pages 패널에 찍히는 경로 — 숨은 명작은 고르기와 결과(?seen=…)를 나눠 세어야 결과까지 본 사람 수가 보인다 */
+export const analyticsPath = (route, pathname) =>
+  (route.name === 'discover' && route.seen.length ? '/discover/results' : pathname);
+
+/** 검색엔진용 대표 주소. 공유 TOP 10 · 숨은 명작 결과처럼 쿼리로 내용이 바뀌는 화면은 쿼리 없는 주소로 묶는다 */
+export function canonicalPath(route) {
+  if (route.name === 'detail') return detailPath(route.type, route.id);
+  if (route.name === 'discover') return '/discover';
+  return '/';
+}
 
 /** 새 탭 열기(⌘/Ctrl/Shift 클릭, 휠 클릭)는 브라우저 기본 동작에 맡긴다 */
 export const isPlainClick = (e) => e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);

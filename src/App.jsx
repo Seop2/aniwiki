@@ -3,7 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { MEDIA, SORTS } from './api/tmdb';
 import { useAnimeList } from './hooks/useAnimeList';
 import { useMyTop10 } from './hooks/useMyTop10';
-import { analyticsRoute, detailPath, isPlainClick, parseRoute, useRoute } from './lib/router';
+import { analyticsPath, analyticsRoute, canonicalPath, detailPath, isPlainClick, parseRoute, useRoute } from './lib/router';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import Filters from './components/Filters';
@@ -27,6 +27,18 @@ export default function App() {
   const list = useAnimeList({ type, sort, query });
 
   useEffect(() => { closing.current = false; }, [loc]);
+
+  // index.html에 고정하면 모든 주소가 /의 중복으로 취급돼 작품 상세가 색인되지 않는다
+  const canonical = canonicalPath(route);
+  useEffect(() => {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'canonical';
+      document.head.append(link);
+    }
+    link.href = `https://www.aniwiki.link${canonical}`;
+  }, [canonical]);
 
   // 상세 모달 뒤에 깔리는 화면: 앱 안에서 열었으면 열기 전 화면, 상세 주소로 바로 들어왔으면 랭킹
   const bg = loc.state?.bg;
@@ -132,7 +144,7 @@ export default function App() {
         />
       )}
       {top10Open && <Top10Modal top10={top10} onClose={() => setTop10Open(false)} />}
-      <Analytics route={analyticsRoute(route)} path={loc.pathname} />
+      <Analytics route={analyticsRoute(route)} path={analyticsPath(route, loc.pathname)} />
     </>
   );
 }
