@@ -1,4 +1,4 @@
-// 상세가 아닌 화면에서는 모달 슬롯을 비운다(다른 화면으로 이동하면 열려 있던 모달이 닫힌다)
-export default function Empty() {
+// 페이지를 처음 불러올 때(새로고침 · 주소 직접 입력) 모달 슬롯에 맞는 화면이 없으면 쓰인다 — 없으면 404
+export default function Default() {
   return null;
 }

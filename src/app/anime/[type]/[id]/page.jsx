@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import DetailPage from '@/components/detail/DetailPage';
 import { posterUrl } from '@/lib/catalog';
+import { overviewSummary } from '@/lib/media';
 import { detailPath, parseDetailParams } from '@/lib/paths';
 import { detailQueryKey } from '@/lib/queryKeys';
 import { fetchAnimeDetail, TmdbError } from '@/server/tmdb';
@@ -23,14 +24,12 @@ const load = cache(async (rawType, rawId) => {
   }
 });
 
-const summary = (overview) => (overview && overview.length > 150 ? `${overview.slice(0, 150)}…` : overview);
-
 export async function generateMetadata({ params }) {
   const { type: rawType, id: rawId } = await params;
   const { type, id, data } = await load(rawType, rawId);
   const title = `${data.title} - ANIWIKI`;
   // 검색 결과에 랭킹 소개 대신 작품 줄거리가 나오도록
-  const description = summary(data.overview) || undefined;
+  const description = overviewSummary(data.overview);
   const image = posterUrl(data.backdrop, 'w780') ?? posterUrl(data.poster, 'w500');
   const images = image ? [{ url: image, alt: data.title }] : undefined;
   return {

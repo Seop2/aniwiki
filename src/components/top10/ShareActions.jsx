@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics';
+import { useIsClient } from '../../hooks/useIsClient';
 import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentUrl } from '../../lib/share';
 import { renderTop10Image } from '../../lib/top10Image';
 import './ShareActions.css';
@@ -8,9 +9,11 @@ import './ShareActions.css';
 export default function ShareActions({ name, items, disabled }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+  // 시스템 공유 지원 여부 · 개발 중 링크 주소(location)는 브라우저에서만 알 수 있어 서버 HTML과 맞추려고 하이드레이션 뒤에 정한다
+  const isClient = useIsClient();
 
   const title = top10Title(name);
-  const url = buildShareUrl({ name, items });
+  const url = buildShareUrl({ name, items }, { local: isClient });
 
   const run = async (method, fn) => {
     try {
@@ -49,7 +52,7 @@ export default function ShareActions({ name, items, disabled }) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
           링크 복사
         </button>
-        {canShareLink() && (
+        {isClient && canShareLink() && (
           <button type="button" className="btn-outline" onClick={onShare} disabled={disabled}>공유하기</button>
         )}
         <a

@@ -24,3 +24,6 @@ export function normalize(raw, type) {
   };
 }
 
+/** 검색 결과 · 링크 미리보기 설명(meta description)용 줄거리 — 150자까지 */
+export const overviewSummary = (overview) =>
+  (overview && overview.length > 150 ? `${overview.slice(0, 150)}…` : overview) || undefined;

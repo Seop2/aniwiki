@@ -2,7 +2,6 @@
 
 import { posterUrl } from '../../lib/catalog';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
-import { useDocumentMeta } from '../../hooks/useDocumentMeta';
 import Poster from '../common/Poster';
 import { useAppState } from '../layout/AppState';
 import './DetailModal.css';
@@ -54,13 +53,6 @@ export default function DetailContent({ type, id, item }) {
   const { top10 } = useAppState();
   const { data, isPending, isError } = useAnimeDetail({ type, id });
   const d = data ?? item; // 상세가 오기 전에는 목록에서 가진 정보로 먼저 그린다
-
-  // 검색 결과에 랭킹 소개 대신 작품 줄거리가 나오도록
-  const overview = d?.overview;
-  useDocumentMeta({
-    title: d?.title && `${d.title} - ANIWIKI`,
-    description: overview && (overview.length > 150 ? `${overview.slice(0, 150)}…` : overview),
-  });
 
   const showOriginal = d?.originalTitle && d.originalTitle !== d.title;
   const inTop10 = top10.has(type, id);

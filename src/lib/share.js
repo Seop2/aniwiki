@@ -2,9 +2,10 @@
 const PREFIX = { tv: 't', movie: 'm' };
 const TYPE_OF = { t: 'tv', m: 'movie' };
 
-// 배포본은 항상 정식 주소로 공유한다(미리보기 배포 URL이 퍼지지 않게). 로컬 개발 중에는 바로 열어볼 수 있게 현재 주소
+// 배포본은 항상 정식 주소로 공유한다(미리보기 배포 URL이 퍼지지 않게). 로컬 개발 중에는 바로 열어볼 수 있게 현재 주소 —
+// 단 서버 렌더에는 location이 없으므로 local(브라우저에서 그리는 중)일 때만
 const SITE_URL = 'https://www.aniwiki.link';
-const shareOrigin = () => (process.env.NODE_ENV === 'development' ? location.origin : SITE_URL);
+const shareOrigin = (local) => (local && process.env.NODE_ENV === 'development' ? location.origin : SITE_URL);
 
 export const TOP10_MAX = 10;
 
@@ -17,7 +18,7 @@ export function shareQuery({ name, items }) {
   return params.toString();
 }
 
-export const buildShareUrl = (top10) => `${shareOrigin()}/top10?${shareQuery(top10)}`;
+export const buildShareUrl = (top10, { local = false } = {}) => `${shareOrigin(local)}/top10?${shareQuery(top10)}`;
 
 /** 공유 링크가 아니거나 유효한 항목이 하나도 없으면 null */
 export function parseShareUrl(search) {
