@@ -10,11 +10,14 @@ export const TOP10_MAX = 10;
 
 export const top10Title = (name) => `${name?.trim() || '나'}의 인생 애니 TOP 10`;
 
-export function buildShareUrl({ name, items }) {
+/** top10=t1429.m372058&name=… */
+export function shareQuery({ name, items }) {
   const params = new URLSearchParams({ top10: items.map((a) => PREFIX[a.type] + a.id).join('.') });
   if (name?.trim()) params.set('name', name.trim());
-  return `${shareOrigin()}/top10?${params}`;
+  return params.toString();
 }
+
+export const buildShareUrl = (top10) => `${shareOrigin()}/top10?${shareQuery(top10)}`;
 
 /** 공유 링크가 아니거나 유효한 항목이 하나도 없으면 null */
 export function parseShareUrl(search) {

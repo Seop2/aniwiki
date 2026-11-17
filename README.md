@@ -1,13 +1,13 @@
 # ANIWIKI
 
-TMDB 애니메이션 랭킹/검색 사이트 (React 19 + Vite 8 + TanStack Query v5)
+TMDB 애니메이션 랭킹/검색 사이트 (Next.js 16 App Router + React 19 + TanStack Query v5)
 
 ## 실행
 
 ```bash
 npm install
-cp .env.example .env   # VITE_TMDB_TOKEN(v4 Read Access Token) 또는 VITE_TMDB_API_KEY(v3 API Key) 입력
-npm run dev
+cp .env.example .env   # TMDB_TOKEN(v4 Read Access Token) 또는 TMDB_API_KEY(v3 API Key) 입력 — 서버에서만 쓴다
+npm run dev            # 배포 빌드 확인: npm run build && npm start
 ```
 
 ## 기능
@@ -18,62 +18,70 @@ npm run dev
 - **넷플릭스 오리지널**: 한국 넷플릭스에 있는 오리지널만 모아 보기 + 상세 배지. 판별은 `lib/netflix.js`의 `isNetflixOriginal`
   - network 213(Netflix)은 "어느 나라든 넷플릭스 방영"이라 쓰지 않는다(예: 타코피의 원죄 — 한국은 라프텔 독점)
   - TV: 방송사가 넷플릭스 하나뿐 / 극장판: 15개국 이상 "Netflix" 디지털 공개 + 일반 극장 개봉이 그보다 앞서지 않음 / 공통: 넷플릭스 제작사
-  - 상세를 봐야 판별되므로 빌드 때 `scripts/netflixOriginals.js`가 `netflix-originals.json`을 만든다(dev에서는 미들웨어로 제공). 배포할 때마다 갱신
+  - 상세를 봐야 판별되므로 `src/server/netflixOriginals.js`가 목록을 만들고 `/netflix-originals.json` 라우트가 빌드 때 + 하루마다(ISR) 갱신
 - "더 보기" 무한 페이지네이션 (`useInfiniteQuery`)
 - 다크 모드 (localStorage 저장, 시스템 설정 기본값)
 - 모바일: 연도/투표수 컬럼을 제목 아래로 이동
 - **나만의 인생 애니 TOP 10**: 상세 모달에서 담고, 헤더 「내 TOP 10」에서 순서 편집 · 닉네임 입력 (localStorage 저장)
   - 공유 이미지(1080×1350 PNG, Canvas로 직접 그림) 저장 / 모바일은 시스템 공유 시트로 바로 공유
-  - 공유 링크 `/top10?top10=t1429.m372058&name=…` (예전 `/?top10=…`도 자동 전환) — 작품 ID만 담고, 받는 쪽에서 TMDB로 불러와 읽기 전용 화면 표시
+  - 공유 링크 `/top10?top10=t1429.m372058&name=…` (예전 `/?top10=…`는 `next.config` redirect) — 작품 ID만 담고, 받는 쪽에서 TMDB로 불러와 읽기 전용 화면 표시
+  - 링크 미리보기 이미지는 `/api/og/top10?…`(next/og `ImageResponse`)가 담긴 작품 포스터로 그림
   - 링크 복사 · X 공유 · Web Share API, 공유 방식별 `top10_share` 이벤트(Vercel Analytics — Pro 플랜에서만 기록)
 - **숨은 명작 찾기** (`/discover`): 본 유명작(원피스 · 나루토 · 진격 등 16편)을 포스터 그리드에서 고르면 덜 알려진 명작 20편 추천
   - 고른 작품들의 TMDB 추천 목록(각 40편)을 합산 — 여러 작품에서, 앞 순위로 추천될수록 높은 점수
   - 일본 애니 · 평점 7.5↑ · 투표 100~1,500(유명작은 2,000~8,000) · 방영 1년 경과 · 총집편 제외, 1995년 이전은 점수 절반
   - 카드마다 추천 이유(「진격의 거인을 본 사람에게」)와 완결 · 화수, 「이미 봤어요」로 제외(localStorage)
   - 기준값은 `lib/discover.js`의 `GEM` 상수
-- **화면별 주소**: `/`(랭킹) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세 모달) · `/discover?seen=…`(숨은 명작)
-  - 라이브러리 없는 최소 라우터(`lib/router.js`)로 `<Analytics route path>`에 페이지뷰를 보내 무료 플랜에서도 화면별로 집계
-  - 숨은 명작 결과(`?seen=…`)는 `/discover/results`로 따로 집계해 고르기 → 결과 전환을 볼 수 있음
-  - canonical은 화면마다 JS로 지정(상세는 자기 주소, 쿼리로 바뀌는 화면은 쿼리 없는 주소)
-  - 앱 안에서 연 상세는 뒤로가기로 닫히고, 상세 주소로 바로 들어오면 랭킹 위에 모달이 열림
-  - Vercel에서는 `vercel.json` rewrite로 모든 경로를 `index.html`로 보냄(SPA 폴백)
-- **사이트맵**: 빌드할 때 `scripts/sitemap.js`(Vite 플러그인)가 TMDB 평점순 · 인기순 상위 작품과 시드 작품의 상세 주소를 받아 `sitemap.xml`을 만듦. TMDB 요청이 실패하면 고정 주소만 담고 빌드는 계속됨
+- **화면별 주소** (App Router): `/`(랭킹) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세) · `/discover?seen=…`(숨은 명작)
+  - 작품 상세는 앱 안에서 열면 `@modal/(.)anime/…` 인터셉트 라우트로 모달(뒤 화면 유지, 뒤로가기로 닫힘), 주소로 바로 들어오면 서버에서 그린 페이지(제목 · 줄거리 · og:image, 10분 ISR)
+  - 필터 · 검색어 · 내 TOP 10은 layout의 `AppState` 컨텍스트에 있어 페이지를 오가도 유지
+  - canonical은 페이지 metadata로(상세는 자기 주소, 쿼리로 바뀌는 화면은 쿼리 없는 주소), 알 수 없는 주소는 404
+  - `<Analytics route path>`로 화면별 집계(무료 플랜). 숨은 명작 결과(`?seen=…`)는 `/discover/results`로 따로 세어 고르기 → 결과 전환을 볼 수 있음
+- **TMDB 토큰은 서버에만**: 브라우저는 `/api/anime` · `/api/anime/{type}/{id}` · `…/recommendations`를 부르고, 서버(`src/server/tmdb.js`)가 TMDB에 요청 · 정규화 · 캐시(React Query staleTime과 같은 시간, CDN `s-maxage`)
+- **사이트맵**: `app/sitemap.js`가 TMDB 평점순 · 인기순 상위 작품과 시드 작품의 상세 주소를 담아 하루마다 갱신. TMDB 요청이 실패하면 고정 주소만 담음
 
 ## 구조
 ```
 src/
-├── api/tmdb.js            # fetch 래퍼, MEDIA/SORTS 설정, 응답 정규화
-├── hooks/useAnimeList.js  # useInfiniteQuery 래핑
-├── hooks/useTheme.js
-├── hooks/useMyTop10.js    # 내 TOP 10 (localStorage)
+├── app/                   # App Router
+│   ├── layout.jsx         # 메타 태그 · 글꼴 · 테마 스크립트, Providers > AppState > Shell + {modal}
+│   ├── page.jsx           # / 랭킹
+│   ├── discover/ top10/   # 숨은 명작 · 공유 TOP 10
+│   ├── anime/[type]/[id]/ # 작품 상세 페이지(SSR · ISR)
+│   ├── @modal/            # 앱 안에서 연 상세 모달((.)anime 인터셉트), 다른 화면에서는 비움
+│   ├── api/anime/…        # TMDB 프록시(입력 검증)
+│   ├── api/og/top10/      # 공유 TOP 10 미리보기 이미지
+│   ├── netflix-originals.json/ sitemap.js
+│   └── providers.jsx      # QueryClient
+├── server/                # 서버 전용(server-only)
+│   ├── tmdb.js            # TMDB 요청 · 정규화 · 캐시 시간
+│   ├── respond.js         # 라우트 입력 검증 · 응답 헬퍼
+│   ├── netflixOriginals.js · sitemapPaths.js · ogFonts.js
+├── api/tmdb.js            # 브라우저용 fetch 래퍼(/api/* 호출)
+├── hooks/                 # useAnimeList(useInfiniteQuery) · useAnimeDetail · useMyTop10 · useSeen · useTheme …
 ├── data/seeds.js          # /discover에서 고를 수 있는 유명작 16편
+├── lib/catalog.js         # PROVIDERS · SORTS · posterUrl (화면 · 서버 공용)
 ├── lib/discover.js        # 숨은 명작 필터 · 점수 계산(rankHiddenGems)
-├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize) — 빌드 스크립트와 공유
+├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize)
 ├── lib/netflix.js         # 넷플릭스 오리지널 판별
-├── lib/router.js          # 경로 파싱, history 기반 useRoute
-├── lib/staleTimes.js      # React Query 캐시 유지 시간(staleTime) 모음
+├── lib/paths.js           # 상세 주소 · 파라미터 검증
+├── lib/storage.js         # localStorage 값을 하이드레이션 안전하게 읽는 useStoredValue
+├── lib/staleTimes.js      # React Query 캐시 유지 시간(staleTime) 모음 — 서버 캐시도 같은 값
 ├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
 ├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
 ├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더에
-│   ├── common/            # Modal(모달 틀), AppLink(앱 내부 링크), Poster(포스터 · 빈 칸)
-│   ├── layout/            # Header, SearchBar
-│   ├── ranking/           # Filters, RankingTable, RankingRow
-│   ├── detail/            # DetailModal
+│   ├── common/            # Modal(모달 틀), Poster(포스터 · 빈 칸)
+│   ├── layout/            # Shell(헤더 · 로고 · 검색창), AppState(공유 상태), PageAnalytics, Header, SearchBar
+│   ├── ranking/           # Home, Filters, RankingTable, RankingRow
+│   ├── detail/            # DetailContent(본문), DetailModal, DetailPage
 │   ├── top10/             # Top10Modal, SharedTop10, ShareActions
 │   └── discover/          # Discover
-├── hooks/useDocumentMeta.js # 탭 제목 · 검색 설명 · canonical
-├── App.jsx
-├── App.css                # 컴포넌트 CSS는 각 컴포넌트 옆(components/layout/Header.css 등)에서 import
-└── styles/                # main.jsx에서 App보다 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
+└── styles/                # layout에서 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
     ├── tokens.css         # 디자인 토큰(:root / [data-theme=dark])
     ├── base.css           # 리셋 · body · focus
     └── ui.css             # 여러 컴포넌트가 함께 쓰는 것(버튼, 크롭 마크, 작품 행, 스켈레톤, 모달 틀)
-scripts/
-├── tmdb.js                # 빌드 스크립트용 TMDB 요청
-├── sitemap.js             # 빌드 시 sitemap.xml 생성
-└── netflixOriginals.js    # 빌드 시 netflix-originals.json 생성
+scripts/og-image.html      # public/og-image.png 원본
 ```
 
 ## 주의
-- 클라이언트에서 토큰을 쓰므로 빌드 결과물에 토큰이 노출됩니다. 배포 시에는 서버(Next.js Route Handler, Vercel Function 등)를 프록시로 두세요.
 - TMDB discover는 최대 500페이지까지만 조회됩니다.
