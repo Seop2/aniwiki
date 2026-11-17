@@ -1,4 +1,4 @@
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import './Header.css';
 
 export default function Header({ top10Count, onOpenTop10, onOpenDiscover }) {

@@ -1,8 +1,8 @@
-import { posterUrl } from '../api/tmdb';
-import { useAnimeDetail } from '../hooks/useAnimeDetail';
-import { useDocumentMeta } from '../hooks/useDocumentMeta';
-import Modal from './Modal';
-import Poster from './Poster';
+import { posterUrl } from '../../api/tmdb';
+import { useAnimeDetail } from '../../hooks/useAnimeDetail';
+import { useDocumentMeta } from '../../hooks/useDocumentMeta';
+import Modal from '../common/Modal';
+import Poster from '../common/Poster';
 import './DetailModal.css';
 
 // TMDB 시청처(JustWatch)에는 라프텔이 없어 검색 결과로 보낸다 — 작품이 있는지는 보장하지 않음

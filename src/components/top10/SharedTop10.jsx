@@ -1,12 +1,12 @@
 import { useQueries } from '@tanstack/react-query';
-import { fetchAnimeDetail, MEDIA } from '../api/tmdb';
-import { top10Title } from '../lib/share';
-import { detailPath } from '../lib/router';
-import AppLink from './AppLink';
-import Poster from './Poster';
+import { fetchAnimeDetail, MEDIA } from '../../api/tmdb';
+import { top10Title } from '../../lib/share';
+import { detailPath } from '../../lib/router';
+import AppLink from '../common/AppLink';
+import Poster from '../common/Poster';
 import ShareActions from './ShareActions';
 import './SharedTop10.css';
-import './RankingTable.css'; // 같은 랭킹 표를 쓴다
+import '../ranking/RankingTable.css'; // 같은 랭킹 표를 쓴다
 
 /** 공유 링크(/top10?top10=...)로 들어왔을 때의 읽기 전용 화면 */
 export default function SharedTop10({ shared, onSelect, onCreate }) {

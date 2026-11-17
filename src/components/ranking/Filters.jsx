@@ -1,4 +1,4 @@
-import { MEDIA, PROVIDERS, SORTS } from '../api/tmdb';
+import { MEDIA, PROVIDERS, SORTS } from '../../api/tmdb';
 import './Filters.css';
 
 /** 「볼 수 있는 곳」 — 내 구독 OTT(여러 개 OR) + 넷플릭스 오리지널 모아 보기 */

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { posterUrl } from '../api/tmdb';
-import { SEEDS, SEED_BY_ID } from '../data/seeds';
-import { discoverPath } from '../lib/discover';
-import { detailPath } from '../lib/router';
-import { useAnimeDetail } from '../hooks/useAnimeDetail';
-import { useDocumentMeta } from '../hooks/useDocumentMeta';
-import { useHiddenGems } from '../hooks/useHiddenGems';
-import { useDiscoverPicks, useSeen } from '../hooks/useSeen';
-import AppLink from './AppLink';
-import Poster from './Poster';
+import { posterUrl } from '../../api/tmdb';
+import { SEEDS, SEED_BY_ID } from '../../data/seeds';
+import { discoverPath } from '../../lib/discover';
+import { detailPath } from '../../lib/router';
+import { useAnimeDetail } from '../../hooks/useAnimeDetail';
+import { useDocumentMeta } from '../../hooks/useDocumentMeta';
+import { useHiddenGems } from '../../hooks/useHiddenGems';
+import { useDiscoverPicks, useSeen } from '../../hooks/useSeen';
+import AppLink from '../common/AppLink';
+import Poster from '../common/Poster';
 import './Discover.css';
 
 const RECOMMENDED_PICKS = 3;

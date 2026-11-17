@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics';
-import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentUrl } from '../lib/share';
-import { renderTop10Image } from '../lib/top10Image';
+import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentUrl } from '../../lib/share';
+import { renderTop10Image } from '../../lib/top10Image';
 import './ShareActions.css';
 
 /** 이미지 저장/공유 · 링크 복사 · 시스템 공유 · X 공유 버튼 묶음 */

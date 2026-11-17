@@ -1,6 +1,6 @@
-import { detailPath } from '../lib/router';
-import AppLink from './AppLink';
-import Poster from './Poster';
+import { detailPath } from '../../lib/router';
+import AppLink from '../common/AppLink';
+import Poster from '../common/Poster';
 
 export default function RankingRow({ rank, item, type, onSelect }) {
   const showOriginal = item.originalTitle && item.originalTitle !== item.title;

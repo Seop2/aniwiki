@@ -53,12 +53,16 @@ src/
 ├── lib/router.js          # 경로 파싱, history 기반 useRoute
 ├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
 ├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
-├── components/            # 화면: Header, SearchBar, Filters, RankingTable, RankingRow, DetailModal,
-│                          #       Top10Modal, SharedTop10, ShareActions, Discover
-│                          # 공통: Modal(모달 틀), AppLink(앱 내부 링크), Poster(포스터 · 빈 칸)
+├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더에
+│   ├── common/            # Modal(모달 틀), AppLink(앱 내부 링크), Poster(포스터 · 빈 칸)
+│   ├── layout/            # Header, SearchBar
+│   ├── ranking/           # Filters, RankingTable, RankingRow
+│   ├── detail/            # DetailModal
+│   ├── top10/             # Top10Modal, SharedTop10, ShareActions
+│   └── discover/          # Discover
 ├── hooks/useDocumentMeta.js # 탭 제목 · 검색 설명 · canonical
 ├── App.jsx
-├── App.css                # 컴포넌트 CSS는 각 컴포넌트 옆(components/Header.css 등)에서 import
+├── App.css                # 컴포넌트 CSS는 각 컴포넌트 옆(components/layout/Header.css 등)에서 import
 └── styles/                # main.jsx에서 App보다 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
     ├── tokens.css         # 디자인 토큰(:root / [data-theme=dark])
     ├── base.css           # 리셋 · body · focus

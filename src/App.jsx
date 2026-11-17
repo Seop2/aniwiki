@@ -6,15 +6,15 @@ import { useMyTop10 } from './hooks/useMyTop10';
 import { usePersistedIds } from './hooks/useSeen';
 import { useCanonical } from './hooks/useDocumentMeta';
 import { analyticsPath, analyticsRoute, canonicalPath, detailPath, parseRoute, useRoute } from './lib/router';
-import AppLink from './components/AppLink';
-import Header from './components/Header';
-import SearchBar from './components/SearchBar';
-import Filters from './components/Filters';
-import RankingTable from './components/RankingTable';
-import DetailModal from './components/DetailModal';
-import Top10Modal from './components/Top10Modal';
-import SharedTop10 from './components/SharedTop10';
-import Discover from './components/Discover';
+import AppLink from './components/common/AppLink';
+import Header from './components/layout/Header';
+import SearchBar from './components/layout/SearchBar';
+import Filters from './components/ranking/Filters';
+import RankingTable from './components/ranking/RankingTable';
+import DetailModal from './components/detail/DetailModal';
+import Top10Modal from './components/top10/Top10Modal';
+import SharedTop10 from './components/top10/SharedTop10';
+import Discover from './components/discover/Discover';
 import './App.css';
 
 export default function App() {
