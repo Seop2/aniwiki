@@ -1,4 +1,4 @@
-import { posterUrl } from '../api/tmdb';
+import { posterUrl } from './catalog';
 import { top10Title } from './share';
 
 const W = 1080;

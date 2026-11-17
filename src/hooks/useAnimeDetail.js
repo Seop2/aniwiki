@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchAnimeDetail } from '../api/tmdb';
+import { fetchAnimeDetail } from '../lib/apiClient';
 import { detailQueryKey } from '../lib/queryKeys';
 import { STALE_TIME } from '../lib/staleTimes';
 

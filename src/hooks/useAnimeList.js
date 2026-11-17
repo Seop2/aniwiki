@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchAnimePage, SORTS } from '../api/tmdb';
+import { fetchAnimePage } from '../lib/apiClient';
+import { SORTS } from '../lib/catalog';
 import { STALE_TIME } from '../lib/staleTimes';
 import { useNetflixOriginals } from './useNetflixOriginals';
 

@@ -1,4 +1,4 @@
-import { MEDIA, PROVIDERS, SORTS } from '../../api/tmdb';
+import { MEDIA, PROVIDERS, SORTS } from '../../lib/catalog';
 import './Filters.css';
 
 function WatchFilter({ providers, onProvidersChange, original, onOriginalChange, searching }) {

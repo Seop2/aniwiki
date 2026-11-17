@@ -1,4 +1,4 @@
-export { MEDIA, PROVIDERS, SORTS, posterUrl } from '../lib/catalog';
+// 브라우저에서 부르는 데이터 요청(app/api/* 호출). TMDB는 서버(src/server/tmdb.js)가 대신 불러 토큰이 노출되지 않는다
 
 async function getJson(path, params = {}) {
   const search = new URLSearchParams();

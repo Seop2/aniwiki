@@ -1,4 +1,4 @@
-import { posterUrl } from '../../api/tmdb';
+import { posterUrl } from '../../lib/catalog';
 
 export default function Poster({ path, size = 'w92', className = 'poster', ...img }) {
   const src = posterUrl(path, size);

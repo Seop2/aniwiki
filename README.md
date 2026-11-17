@@ -57,9 +57,9 @@ src/
 │   ├── tmdb.js            # TMDB 요청 · 정규화 · 캐시 시간
 │   ├── respond.js         # 라우트 입력 검증 · 응답 헬퍼
 │   ├── netflixOriginals.js · sitemapPaths.js · ogFonts.js
-├── api/tmdb.js            # 브라우저용 fetch 래퍼(/api/* 호출)
 ├── hooks/                 # useAnimeList(useInfiniteQuery) · useAnimeDetail · useMyTop10 · useSeen · useTheme …
 ├── data/seeds.js          # /discover에서 고를 수 있는 유명작 16편
+├── lib/apiClient.js       # 브라우저용 데이터 요청(app/api/* 호출) — React Query 훅이 쓴다
 ├── lib/catalog.js         # PROVIDERS · SORTS · posterUrl (화면 · 서버 공용)
 ├── lib/discover.js        # 숨은 명작 필터 · 점수 계산(rankHiddenGems)
 ├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize)

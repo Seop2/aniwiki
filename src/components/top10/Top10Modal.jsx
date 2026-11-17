@@ -1,4 +1,4 @@
-import { MEDIA } from '../../api/tmdb';
+import { MEDIA } from '../../lib/catalog';
 import { TOP10_MAX, top10Title } from '../../lib/share';
 import Modal from '../common/Modal';
 import Poster from '../common/Poster';
