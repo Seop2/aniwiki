@@ -17,6 +17,16 @@ import SharedTop10 from './components/top10/SharedTop10';
 import Discover from './components/discover/Discover';
 import './App.css';
 
+// 내 브라우저에서 localStorage.setItem('va-disable', '1') 해 두면 본인 접속은 Analytics에 보내지 않는다
+const skipOwnVisits = (event) => {
+  try {
+    if (localStorage.getItem('va-disable')) return null;
+  } catch {
+    // 저장소 접근이 막힌 환경에서는 그대로 보낸다
+  }
+  return event;
+};
+
 export default function App() {
   const { loc, route, navigate } = useRoute();
   const [type, setType] = useState('tv');
@@ -156,7 +166,7 @@ export default function App() {
         />
       )}
       {top10Open && <Top10Modal top10={top10} onClose={() => setTop10Open(false)} />}
-      <Analytics route={analyticsRoute(route)} path={analyticsPath(route, loc.pathname)} />
+      <Analytics route={analyticsRoute(route)} path={analyticsPath(route, loc.pathname)} beforeSend={skipOwnVisits} />
     </>
   );
 }
