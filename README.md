@@ -51,6 +51,7 @@ src/
 ├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize) — 빌드 스크립트와 공유
 ├── lib/netflix.js         # 넷플릭스 오리지널 판별
 ├── lib/router.js          # 경로 파싱, history 기반 useRoute
+├── lib/staleTimes.js      # React Query 캐시 유지 시간(staleTime) 모음
 ├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
 ├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
 ├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더에

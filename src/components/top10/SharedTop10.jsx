@@ -1,5 +1,6 @@
 import { useQueries } from '@tanstack/react-query';
-import { fetchAnimeDetail, MEDIA } from '../../api/tmdb';
+import { MEDIA } from '../../api/tmdb';
+import { animeDetailQuery } from '../../hooks/useAnimeDetail';
 import { top10Title } from '../../lib/share';
 import { detailPath } from '../../lib/router';
 import AppLink from '../common/AppLink';
@@ -10,13 +11,9 @@ import '../ranking/RankingTable.css'; // 같은 랭킹 표를 쓴다
 
 /** 공유 링크(/top10?top10=...)로 들어왔을 때의 읽기 전용 화면 */
 export default function SharedTop10({ shared, onSelect, onCreate }) {
-  // DetailModal(useAnimeDetail)과 같은 queryKey → 항목을 눌러 상세를 열 때 다시 요청하지 않는다
+  // 상세 모달과 같은 쿼리 → 항목을 눌러 상세를 열 때 다시 요청하지 않는다
   const results = useQueries({
-    queries: shared.items.map(({ type, id }) => ({
-      queryKey: ['anime-detail', type, id],
-      queryFn: () => fetchAnimeDetail({ type, id }),
-      staleTime: 1000 * 60 * 10,
-    })),
+    queries: shared.items.map(({ type, id }) => animeDetailQuery(type, id)),
   });
 
   const isPending = results.some((r) => r.isPending);

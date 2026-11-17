@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchAnimePage, SORTS } from '../api/tmdb';
+import { STALE_TIME } from '../lib/staleTimes';
 import { useNetflixOriginals } from './useNetflixOriginals';
 
 // 넷플릭스 오리지널 목록은 클라이언트에서 정렬한다. 평점순은 일반 랭킹(SORTS.rating)과 같은 200표 기준
@@ -22,7 +23,7 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
     queryFn: ({ pageParam }) => fetchAnimePage({ type, sort, query, providers, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (last) => (last.page < last.totalPages ? last.page + 1 : undefined),
-    staleTime: 1000 * 60 * 10,
+    staleTime: STALE_TIME.list,
     enabled: !useOriginals,
   });
 

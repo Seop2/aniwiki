@@ -3,6 +3,7 @@ import { useQueries } from '@tanstack/react-query';
 import { fetchRecommendations } from '../api/tmdb';
 import { EXCLUDE_IDS, SEED_BY_ID } from '../data/seeds';
 import { rankHiddenGems } from '../lib/discover';
+import { STALE_TIME } from '../lib/staleTimes';
 
 const PAGES = [1, 2]; // 시드마다 추천 40편
 
@@ -13,7 +14,7 @@ export function useHiddenGems(seedIds, seenIds) {
     queries: pairs.map(({ id, page }) => ({
       queryKey: ['recs', 'tv', id, page],
       queryFn: () => fetchRecommendations({ type: 'tv', id, page }),
-      staleTime: 1000 * 60 * 60,
+      staleTime: STALE_TIME.recommendations,
     })),
   });
 
