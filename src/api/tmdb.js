@@ -2,8 +2,8 @@ import { MEDIA, normalize } from '../lib/media';
 import { isNetflixOriginal, NETFLIX_PROVIDERS } from '../lib/netflix';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
-const TOKEN = import.meta.env.VITE_TMDB_TOKEN;
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY; // v3 API 키 (TOKEN이 없을 때 사용)
+const TOKEN = process.env.NEXT_PUBLIC_TMDB_TOKEN;
+const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY; // v3 API 키 (TOKEN이 없을 때 사용)
 const ANIMATION_GENRE_ID = 16;
 
 export { MEDIA };

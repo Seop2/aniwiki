@@ -1,4 +1,4 @@
-// 빌드 스크립트용 TMDB 요청. 앱의 src/api/tmdb.js는 import.meta.env를 읽어 Node에서 쓸 수 없다
+// 서버용 TMDB 요청(sitemap · 넷플릭스 오리지널 라우트). env는 process.env
 export async function tmdbGet(env, path, params = {}) {
   if (!env.VITE_TMDB_TOKEN && !env.VITE_TMDB_API_KEY) throw new Error('MISSING_TOKEN');
   const url = new URL(`https://api.themoviedb.org/3${path}`);
