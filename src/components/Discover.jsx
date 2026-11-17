@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { posterUrl } from '../api/tmdb';
 import { SEEDS, SEED_BY_ID } from '../data/seeds';
 import { discoverPath } from '../lib/discover';
-import { detailPath, isPlainClick } from '../lib/router';
+import { detailPath } from '../lib/router';
 import { useAnimeDetail } from '../hooks/useAnimeDetail';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { useHiddenGems } from '../hooks/useHiddenGems';
 import { useDiscoverPicks, useSeen } from '../hooks/useSeen';
+import AppLink from './AppLink';
+import Poster from './Poster';
 import './Discover.css';
 
 const RECOMMENDED_PICKS = 3;
@@ -55,24 +58,17 @@ function Burden({ id }) {
 
 function GemCard({ gem, rank, onSelect, onSeen }) {
   const { item, reasons } = gem;
-  const src = posterUrl(item.poster, 'w185');
   return (
     <li className="gem-card">
-      <a
-        className="gem-main"
-        href={detailPath('tv', item.id)}
-        onClick={(e) => { if (isPlainClick(e)) { e.preventDefault(); onSelect(item); } }}
-      >
+      <AppLink className="gem-main" href={detailPath('tv', item.id)} onNavigate={() => onSelect(item)}>
         <span className="gem-rank">{rank}</span>
-        {src
-          ? <img className="gem-poster" src={src} alt="" width="72" height="108" loading="lazy" />
-          : <div className="gem-poster poster-empty" aria-hidden />}
+        <Poster className="gem-poster" path={item.poster} size="w185" width="72" height="108" loading="lazy" />
         <div className="gem-text">
           <strong>{item.title}</strong>
           <span className="gem-meta">{item.year} · ★{item.rating.toFixed(1)} <Burden id={item.id} /></span>
           <span className="gem-reason">{reasons.slice(0, 2).join(' · ')}{reasons.length > 2 && ` 외 ${reasons.length - 2}편`} 팬이라면</span>
         </div>
-      </a>
+      </AppLink>
       <button type="button" className="btn-outline gem-seen" onClick={() => onSeen(item.id)}>이미 봤어요</button>
     </li>
   );
@@ -127,17 +123,10 @@ export default function Discover({ seen, navigate, onSelect }) {
     if (seen.length) setSavedPicks(seen);
   }, [seenKey]);
 
-  useEffect(() => {
-    const prevTitle = document.title;
-    const meta = document.querySelector('meta[name="description"]');
-    const prevDesc = meta?.content;
-    document.title = '숨은 명작 찾기 - ANIWIKI';
-    if (meta) meta.content = '원피스 · 진격의 거인처럼 본 유명작을 고르면, 그 팬들이 본 덜 알려진 명작 애니메이션을 추천해 드려요.';
-    return () => {
-      document.title = prevTitle;
-      if (meta) meta.content = prevDesc;
-    };
-  }, []);
+  useDocumentMeta({
+    title: '숨은 명작 찾기 - ANIWIKI',
+    description: '원피스 · 진격의 거인처럼 본 유명작을 고르면, 그 팬들이 본 덜 알려진 명작 애니메이션을 추천해 드려요.',
+  });
 
   const toggle = (id) => setPicks((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 

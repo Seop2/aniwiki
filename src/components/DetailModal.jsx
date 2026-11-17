@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
 import { posterUrl } from '../api/tmdb';
 import { useAnimeDetail } from '../hooks/useAnimeDetail';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import Modal from './Modal';
+import Poster from './Poster';
 import './DetailModal.css';
 
 // TMDB 시청처(JustWatch)에는 라프텔이 없어 검색 결과로 보낸다 — 작품이 있는지는 보장하지 않음
@@ -47,139 +49,102 @@ function Providers({ providers }) {
 
 /** item: 목록에서 연 경우의 항목. 상세 주소로 바로 들어오면 없다 */
 export default function DetailModal({ type, id, item, top10, onClose }) {
-  const ref = useRef(null);
   const { data, isPending, isError } = useAnimeDetail({ type, id });
   const d = data ?? item; // 상세가 오기 전에는 목록에서 가진 정보로 먼저 그린다
 
-  useEffect(() => {
-    const dialog = ref.current;
-    // close()는 부르지 않는다 — StrictMode 재실행 시 close 이벤트가 onClose를 불러 모달이 바로 닫힌다.
-    // 언마운트로 DOM에서 빠지면 모달 상태도 함께 해제된다.
-    if (!dialog.open) dialog.showModal();
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prevOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!d?.title) return;
-    const prevTitle = document.title;
-    document.title = `${d.title} - ANIWIKI`;
-    return () => { document.title = prevTitle; };
-  }, [d?.title]);
-
   // 검색 결과에 랭킹 소개 대신 작품 줄거리가 나오도록
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="description"]');
-    if (!meta || !d?.overview) return;
-    const prev = meta.content;
-    meta.content = d.overview.length > 150 ? `${d.overview.slice(0, 150)}…` : d.overview;
-    return () => { meta.content = prev; };
-  }, [d?.overview]);
+  const overview = d?.overview;
+  useDocumentMeta({
+    title: d?.title && `${d.title} - ANIWIKI`,
+    description: overview && (overview.length > 150 ? `${overview.slice(0, 150)}…` : overview),
+  });
 
-  const src = d && posterUrl(d.poster, 'w342');
   const showOriginal = d?.originalTitle && d.originalTitle !== d.title;
   const inTop10 = top10.has(type, id);
 
   return (
-    <dialog
-      ref={ref}
-      className="detail"
-      aria-labelledby="detail-title"
-      onClose={onClose}
-      onClick={(e) => e.target === e.currentTarget && onClose()} // 백드롭 클릭
-    >
-      <div className="detail-inner">
-        <button type="button" className="detail-close" onClick={onClose} aria-label="닫기">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
+    <Modal labelledBy="detail-title" onClose={onClose}>
+      {data?.backdrop && (
+        <div className="detail-backdrop" style={{ backgroundImage: `url(${posterUrl(data.backdrop, 'w780')})` }} aria-hidden />
+      )}
 
-        {data?.backdrop && (
-          <div className="detail-backdrop" style={{ backgroundImage: `url(${posterUrl(data.backdrop, 'w780')})` }} aria-hidden />
-        )}
-
-        {!d ? (
-          isError
-            ? <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
-            : (
-              <div className="detail-head" aria-hidden>
-                <div className="detail-poster poster-empty" />
-                <div className="skeleton detail-skeleton detail-info">
-                  <i style={{ width: '70%' }} /><i style={{ width: '40%' }} /><i style={{ width: '30%' }} />
-                </div>
+      {!d ? (
+        isError
+          ? <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
+          : (
+            <div className="detail-head" aria-hidden>
+              <div className="detail-poster poster-empty" />
+              <div className="skeleton detail-skeleton detail-info">
+                <i style={{ width: '70%' }} /><i style={{ width: '40%' }} /><i style={{ width: '30%' }} />
               </div>
-            )
-        ) : (
-        <div className="detail-head">
-          {src
-            ? <img className="detail-poster" src={src} alt="" width="140" height="210" />
-            : <div className="detail-poster poster-empty" aria-hidden />}
-          <div className="detail-info">
-            <h2 id="detail-title">{d.title}</h2>
-            {showOriginal && <p className="detail-original">{d.originalTitle}</p>}
-            <p className="detail-meta">{metaOf(type, d)}</p>
-            <p className="detail-rating">
-              <strong>{d.rating.toFixed(1)}</strong>
-              <span>{d.votes.toLocaleString()}표</span>
-            </p>
-            {data?.netflixOriginal && <span className="badge-netflix">넷플릭스 오리지널</span>}
-            {data?.genres.length > 0 && (
-              <ul className="genre-list">
-                {data.genres.map((g) => <li key={g}>{g}</li>)}
-              </ul>
-            )}
-            {data?.networks.length > 0 && (
-              <p className="detail-sub">
-                방송 · {data.networks.slice(0, 3).join(', ')}
-                {data.networks.length > 3 && ` 외 ${data.networks.length - 3}곳`}
-              </p>
-            )}
-            <div className="detail-top10">
-              <button
-                type="button"
-                className={inTop10 ? 'btn-outline' : 'btn-primary'}
-                onClick={() => (inTop10 ? top10.remove(type, id) : top10.add(type, d))}
-                disabled={!inTop10 && top10.isFull}
-              >
-                {inTop10 ? 'TOP 10에서 빼기' : '내 TOP 10에 추가'}
-              </button>
-              <span>{!inTop10 && top10.isFull ? 'TOP 10이 가득 찼어요' : `${top10.items.length}/10`}</span>
             </div>
+          )
+      ) : (
+      <div className="detail-head">
+        <Poster className="detail-poster" path={d.poster} size="w342" width="140" height="210" />
+        <div className="detail-info">
+          <h2 id="detail-title">{d.title}</h2>
+          {showOriginal && <p className="detail-original">{d.originalTitle}</p>}
+          <p className="detail-meta">{metaOf(type, d)}</p>
+          <p className="detail-rating">
+            <strong>{d.rating.toFixed(1)}</strong>
+            <span>{d.votes.toLocaleString()}표</span>
+          </p>
+          {data?.netflixOriginal && <span className="badge-netflix">넷플릭스 오리지널</span>}
+          {data?.genres.length > 0 && (
+            <ul className="genre-list">
+              {data.genres.map((g) => <li key={g}>{g}</li>)}
+            </ul>
+          )}
+          {data?.networks.length > 0 && (
+            <p className="detail-sub">
+              방송 · {data.networks.slice(0, 3).join(', ')}
+              {data.networks.length > 3 && ` 외 ${data.networks.length - 3}곳`}
+            </p>
+          )}
+          <div className="detail-top10">
+            <button
+              type="button"
+              className={inTop10 ? 'btn-outline' : 'btn-primary'}
+              onClick={() => (inTop10 ? top10.remove(type, id) : top10.add(type, d))}
+              disabled={!inTop10 && top10.isFull}
+            >
+              {inTop10 ? 'TOP 10에서 빼기' : '내 TOP 10에 추가'}
+            </button>
+            <span>{!inTop10 && top10.isFull ? 'TOP 10이 가득 찼어요' : `${top10.items.length}/10`}</span>
           </div>
         </div>
-        )}
-
-        {!d ? null : isError ? (
-          <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
-        ) : isPending ? (
-          <div className="skeleton detail-skeleton" aria-hidden>
-            <i style={{ width: '90%' }} /><i style={{ width: '80%' }} /><i style={{ width: '60%' }} />
-          </div>
-        ) : (
-          <>
-            <section className="detail-section">
-              <h3>줄거리</h3>
-              {data.tagline && <p className="detail-tagline">{data.tagline}</p>}
-              <p className="detail-overview">{data.overview || '줄거리 정보가 없습니다.'}</p>
-            </section>
-
-            <section className="detail-section">
-              <h3>시청 가능 플랫폼</h3>
-              <Providers providers={data.providers} />
-              <a className="detail-link" href={laftelSearchUrl(d.title)} target="_blank" rel="noreferrer">
-                라프텔에서 검색 →
-              </a>
-              <p className="detail-note">시청처는 TMDB(JustWatch) 기준이라 실제와 다를 수 있어요.</p>
-            </section>
-
-            {data.homepage && (
-              <a className="detail-link" href={data.homepage} target="_blank" rel="noreferrer">공식 홈페이지 →</a>
-            )}
-          </>
-        )}
       </div>
-    </dialog>
+      )}
+
+      {!d ? null : isError ? (
+        <p className="detail-empty">상세 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
+      ) : isPending ? (
+        <div className="skeleton detail-skeleton" aria-hidden>
+          <i style={{ width: '90%' }} /><i style={{ width: '80%' }} /><i style={{ width: '60%' }} />
+        </div>
+      ) : (
+        <>
+          <section className="detail-section">
+            <h3>줄거리</h3>
+            {data.tagline && <p className="detail-tagline">{data.tagline}</p>}
+            <p className="detail-overview">{data.overview || '줄거리 정보가 없습니다.'}</p>
+          </section>
+
+          <section className="detail-section">
+            <h3>시청 가능 플랫폼</h3>
+            <Providers providers={data.providers} />
+            <a className="detail-link" href={laftelSearchUrl(d.title)} target="_blank" rel="noreferrer">
+              라프텔에서 검색 →
+            </a>
+            <p className="detail-note">시청처는 TMDB(JustWatch) 기준이라 실제와 다를 수 있어요.</p>
+          </section>
+
+          {data.homepage && (
+            <a className="detail-link" href={data.homepage} target="_blank" rel="noreferrer">공식 홈페이지 →</a>
+          )}
+        </>
+      )}
+    </Modal>
   );
 }

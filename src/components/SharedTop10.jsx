@@ -1,7 +1,9 @@
 import { useQueries } from '@tanstack/react-query';
-import { fetchAnimeDetail, posterUrl, MEDIA } from '../api/tmdb';
+import { fetchAnimeDetail, MEDIA } from '../api/tmdb';
 import { top10Title } from '../lib/share';
-import { detailPath, isPlainClick } from '../lib/router';
+import { detailPath } from '../lib/router';
+import AppLink from './AppLink';
+import Poster from './Poster';
 import ShareActions from './ShareActions';
 import './SharedTop10.css';
 import './RankingTable.css'; // 같은 랭킹 표를 쓴다
@@ -43,19 +45,17 @@ export default function SharedTop10({ shared, onSelect, onCreate }) {
                   <td className="col-rank">{i + 1}</td>
                   <td className="col-title">
                     {d ? (
-                      <a
+                      <AppLink
                         className="title-cell title-button"
                         href={detailPath(type, d.id)}
-                        onClick={(e) => { if (isPlainClick(e)) { e.preventDefault(); onSelect({ type, item: d }); } }}
+                        onNavigate={() => onSelect({ type, item: d })}
                       >
-                        {d.poster
-                          ? <img className="poster" src={posterUrl(d.poster)} alt="" width="36" height="54" />
-                          : <div className="poster poster-empty" aria-hidden />}
+                        <Poster path={d.poster} width="36" height="54" />
                         <div className="title-text">
                           <strong>{d.title}</strong>
                           <span>{d.year} · {MEDIA[type].label}</span>
                         </div>
-                      </a>
+                      </AppLink>
                     ) : r.isError ? (
                       <span className="shared-missing">작품 정보를 불러오지 못했어요.</span>
                     ) : (

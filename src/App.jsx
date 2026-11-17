@@ -4,7 +4,9 @@ import { MEDIA, PROVIDERS, SORTS } from './api/tmdb';
 import { useAnimeList } from './hooks/useAnimeList';
 import { useMyTop10 } from './hooks/useMyTop10';
 import { usePersistedIds } from './hooks/useSeen';
-import { analyticsPath, analyticsRoute, canonicalPath, detailPath, isPlainClick, parseRoute, useRoute } from './lib/router';
+import { useCanonical } from './hooks/useDocumentMeta';
+import { analyticsPath, analyticsRoute, canonicalPath, detailPath, parseRoute, useRoute } from './lib/router';
+import AppLink from './components/AppLink';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import Filters from './components/Filters';
@@ -33,17 +35,7 @@ export default function App() {
 
   useEffect(() => { closing.current = false; }, [loc]);
 
-  // index.html에 고정하면 모든 주소가 /의 중복으로 취급돼 작품 상세가 색인되지 않는다
-  const canonical = canonicalPath(route);
-  useEffect(() => {
-    let link = document.querySelector('link[rel="canonical"]');
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'canonical';
-      document.head.append(link);
-    }
-    link.href = `https://www.aniwiki.link${canonical}`;
-  }, [canonical]);
+  useCanonical(canonicalPath(route));
 
   // 상세 모달 뒤에 깔리는 화면: 앱 안에서 열었으면 열기 전 화면, 상세 주소로 바로 들어왔으면 랭킹
   const bg = loc.state?.bg;
@@ -66,17 +58,13 @@ export default function App() {
     if (view.name !== 'home') navigate('/');
   };
 
-  const openDiscover = (e) => {
-    if (e && !isPlainClick(e)) return;
-    e?.preventDefault();
+  const openDiscover = () => {
     navigate('/discover');
     window.scrollTo({ top: 0 });
   };
 
   /** 로고 클릭 → 검색 · 필터 · 공유 화면을 모두 초기 상태로 */
-  const goHome = (e) => {
-    if (!isPlainClick(e)) return;
-    e.preventDefault();
+  const goHome = () => {
     navigate('/', { replace: route.name === 'home' });
     setQuery('');
     setType('tv');
@@ -99,12 +87,12 @@ export default function App() {
 
   return (
     <>
-      <Header top10Count={top10.items.length} onOpenTop10={() => setTop10Open(true)} onOpenDiscover={() => openDiscover()} />
+      <Header top10Count={top10.items.length} onOpenTop10={() => setTop10Open(true)} onOpenDiscover={openDiscover} />
       <main className="container">
         <section className="hero">
           <div>
             <p className="eyebrow">TMDB · TOP RATED · ANIMATION</p>
-            <h1 className="logo"><a href="/" onClick={goHome}>ANIWIKI</a></h1>
+            <h1 className="logo"><AppLink href="/" onNavigate={goHome}>ANIWIKI</AppLink></h1>
           </div>
           <SearchBar key={homeKey} onSearch={(q) => { leaveToHome(); setQuery(q); }} />
         </section>
@@ -125,10 +113,10 @@ export default function App() {
           />
         ) : (
           <>
-            <a className="discover-cta corners" href="/discover" onClick={openDiscover}>
+            <AppLink className="discover-cta corners" href="/discover" onNavigate={openDiscover}>
               <span className="eyebrow">숨은 명작 찾기</span>
               <strong>원피스·진격은 봤다면, 다음은 이거 →</strong>
-            </a>
+            </AppLink>
 
             <Filters
               type={type}
