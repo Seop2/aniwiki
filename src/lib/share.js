@@ -1,5 +1,3 @@
-import { TOP10_MAX } from '../hooks/useMyTop10';
-
 // 공유 링크: /top10?top10=t1429.m372058&name=닉네임 — 작품 ID만 담고 상세는 받는 쪽에서 TMDB로 불러온다
 const PREFIX = { tv: 't', movie: 'm' };
 const TYPE_OF = { t: 'tv', m: 'movie' };
@@ -7,6 +5,8 @@ const TYPE_OF = { t: 'tv', m: 'movie' };
 // 배포본은 항상 정식 주소로 공유한다(미리보기 배포 URL이 퍼지지 않게). 로컬 개발 중에는 바로 열어볼 수 있게 현재 주소
 const SITE_URL = 'https://www.aniwiki.link';
 const shareOrigin = () => (process.env.NODE_ENV === 'development' ? location.origin : SITE_URL);
+
+export const TOP10_MAX = 10;
 
 export const top10Title = (name) => `${name?.trim() || '나'}의 인생 애니 TOP 10`;
 

@@ -2,10 +2,7 @@ import 'server-only';
 import { MEDIA } from '@/lib/catalog';
 import { TmdbError } from './tmdb';
 
-const ID_RE = /^\d{1,9}$/;
-
 export const isType = (type) => Object.hasOwn(MEDIA, type);
-export const isId = (id) => ID_RE.test(id);
 
 /** 1~500(TMDB가 허용하는 페이지) 밖이면 null */
 export function parsePage(value) {

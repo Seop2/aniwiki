@@ -1,13 +1,16 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { posterUrl } from '../../api/tmdb';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { posterUrl } from '../../lib/catalog';
 import { SEEDS, SEED_BY_ID } from '../../data/seeds';
 import { discoverPath } from '../../lib/discover';
-import { detailPath } from '../../lib/router';
+import { detailPath } from '../../lib/paths';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
-import { useDocumentMeta } from '../../hooks/useDocumentMeta';
 import { useHiddenGems } from '../../hooks/useHiddenGems';
 import { useDiscoverPicks, useSeen } from '../../hooks/useSeen';
-import AppLink from '../common/AppLink';
+import { useAppState } from '../layout/AppState';
 import Poster from '../common/Poster';
 import './Discover.css';
 
@@ -60,7 +63,7 @@ function GemCard({ gem, rank, onSelect, onSeen }) {
   const { item, reasons } = gem;
   return (
     <li className="gem-card">
-      <AppLink className="gem-main" href={detailPath('tv', item.id)} onNavigate={() => onSelect(item)}>
+      <Link className="gem-main" href={detailPath('tv', item.id)} onClick={() => onSelect(item)}>
         <span className="gem-rank">{rank}</span>
         <Poster className="gem-poster" path={item.poster} size="w185" width="72" height="108" loading="lazy" />
         <div className="gem-text">
@@ -68,7 +71,7 @@ function GemCard({ gem, rank, onSelect, onSeen }) {
           <span className="gem-meta">{item.year} · ★{item.rating.toFixed(1)} <Burden id={item.id} /></span>
           <span className="gem-reason">{reasons.slice(0, 2).join(' · ')}{reasons.length > 2 && ` 외 ${reasons.length - 2}편`} 팬이라면</span>
         </div>
-      </AppLink>
+      </Link>
       <button type="button" className="btn-outline gem-seen" onClick={() => onSeen(item.id)}>이미 봤어요</button>
     </li>
   );
@@ -112,10 +115,18 @@ function GemResults({ seedIds, onSelect, onRepick }) {
   );
 }
 
-/** /discover — 본 유명작을 고르면(?seen=…) TMDB 추천을 합산해 덜 알려진 명작을 보여 준다 */
-export default function Discover({ seen, navigate, onSelect }) {
+/**
+ * /discover — 본 유명작을 고르면(?seen=…) TMDB 추천을 합산해 덜 알려진 명작을 보여 준다.
+ * seen은 페이지가 주소에서 읽어 넘긴다(상세 모달이 열려 주소가 바뀌어도 뒤 화면은 그대로 남도록)
+ */
+export default function Discover({ seen }) {
+  const router = useRouter();
+  const { openDetail } = useAppState();
+  const onSelect = (item) => openDetail('tv', item);
   const [savedPicks, setSavedPicks] = useDiscoverPicks();
-  const [picks, setPicks] = useState(() => (seen.length ? seen : savedPicks));
+  // 직접 고르기 전에는 지난번 고른 작품 — 저장값은 하이드레이션 뒤에 들어오므로 state에 복사하지 않는다
+  const [touched, setPicks] = useState(null);
+  const picks = touched ?? (seen.length ? seen : savedPicks);
 
   // 결과를 본 조합을 "마지막으로 고른 작품"으로 기억 — 공유 링크로 들어온 경우도 포함
   const seenKey = seen.join('.');
@@ -123,24 +134,16 @@ export default function Discover({ seen, navigate, onSelect }) {
     if (seen.length) setSavedPicks(seen);
   }, [seenKey]);
 
-  useDocumentMeta({
-    title: '숨은 명작 찾기 - ANIWIKI',
-    description: '원피스 · 진격의 거인처럼 본 유명작을 고르면, 그 팬들이 본 덜 알려진 명작 애니메이션을 추천해 드려요.',
-  });
+  const toggle = (id) => setPicks(picks.includes(id) ? picks.filter((x) => x !== id) : [...picks, id]);
 
-  const toggle = (id) => setPicks((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
-
-  const submit = () => {
-    navigate(discoverPath(picks));
-    window.scrollTo({ top: 0 });
-  };
+  const submit = () => router.push(discoverPath(picks));
 
   if (seen.length) {
     return (
       <GemResults
         seedIds={seen}
         onSelect={onSelect}
-        onRepick={() => { setPicks(seen); navigate('/discover'); }}
+        onRepick={() => { setPicks(seen); router.push('/discover'); }}
       />
     );
   }

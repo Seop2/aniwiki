@@ -1,16 +1,23 @@
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQueries } from '@tanstack/react-query';
-import { MEDIA } from '../../api/tmdb';
+import { MEDIA } from '../../lib/catalog';
 import { animeDetailQuery } from '../../hooks/useAnimeDetail';
 import { top10Title } from '../../lib/share';
-import { detailPath } from '../../lib/router';
-import AppLink from '../common/AppLink';
+import { detailPath } from '../../lib/paths';
+import { useAppState } from '../layout/AppState';
 import Poster from '../common/Poster';
 import ShareActions from './ShareActions';
 import './SharedTop10.css';
 import '../ranking/RankingTable.css'; // 같은 랭킹 표를 쓴다
 
 /** 공유 링크(/top10?top10=...)로 들어왔을 때의 읽기 전용 화면 */
-export default function SharedTop10({ shared, onSelect, onCreate }) {
+export default function SharedTop10({ shared }) {
+  const router = useRouter();
+  const { openDetail, openTop10 } = useAppState();
+
   // 상세 모달과 같은 쿼리 → 항목을 눌러 상세를 열 때 다시 요청하지 않는다
   const results = useQueries({
     queries: shared.items.map(({ type, id }) => animeDetailQuery(type, id)),
@@ -28,7 +35,7 @@ export default function SharedTop10({ shared, onSelect, onCreate }) {
           <p className="eyebrow">SHARED · TOP 10</p>
           <h2>{top10Title(shared.name)}</h2>
         </div>
-        <button type="button" className="btn-primary corners" onClick={onCreate}>나도 만들기</button>
+        <button type="button" className="btn-primary corners" onClick={() => { router.push('/'); openTop10(); }}>나도 만들기</button>
       </div>
 
       <div className="table-wrap corners">
@@ -42,17 +49,17 @@ export default function SharedTop10({ shared, onSelect, onCreate }) {
                   <td className="col-rank">{i + 1}</td>
                   <td className="col-title">
                     {d ? (
-                      <AppLink
+                      <Link
                         className="title-cell title-button"
                         href={detailPath(type, d.id)}
-                        onNavigate={() => onSelect({ type, item: d })}
+                        onClick={() => openDetail(type, d)}
                       >
                         <Poster path={d.poster} width="36" height="54" />
                         <div className="title-text">
                           <strong>{d.title}</strong>
                           <span>{d.year} · {MEDIA[type].label}</span>
                         </div>
-                      </AppLink>
+                      </Link>
                     ) : r.isError ? (
                       <span className="shared-missing">작품 정보를 불러오지 못했어요.</span>
                     ) : (

@@ -19,7 +19,7 @@ function SkeletonRows({ count = 8 }) {
 
 export default function RankingTable({ items, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, type, emptyText, onSelect }) {
   const errorText = error?.message === 'MISSING_TOKEN'
-    ? '.env 파일에 VITE_TMDB_TOKEN 또는 VITE_TMDB_API_KEY를 설정해 주세요.'
+    ? '.env 파일에 TMDB_TOKEN 또는 TMDB_API_KEY를 설정해 주세요.'
     : '데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
 
   return (

@@ -1,27 +1,17 @@
-import { useEffect, useState } from 'react';
+import { TOP10_MAX } from '../lib/share';
+import { useStoredValue } from '../lib/storage';
 
 const KEY = 'aniwiki-top10';
-export const TOP10_MAX = 10;
+const EMPTY = { name: '', items: [] };
 
-function initialTop10() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY));
-    if (saved && Array.isArray(saved.items)) {
-      return { name: saved.name ?? '', items: saved.items.slice(0, TOP10_MAX) };
-    }
-  } catch {}
-  return { name: '', items: [] };
-}
+const readTop10 = (saved) =>
+  saved && Array.isArray(saved.items) ? { name: saved.name ?? '', items: saved.items.slice(0, TOP10_MAX) } : undefined;
 
 const same = (a, type, id) => a.type === type && a.id === id;
 
-/** 내 TOP 10 목록 — localStorage에 저장. 헤더·모달이 같은 상태를 쓰도록 App에서 한 번만 호출한다 */
+/** 내 TOP 10 목록 — localStorage에 저장. 헤더 · 모달이 같은 상태를 쓰도록 AppState에서 한 번만 호출한다 */
 export function useMyTop10() {
-  const [state, setState] = useState(initialTop10);
-
-  useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  }, [state]);
+  const [state, setState] = useStoredValue(KEY, readTop10, EMPTY);
 
   const { name, items } = state;
   const has = (type, id) => items.some((a) => same(a, type, id));

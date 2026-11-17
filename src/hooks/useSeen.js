@@ -1,23 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useStoredValue } from '../lib/storage';
 
 const SEEN_KEY = 'aniwiki-seen';
 const PICKS_KEY = 'aniwiki-discover-picks';
-
-function load(key, isValid) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(key));
-    if (Array.isArray(saved)) return saved.filter(isValid);
-  } catch {}
-  return [];
-}
+const EMPTY = [];
 
 /** localStorage에 저장되는 값 목록. isValid로 저장값을 검증한다(기본: 작품 ID) */
 export function usePersistedIds(key, isValid = Number.isInteger) {
-  const [ids, setIds] = useState(() => load(key, isValid));
-  useEffect(() => {
-    try { localStorage.setItem(key, JSON.stringify(ids)); } catch {}
-  }, [key, ids]);
-  return [ids, setIds];
+  return useStoredValue(key, (saved) => (Array.isArray(saved) ? saved.filter(isValid) : undefined), EMPTY);
 }
 
 /** 「이미 봤어요」로 뺀 작품 ID (추천 결과에서 제외) */

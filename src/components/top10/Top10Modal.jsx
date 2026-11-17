@@ -1,6 +1,5 @@
 import { MEDIA } from '../../api/tmdb';
-import { TOP10_MAX } from '../../hooks/useMyTop10';
-import { top10Title } from '../../lib/share';
+import { TOP10_MAX, top10Title } from '../../lib/share';
 import Modal from '../common/Modal';
 import Poster from '../common/Poster';
 import ShareActions from './ShareActions';

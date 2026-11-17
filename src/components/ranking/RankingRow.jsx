@@ -1,5 +1,5 @@
-import { detailPath } from '../../lib/router';
-import AppLink from '../common/AppLink';
+import Link from 'next/link';
+import { detailPath } from '../../lib/paths';
 import Poster from '../common/Poster';
 
 export default function RankingRow({ rank, item, type, onSelect }) {
@@ -9,14 +9,14 @@ export default function RankingRow({ rank, item, type, onSelect }) {
     <tr>
       <td className="col-rank">{rank}</td>
       <td className="col-title">
-        <AppLink className="title-cell title-button" href={detailPath(type, item.id)} onNavigate={() => onSelect(item)}>
+        <Link className="title-cell title-button" href={detailPath(type, item.id)} onClick={() => onSelect(item)}>
           <Poster path={item.poster} loading="lazy" width="36" height="54" />
           <div className="title-text">
             <strong>{item.title}</strong>
             {showOriginal && <span>{item.originalTitle}</span>}
             <span className="meta-mobile">{item.year} · {item.votes.toLocaleString()}표</span>
           </div>
-        </AppLink>
+        </Link>
       </td>
       <td className="col-year">{item.year}</td>
       <td className="col-rating">{item.rating.toFixed(1)}</td>
