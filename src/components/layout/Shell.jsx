@@ -14,9 +14,14 @@ export default function Shell({ children }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const openDiscover = () => {
+    router.push('/discover');
+    window.scrollTo({ top: 0 }); // /discover에서 다시 눌러도(같은 주소) 맨 위로
+  };
+
   return (
     <>
-      <Header top10Count={app.top10.items.length} onOpenTop10={app.openTop10} onOpenDiscover={() => router.push('/discover')} />
+      <Header top10Count={app.top10.items.length} onOpenTop10={app.openTop10} onOpenDiscover={openDiscover} />
       <main className="container">
         <section className="hero">
           <div>

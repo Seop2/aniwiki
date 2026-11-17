@@ -13,7 +13,8 @@ function originalItems(list, type, sort) {
   return items.sort(SORTS[sort].compare);
 }
 
-export function useAnimeList({ type, sort, query, providers = [], original = false }) {
+/** ready: 저장된 시청처를 읽은 뒤(하이드레이션 뒤)에만 요청한다 — 빈 시청처로 한 번 받고 다시 받지 않게 */
+export function useAnimeList({ type, sort, query, providers = [], original = false, ready = true }) {
   const useOriginals = original && !query;
 
   const result = useInfiniteQuery({
@@ -22,10 +23,10 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
     initialPageParam: 1,
     getNextPageParam: (last) => (last.page < last.totalPages ? last.page + 1 : undefined),
     staleTime: STALE_TIME.list,
-    enabled: !useOriginals,
+    enabled: ready && !useOriginals,
   });
 
-  const originals = useNetflixOriginals({ enabled: useOriginals });
+  const originals = useNetflixOriginals({ enabled: ready && useOriginals });
 
   if (useOriginals) {
     const items = originals.data ? originalItems(originals.data, type, sort) : [];

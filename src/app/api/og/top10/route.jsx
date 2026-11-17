@@ -19,10 +19,17 @@ export async function GET(request) {
   const owner = `${shared.name.trim() || '나'}의`;
   const ownerSize = owner.length > 8 ? 36 : 48;
 
-  const fonts = await Promise.all([
-    loadGoogleFont(SANS, 800, title),
-    loadGoogleFont(DISPLAY, 600, 'ANIME / INDEX MY TOP 10 aniwiki.link 0123456789'),
-  ]);
+  let fonts;
+  try {
+    fonts = await Promise.all([
+      loadGoogleFont(SANS, 800, title),
+      loadGoogleFont(DISPLAY, 600, 'ANIME / INDEX MY TOP 10 aniwiki.link 0123456789'),
+    ]);
+  } catch (e) {
+    // 글꼴 없이는 한글이 깨지므로 사이트 기본 미리보기 이미지로 보낸다(캐시하지 않아 다음 요청에서 다시 시도)
+    console.warn(`TOP 10 미리보기 이미지 대신 기본 이미지를 씁니다 (${e.message})`);
+    return Response.redirect(new URL('/og-image.png', request.url), 307);
+  }
 
   return new ImageResponse(
     (

@@ -36,6 +36,7 @@ export function AppStateProvider({ children }) {
       setSort('rating');
       setOriginal(false);
       setHomeKey((k) => k + 1);
+      window.scrollTo({ top: 0 }); // 이미 /에 있으면 같은 주소 이동이라 Next가 스크롤하지 않는다
     },
     openDetail: (itemType, item) => setPreview({ type: itemType, item }),
     openTop10: () => setTop10Open(true),

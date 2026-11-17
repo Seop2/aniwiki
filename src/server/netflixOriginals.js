@@ -1,4 +1,5 @@
 import 'server-only';
+import { ANIMATION_GENRE_ID } from '@/lib/catalog';
 import { MEDIA, normalize } from '@/lib/media';
 import { isNetflixOriginal, NETFLIX_NETWORK, NETFLIX_PROVIDERS } from '@/lib/netflix';
 import { mapLimit, tmdbGet } from './tmdb';
@@ -7,7 +8,7 @@ const MAX_PAGES = 30;
 const DAILY = { revalidate: 86400 };
 
 const candidateParams = (type) => ({
-  with_genres: 16,
+  with_genres: ANIMATION_GENRE_ID,
   watch_region: 'KR',
   with_watch_providers: NETFLIX_PROVIDERS.join('|'),
   with_watch_monetization_types: 'flatrate|ads',
@@ -36,5 +37,7 @@ async function originals(type) {
 }
 
 export async function buildNetflixOriginals() {
-  return [...(await originals('tv')), ...(await originals('movie'))];
+  // TV와 극장판은 서로 독립이라 동시에 만든다(각각 후보 · 상세 수백 건)
+  const [tv, movie] = await Promise.all([originals('tv'), originals('movie')]);
+  return [...tv, ...movie];
 }

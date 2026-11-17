@@ -7,5 +7,8 @@ export async function loadGoogleFont(family, weight, text) {
   ).then((r) => r.text());
   const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1];
   if (!url) throw new Error(`글꼴을 찾지 못했습니다: ${family}`);
-  return { name: family, weight, style: 'normal', data: await fetch(url).then((r) => r.arrayBuffer()) };
+  // 글꼴 파일 주소는 내용이 바뀌지 않으므로 받아 둔 것을 계속 쓴다
+  const res = await fetch(url, { cache: 'force-cache' });
+  if (!res.ok) throw new Error(`글꼴을 받지 못했습니다: ${family} ${res.status}`);
+  return { name: family, weight, style: 'normal', data: await res.arrayBuffer() };
 }
