@@ -1,4 +1,4 @@
-// TMDB 응답 → 앱 데이터 매핑. import.meta.env를 쓰지 않아 빌드 스크립트(Node)에서도 불러올 수 있다
+// TMDB 응답 → 앱 데이터 매핑. 서버(src/server)와 브라우저가 함께 쓴다
 
 /** TV / 극장판은 필드명이 다르므로 한 곳에서 매핑한다 */
 export const MEDIA = {
