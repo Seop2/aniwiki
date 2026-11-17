@@ -4,7 +4,6 @@ import { parseShareUrl, top10Title } from '@/lib/share';
 import { loadGoogleFont } from '@/server/ogFonts';
 import { fetchAnimeDetail } from '@/server/tmdb';
 
-// 공유 TOP 10 링크 미리보기(카카오톡 · X 등) — 1200×630, 왼쪽 제목 · 오른쪽 포스터 5×2. 색은 다크 테마 토큰과 같다
 const C = { bg: '#0f0f13', surface: '#17171d', line: '#24242c', text: '#ececf1', muted: '#8d8d99', accent: '#8b6dff', accentText: '#a48cff' };
 const POSTER = { width: 96, height: 144 };
 
@@ -15,10 +14,8 @@ export async function GET(request) {
   const shared = parseShareUrl(request.nextUrl.search);
   if (!shared) return new Response('Bad Request', { status: 400 });
 
-  // 상세 페이지와 같은 캐시를 쓴다. 실패한 작품은 빈 칸으로
   const items = await Promise.all(shared.items.map((it) => fetchAnimeDetail(it).catch(() => null)));
   const title = top10Title(shared.name);
-  // 닉네임(최대 20자)과 「인생 애니 TOP 10」을 줄을 나눠 그린다. 긴 닉네임은 글자를 줄여 영역 안에 넣는다
   const owner = `${shared.name.trim() || '나'}의`;
   const ownerSize = owner.length > 8 ? 36 : 48;
 
@@ -67,7 +64,6 @@ export async function GET(request) {
       width: 1200,
       height: 630,
       fonts,
-      // 같은 링크는 같은 이미지 — 하루 동안 CDN에 둔다
       headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
     },
   );

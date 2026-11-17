@@ -5,9 +5,8 @@ import { EXCLUDE_IDS, SEED_BY_ID } from '../data/seeds';
 import { rankHiddenGems } from '../lib/discover';
 import { STALE_TIME } from '../lib/staleTimes';
 
-const PAGES = [1, 2]; // 시드마다 추천 40편
+const PAGES = [1, 2];
 
-/** 고른 유명작들의 TMDB 추천을 합산해 숨은 명작 순위를 낸다. 일부 요청이 실패해도 성공한 것만으로 계산 */
 export function useHiddenGems(seedIds, seenIds) {
   const pairs = seedIds.flatMap((id) => PAGES.map((page) => ({ id, page })));
   const results = useQueries({

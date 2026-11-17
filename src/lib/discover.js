@@ -1,14 +1,13 @@
 import { SEED_BY_ID } from '../data/seeds';
 
-// 숨은 명작 기준. 유명작은 투표가 2,000~8,000개라 1,500개 이하를 "덜 알려진" 작품으로 본다
 export const GEM = {
-  minVotes: 100, // 이보다 적으면 평점을 믿기 어렵다
+  minVotes: 100,
   maxVotes: 1500,
-  relaxedMaxVotes: 3000, // 결과가 너무 적을 때만 푼다
+  relaxedMaxVotes: 3000,
   minRating: 7.5,
-  minAgeDays: 365, // 방영 직후에는 초반 팬 점수로 평점이 부풀려진다
+  minAgeDays: 365,
   oldYear: 1995,
-  oldFactor: 0.5, // 너무 오래된 작품이 위로 몰리지 않게
+  oldFactor: 0.5,
   limit: 20,
   minResults: 8,
 };
@@ -33,7 +32,7 @@ function rank(lists, exclude, maxVotes, today) {
       ) return;
 
       const entry = byId.get(item.id) ?? { item, weight: 0, reasons: [] };
-      entry.weight += 1 / (1 + pos / 10); // 추천 목록 앞쪽일수록 비중이 크다
+      entry.weight += 1 / (1 + pos / 10);
       if (!entry.reasons.includes(seed.title)) entry.reasons.push(seed.title);
       byId.set(item.id, entry);
     });
@@ -48,16 +47,11 @@ function rank(lists, exclude, maxVotes, today) {
     .slice(0, GEM.limit);
 }
 
-/**
- * lists: [{ seed: { id, title }, items: 추천 목록(순서 그대로) }]
- * 여러 시드에서 공통으로, 앞 순위로 추천될수록 점수가 높다. 결과가 너무 적으면 투표 상한을 풀어 다시 계산한다
- */
 export function rankHiddenGems(lists, { exclude = new Set(), today = Date.now() } = {}) {
   const gems = rank(lists, exclude, GEM.maxVotes, today);
   return gems.length >= GEM.minResults ? gems : rank(lists, exclude, GEM.relaxedMaxVotes, today);
 }
 
-/** ?seen=1429.13916 → 고를 수 있는 시드 ID만, 중복 없이 */
 export function parseSeen(search) {
   const raw = new URLSearchParams(search).get('seen') ?? '';
   return [...new Set(raw.split('.').map(Number))].filter((id) => SEED_BY_ID.has(id));

@@ -11,14 +11,12 @@ import { useAppState } from '../layout/AppState';
 import Poster from '../common/Poster';
 import ShareActions from './ShareActions';
 import './SharedTop10.css';
-import '../ranking/RankingTable.css'; // 같은 랭킹 표를 쓴다
+import '../ranking/RankingTable.css';
 
-/** 공유 링크(/top10?top10=...)로 들어왔을 때의 읽기 전용 화면 */
 export default function SharedTop10({ shared }) {
   const router = useRouter();
   const { openDetail, openTop10 } = useAppState();
 
-  // 상세 모달과 같은 쿼리 → 항목을 눌러 상세를 열 때 다시 요청하지 않는다
   const results = useQueries({
     queries: shared.items.map(({ type, id }) => animeDetailQuery(type, id)),
   });

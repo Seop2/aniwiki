@@ -1,4 +1,3 @@
-/* Top bar */
 .topbar { border-bottom: 1px solid var(--border); background: var(--bg); }
 .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 56px; }
 .brand {

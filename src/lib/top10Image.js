@@ -1,7 +1,6 @@
 import { posterUrl } from '../api/tmdb';
 import { top10Title } from './share';
 
-// 공유용 이미지(인스타 피드 4:5). 사이트 다크 테마 색과 크롭 마크를 그대로 쓴다
 const W = 1080;
 const H = 1350;
 const PAD = 72;
@@ -23,14 +22,13 @@ function loadImage(src) {
   return new Promise((resolve) => {
     if (!src) return resolve(null);
     const img = new Image();
-    img.crossOrigin = 'anonymous'; // image.tmdb.org는 CORS 허용 → canvas가 오염되지 않는다
+    img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
     img.src = src;
   });
 }
 
-/** 너비를 넘으면 글자 단위로 줄바꿈, maxLines를 넘으면 말줄임 */
 function wrapText(ctx, text, maxWidth, maxLines) {
   const lines = [];
   let line = '';
@@ -102,12 +100,10 @@ function drawCard(ctx, x, y, rank, item, img) {
   ctx.fillText(`${item.year ?? ''}  ·  ${item.type === 'movie' ? '극장판' : 'TV'}`, tx, ty + 4);
 }
 
-/** items: [{ type, title, year, poster }] (최대 10개) → PNG Blob */
 export async function renderTop10Image({ name, items }) {
   const title = top10Title(name);
   const allText = title + items.map((a) => a.title).join('') + '0123456789극장판TV·';
 
-  // Pretendard dynamic-subset은 글자별로 폰트 파일을 나눠 받으므로 실제 쓸 글자를 넘겨 미리 받는다
   await Promise.all([
     document.fonts.load(`700 64px ${DISPLAY}`, '0123456789'),
     document.fonts.load(`600 30px ${DISPLAY}`, 'ANIWIKI MY TOP 10 aniwiki.link'),
@@ -141,7 +137,7 @@ export async function renderTop10Image({ name, items }) {
   ctx.fillRect(PAD, PAD + 172, 72, 6);
 
   for (let i = 0; i < 10; i++) {
-    const col = Math.floor(i / 5); // 왼쪽 열 1~5위, 오른쪽 열 6~10위
+    const col = Math.floor(i / 5);
     const row = i % 5;
     drawCard(ctx, PAD + col * (CARD_W + GAP), GRID_TOP + row * (CARD_H + GAP), i + 1, items[i], images[i]);
   }

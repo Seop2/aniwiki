@@ -2,7 +2,6 @@ import { fetchAnimeDetail, REVALIDATE } from '@/server/tmdb';
 import { parseDetailParams } from '@/lib/paths';
 import { badRequest, cachedJson, errorJson } from '@/server/respond';
 
-/** 작품 상세 + 한국 시청처 */
 export async function GET(_request, { params }) {
   const { type, id } = await params;
   const detail = parseDetailParams(type, id);

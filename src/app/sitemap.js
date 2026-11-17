@@ -5,7 +5,6 @@ const STATIC_PATHS = ['/', '/discover'];
 
 export const revalidate = 86400;
 
-/** TMDB 요청이 실패해도 고정 주소만으로 sitemap.xml을 만든다 */
 export default async function sitemap() {
   let anime = [];
   try {

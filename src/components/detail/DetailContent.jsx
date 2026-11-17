@@ -6,7 +6,6 @@ import Poster from '../common/Poster';
 import { useAppState } from '../layout/AppState';
 import './DetailModal.css';
 
-// TMDB 시청처(JustWatch)에는 라프텔이 없어 검색 결과로 보낸다 — 작품이 있는지는 보장하지 않음
 const laftelSearchUrl = (title) => `https://laftel.net/search?keyword=${encodeURIComponent(title)}`;
 
 function metaOf(type, d) {
@@ -48,11 +47,10 @@ function Providers({ providers }) {
   );
 }
 
-/** 상세 모달 · 상세 페이지가 함께 쓰는 본문. item: 목록에서 연 경우의 항목(상세가 오기 전에 먼저 그린다) */
 export default function DetailContent({ type, id, item }) {
   const { top10 } = useAppState();
   const { data, isPending, isError } = useAnimeDetail({ type, id });
-  const d = data ?? item; // 상세가 오기 전에는 목록에서 가진 정보로 먼저 그린다
+  const d = data ?? item;
 
   const showOriginal = d?.originalTitle && d.originalTitle !== d.title;
   const inTop10 = top10.has(type, id);

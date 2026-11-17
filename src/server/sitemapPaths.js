@@ -1,9 +1,7 @@
-// sitemap.xml에 넣을 작품 상세 주소 — TMDB에서 많이 찾는 작품(작품 상세 /anime/{type}/{id}가 검색에 걸리도록)
 import 'server-only';
 import { SEEDS } from '@/data/seeds';
 import { tmdbGet } from './tmdb';
 
-// [type, sort 파라미터, 페이지 수] — 앱의 평점순 · 인기순 랭킹 앞부분과 같다
 const LISTS = [
   ['tv', { sort_by: 'vote_average.desc', 'vote_count.gte': 200 }, 5],
   ['tv', { sort_by: 'popularity.desc' }, 3],

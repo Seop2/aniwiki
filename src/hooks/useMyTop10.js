@@ -9,7 +9,6 @@ const readTop10 = (saved) =>
 
 const same = (a, type, id) => a.type === type && a.id === id;
 
-/** 내 TOP 10 목록 — localStorage에 저장. 헤더 · 모달이 같은 상태를 쓰도록 AppState에서 한 번만 호출한다 */
 export function useMyTop10() {
   const [state, setState] = useStoredValue(KEY, readTop10, EMPTY);
 
@@ -26,7 +25,6 @@ export function useMyTop10() {
   const remove = (type, id) =>
     setState((s) => ({ ...s, items: s.items.filter((a) => !same(a, type, id)) }));
 
-  /** dir: -1(위로) / 1(아래로) */
   const move = (index, dir) =>
     setState((s) => {
       const to = index + dir;

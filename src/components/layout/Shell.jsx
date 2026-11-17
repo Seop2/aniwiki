@@ -9,7 +9,6 @@ import Header from './Header';
 import SearchBar from './SearchBar';
 import './Shell.css';
 
-/** 모든 화면에 공통인 헤더 · 로고 · 검색창. children이 페이지 본문 */
 export default function Shell({ children }) {
   const app = useAppState();
   const router = useRouter();

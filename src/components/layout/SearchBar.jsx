@@ -6,7 +6,7 @@ export default function SearchBar({ onSearch }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(value.trim()); // 빈 값으로 검색하면 랭킹 목록으로 돌아간다
+    onSearch(value.trim());
   };
 
   return (

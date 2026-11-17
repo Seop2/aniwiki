@@ -7,7 +7,6 @@ import { useAppState } from '../layout/AppState';
 import Filters from './Filters';
 import RankingTable from './RankingTable';
 
-/** / — 랭킹 · 검색 결과 */
 export default function Home() {
   const {
     type, setType, sort, setSort, query, providers, setProviders, original, setOriginal, openDetail,

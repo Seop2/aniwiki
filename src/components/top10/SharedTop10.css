@@ -1,4 +1,3 @@
-/* 공유 링크 화면 */
 .shared-head { align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .shared-head .eyebrow { margin-bottom: 6px; }
 .shared-missing { font-size: 13px; color: var(--muted); }

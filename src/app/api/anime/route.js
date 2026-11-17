@@ -4,7 +4,6 @@ import { badRequest, cachedJson, errorJson, isType, parsePage } from '@/server/r
 
 const MAX_QUERY = 100;
 
-/** 랭킹 · 검색 한 페이지. ?type=tv&sort=rating&page=1&providers=netflix,tving 또는 ?type=tv&query=… */
 export async function GET(request) {
   const params = request.nextUrl.searchParams;
   const type = params.get('type');

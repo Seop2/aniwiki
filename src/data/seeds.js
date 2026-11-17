@@ -1,4 +1,3 @@
-// /discover에서 "본 작품"으로 고를 수 있는 유명작. 포스터 경로를 고정해 두어 그리드를 API 요청 없이 바로 그린다
 export const SEEDS = [
   { id: 37854, title: '원피스', poster: '/qHjXsSUuolEtbgvYPzRjAuB1VHE.jpg' },
   { id: 46260, title: '나루토', poster: '/5llYnYzA2oiTxxSi9d7RSanrwR8.jpg' },
@@ -20,5 +19,4 @@ export const SEEDS = [
 
 export const SEED_BY_ID = new Map(SEEDS.map((s) => [s.id, s]));
 
-// 추천 결과에서 빼는 작품: 고를 수 있는 유명작 + 같은 시리즈의 다른 TMDB 항목
-export const EXCLUDE_IDS = new Set([...SEED_BY_ID.keys(), 31910 /* 나루토 질풍전 */]);
+export const EXCLUDE_IDS = new Set([...SEED_BY_ID.keys(), 31910]);

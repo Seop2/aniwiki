@@ -51,7 +51,6 @@ function SeedPicker({ picks, onToggle, onSubmit }) {
   );
 }
 
-/** 완결 여부 · 화수는 상세에만 있어 카드마다 늦게 채운다(상세 모달과 같은 쿼리라 다시 요청하지 않음) */
 function Burden({ id }) {
   const { data } = useAnimeDetail({ type: 'tv', id });
   if (!data) return <span className="gem-burden is-loading" aria-hidden>…</span>;
@@ -115,20 +114,14 @@ function GemResults({ seedIds, onSelect, onRepick }) {
   );
 }
 
-/**
- * /discover — 본 유명작을 고르면(?seen=…) TMDB 추천을 합산해 덜 알려진 명작을 보여 준다.
- * seen은 페이지가 주소에서 읽어 넘긴다(상세 모달이 열려 주소가 바뀌어도 뒤 화면은 그대로 남도록)
- */
 export default function Discover({ seen }) {
   const router = useRouter();
   const { openDetail } = useAppState();
   const onSelect = (item) => openDetail('tv', item);
   const [savedPicks, setSavedPicks] = useDiscoverPicks();
-  // 직접 고르기 전에는 지난번 고른 작품 — 저장값은 하이드레이션 뒤에 들어오므로 state에 복사하지 않는다
   const [touched, setPicks] = useState(null);
   const picks = touched ?? (seen.length ? seen : savedPicks);
 
-  // 결과를 본 조합을 "마지막으로 고른 작품"으로 기억 — 공유 링크로 들어온 경우도 포함
   const seenKey = seen.join('.');
   useEffect(() => {
     if (seen.length) setSavedPicks(seen);

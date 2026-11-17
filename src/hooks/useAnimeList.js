@@ -3,7 +3,6 @@ import { fetchAnimePage, SORTS } from '../api/tmdb';
 import { STALE_TIME } from '../lib/staleTimes';
 import { useNetflixOriginals } from './useNetflixOriginals';
 
-// 넷플릭스 오리지널 목록은 클라이언트에서 정렬한다. 평점순은 일반 랭킹(SORTS.rating)과 같은 200표 기준
 const ORIGINAL_MIN_VOTES = 200;
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -18,7 +17,6 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
   const useOriginals = original && !query;
 
   const result = useInfiniteQuery({
-    // 검색 모드는 정렬 · 시청처를 쓰지 않으므로 키에 넣지 않는다 (불필요한 재요청 방지)
     queryKey: ['anime', type, query ? { query } : { sort, providers }],
     queryFn: ({ pageParam }) => fetchAnimePage({ type, sort, query, providers, page: pageParam }),
     initialPageParam: 1,

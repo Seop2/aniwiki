@@ -1,7 +1,6 @@
 import { MEDIA, PROVIDERS, SORTS } from '../../api/tmdb';
 import './Filters.css';
 
-/** 「볼 수 있는 곳」 — 내 구독 OTT(여러 개 OR) + 넷플릭스 오리지널 모아 보기 */
 function WatchFilter({ providers, onProvidersChange, original, onOriginalChange, searching }) {
   const toggle = (key) =>
     onProvidersChange(providers.includes(key) ? providers.filter((k) => k !== key) : [...providers, key]);
@@ -18,7 +17,6 @@ function WatchFilter({ providers, onProvidersChange, original, onOriginalChange,
             key={p.key}
             type="button"
             className="chip"
-            // 검색 · 오리지널 모드에서는 적용되지 않으므로 선택 표시도 끈다(선택값은 유지)
             aria-pressed={!searching && !original && providers.includes(p.key)}
             disabled={searching || original}
             onClick={() => toggle(p.key)}

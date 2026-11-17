@@ -1,4 +1,3 @@
-/* 공유 TOP 10 화면(SharedTop10)도 같은 표를 쓴다 */
 .table-wrap { background: var(--surface); border: 1px solid var(--border); }
 .ranking { width: 100%; border-collapse: collapse; }
 .ranking th {

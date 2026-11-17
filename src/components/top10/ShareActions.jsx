@@ -5,11 +5,9 @@ import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentU
 import { renderTop10Image } from '../../lib/top10Image';
 import './ShareActions.css';
 
-/** 이미지 저장/공유 · 링크 복사 · 시스템 공유 · X 공유 버튼 묶음 */
 export default function ShareActions({ name, items, disabled }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  // 시스템 공유 지원 여부 · 개발 중 링크 주소(location)는 브라우저에서만 알 수 있어 서버 HTML과 맞추려고 하이드레이션 뒤에 정한다
   const isClient = useIsClient();
 
   const title = top10Title(name);
@@ -20,7 +18,6 @@ export default function ShareActions({ name, items, disabled }) {
       setStatus((await fn()) || '');
       track('top10_share', { method });
     } catch (e) {
-      // 공유 시트를 그냥 닫은 경우(AbortError)는 실패로 보지 않는다
       setStatus(e?.name === 'AbortError' ? '' : '공유에 실패했어요. 다시 시도해 주세요.');
     }
   };
