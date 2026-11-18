@@ -1,7 +1,7 @@
 const PREFIX = { tv: 't', movie: 'm' };
 const TYPE_OF = { t: 'tv', m: 'movie' };
 
-const SITE_URL = 'https://www.aniwiki.link';
+export const SITE_URL = 'https://www.aniwiki.link';
 const shareOrigin = (local) => (local && process.env.NODE_ENV === 'development' ? location.origin : SITE_URL);
 
 export const TOP10_MAX = 10;
@@ -58,3 +58,37 @@ export const copyLink = (url) => navigator.clipboard.writeText(url);
 
 export const xIntentUrl = (text, url) =>
   `https://twitter.com/intent/tweet?${new URLSearchParams({ text, url })}`;
+
+const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+const KAKAO_SDK = {
+  src: 'https://t1.kakaocdn.net/kakao_js_sdk/2.8.4/kakao.min.js',
+  integrity: 'sha384-BGX7Wb16GmRFagri4bLJV2DgipVZaU2AI812GZtHtHzzDQJnfHasDXN5houxv45w',
+};
+
+export const hasKakao = Boolean(KAKAO_KEY);
+
+let kakaoLoading;
+export function loadKakao() {
+  kakaoLoading ??= new Promise((resolve, reject) => {
+    const script = Object.assign(document.createElement('script'), { ...KAKAO_SDK, crossOrigin: 'anonymous', async: true });
+    script.onload = () => {
+      if (!window.Kakao.isInitialized()) window.Kakao.init(KAKAO_KEY);
+      resolve(window.Kakao);
+    };
+    script.onerror = () => {
+      kakaoLoading = undefined;
+      reject(new Error('KAKAO_SDK'));
+    };
+    document.head.append(script);
+  });
+  return kakaoLoading;
+}
+
+export function shareKakao({ title, description, imageUrl, url, buttonTitle }) {
+  const link = { webUrl: url, mobileWebUrl: url };
+  window.Kakao.Share.sendDefault({
+    objectType: 'feed',
+    content: { title, description, imageUrl, imageWidth: 1200, imageHeight: 630, link },
+    buttons: [{ title: buttonTitle, link }],
+  });
+}

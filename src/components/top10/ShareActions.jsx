@@ -1,15 +1,21 @@
 import { useState, useSyncExternalStore } from 'react';
 import { track } from '@vercel/analytics';
-import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentUrl } from '../../lib/share';
+import { useKakao } from '../../hooks/useKakao';
+import { buildShareUrl, canShareLink, copyLink, shareImage, shareKakao, shareQuery, SITE_URL, top10Title, xIntentUrl } from '../../lib/share';
 import { renderTop10Image } from '../../lib/top10Image';
 import './ShareActions.css';
 
 const noop = () => () => {};
 
+export const KakaoIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.3-2.9c.5.1 1 .1 1.4.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>
+);
+
 export default function ShareActions({ name, items, disabled }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const isClient = useSyncExternalStore(noop, () => true, () => false);
+  const kakao = useKakao();
 
   const title = top10Title(name);
   const url = buildShareUrl({ name, items }, { local: isClient });
@@ -37,11 +43,27 @@ export default function ShareActions({ name, items, disabled }) {
 
   const onCopy = () => run('copy', async () => (await copyLink(url), '링크를 복사했어요.'));
 
+  const onKakao = () =>
+    run('kakao', () =>
+      shareKakao({
+        title,
+        description: items.slice(0, 3).map((a) => a.title).join(' · '),
+        imageUrl: `${SITE_URL}/api/og/top10?${shareQuery({ name, items })}`,
+        url,
+        buttonTitle: '나도 TOP 10 만들기',
+      }));
+
   const onShare = () => run('native', async () => (await navigator.share({ title, text: title, url }), ''));
 
   return (
     <div className="share-actions">
       <div className="share-buttons">
+        {kakao.enabled && (
+          <button type="button" className="btn-kakao" onClick={onKakao} disabled={disabled || !kakao.ready}>
+            <KakaoIcon />
+            카카오톡
+          </button>
+        )}
         <button type="button" className="btn-primary" onClick={onImage} disabled={disabled || busy}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><rect x="3" y="3" width="18" height="18"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
           이미지 저장

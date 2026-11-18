@@ -1,8 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { track } from '@vercel/analytics';
 import { posterUrl } from '../../lib/catalog';
+import { overviewSummary } from '../../lib/media';
+import { detailPath } from '../../lib/paths';
+import { copyLink, shareKakao, SITE_URL } from '../../lib/share';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
+import { useKakao } from '../../hooks/useKakao';
+import { KakaoIcon } from '../top10/ShareActions';
 import Poster from '../common/Poster';
 import { useAppState } from '../layout/AppState';
 import './Detail.css';
@@ -45,6 +51,46 @@ function Providers({ providers }) {
         TMDB에서 시청 링크 보기 →
       </a>
     </>
+  );
+}
+
+function Share({ type, id, data }) {
+  const kakao = useKakao();
+  const [status, setStatus] = useState('');
+  const url = SITE_URL + detailPath(type, id);
+
+  const run = async (method, fn) => {
+    try {
+      setStatus((await fn()) || '');
+      track('detail_share', { method });
+    } catch {
+      setStatus('공유에 실패했어요. 다시 시도해 주세요.');
+    }
+  };
+
+  const onKakao = () =>
+    run('kakao', () =>
+      shareKakao({
+        title: data.title,
+        description: overviewSummary(data.overview) ?? '',
+        imageUrl: posterUrl(data.backdrop, 'w780') ?? posterUrl(data.poster, 'w500'),
+        url,
+        buttonTitle: '작품 보기',
+      }));
+
+  const onCopy = () => run('copy', async () => (await copyLink(url), '링크를 복사했어요.'));
+
+  return (
+    <div className="detail-share">
+      {kakao.enabled && (
+        <button type="button" className="btn-kakao" onClick={onKakao} disabled={!data || !kakao.ready}>
+          <KakaoIcon />
+          카카오톡
+        </button>
+      )}
+      <button type="button" className="btn-outline" onClick={onCopy}>링크 복사</button>
+      <span role="status">{status}</span>
+    </div>
   );
 }
 
@@ -129,6 +175,7 @@ export default function DetailContent({ type, id, item }) {
             </button>
             <span>{!inTop10 && top10.isFull ? 'TOP 10이 가득 찼어요' : `${top10.items.length}/10`}</span>
           </div>
+          <Share type={type} id={id} data={data} />
         </div>
       </div>
       )}
