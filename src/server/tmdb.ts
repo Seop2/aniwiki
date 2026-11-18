@@ -1,7 +1,8 @@
 import 'server-only';
+import type { AnimePage, MediaType, OriginKey, ProviderKey, SortKey } from '@/types';
 import { ANIMATION_GENRE_ID, ORIGINS, PROVIDERS, SORTS } from '@/lib/catalog';
-import { normalize } from '@/lib/media';
-import { isNetflixOriginal } from '@/lib/netflix';
+import { normalize, type TmdbListItem } from '@/lib/media';
+import { isNetflixOriginal, type TmdbReleaseDates } from '@/lib/netflix';
 import { STALE_TIME } from '@/lib/queries';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -12,21 +13,66 @@ export const REVALIDATE = {
   recommendations: STALE_TIME.recommendations / 1000,
 };
 
+type Params = Record<string, string | number | undefined>;
+
+export interface TmdbList {
+  page: number;
+  results: TmdbListItem[];
+  total_pages: number;
+  total_results: number;
+}
+
+interface TmdbProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+  display_priority: number;
+}
+
+interface TmdbVideo {
+  site: string;
+  key: string;
+  name: string;
+  type: string;
+  official: boolean;
+  iso_639_1: string;
+  published_at: string;
+}
+
+interface TmdbDetail extends TmdbListItem {
+  backdrop_path: string | null;
+  overview: string;
+  tagline: string;
+  homepage: string;
+  genres?: { name: string }[];
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+  status: string;
+  networks?: { id: number; name: string }[];
+  production_companies?: { id: number }[];
+  runtime?: number;
+  release_dates?: TmdbReleaseDates;
+  videos?: { results: TmdbVideo[] };
+  'watch/providers'?: { results: Record<string, ({ link: string } & Partial<Record<string, TmdbProvider[]>>) | undefined> };
+}
+
 export class TmdbError extends Error {
-  constructor(status, path) {
+  status: number;
+
+  constructor(status: number, path: string) {
     super(`TMDB ${status} ${path}`);
     this.status = status;
   }
 }
 
-export async function tmdbGet(path, params = {}, { revalidate = REVALIDATE.list } = {}) {
+export async function tmdbGet<T = TmdbList>(path: string, params: Params = {}, { revalidate = REVALIDATE.list } = {}): Promise<T> {
   const token = process.env.TMDB_TOKEN;
   const apiKey = process.env.TMDB_API_KEY;
   if (!token && !apiKey) throw new Error('MISSING_TOKEN');
 
   const url = new URL(BASE_URL + path);
   Object.entries({ language: 'ko-KR', ...(token ? {} : { api_key: apiKey }), ...params }).forEach(([key, value]) => {
-    if (value !== undefined && value !== '') url.searchParams.set(key, value);
+    if (value !== undefined && value !== '') url.searchParams.set(key, String(value));
   });
 
   const res = await fetch(url, {
@@ -37,8 +83,8 @@ export async function tmdbGet(path, params = {}, { revalidate = REVALIDATE.list 
   return res.json();
 }
 
-export async function mapLimit(items, limit, fn) {
-  const out = new Array(items.length);
+export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>) {
+  const out = new Array<R>(items.length);
   let next = 0;
   const worker = async () => {
     while (next < items.length) {
@@ -50,13 +96,20 @@ export async function mapLimit(items, limit, fn) {
   return out;
 }
 
-function providerParams(keys) {
+function providerParams(keys: ProviderKey[]) {
   const picked = PROVIDERS.filter((p) => keys.includes(p.key));
   const ids = (picked.length ? picked : PROVIDERS).flatMap((p) => p.ids);
   return { watch_region: 'KR', with_watch_providers: ids.join('|'), with_watch_monetization_types: 'flatrate|free|ads' };
 }
 
-export async function fetchAnimePage({ type, sort, query, page, providers = [], origin = '' }) {
+export async function fetchAnimePage({ type, sort, query, page, providers = [], origin = '' }: {
+  type: MediaType;
+  sort: SortKey;
+  query: string;
+  page: number;
+  providers?: ProviderKey[];
+  origin?: OriginKey | '';
+}): Promise<AnimePage> {
   const data = query
     ? await tmdbGet(`/search/${type}`, { query, page })
     : await tmdbGet(`/discover/${type}`, {
@@ -64,7 +117,7 @@ export async function fetchAnimePage({ type, sort, query, page, providers = [], 
         page,
         ...SORTS[sort].params(type),
         ...providerParams(providers),
-        with_origin_country: ORIGINS[origin]?.countries,
+        with_origin_country: origin ? ORIGINS[origin].countries : undefined,
       });
 
   const results = query
@@ -79,12 +132,12 @@ export async function fetchAnimePage({ type, sort, query, page, providers = [], 
   };
 }
 
-export async function fetchRecommendations({ type, id, page = 1 }) {
+export async function fetchRecommendations({ type, id, page = 1 }: { type: MediaType; id: number; page?: number }) {
   const data = await tmdbGet(`/${type}/${id}/recommendations`, { page }, { revalidate: REVALIDATE.recommendations });
   return data.results.map((r) => normalize(r, type));
 }
 
-const TV_STATUS = {
+const TV_STATUS: Record<string, string> = {
   'Returning Series': '방영 중',
   Ended: '완결',
   Canceled: '방영 중단',
@@ -95,7 +148,7 @@ const TV_STATUS = {
 
 const HIDDEN_PROVIDERS = [283];
 
-const isDuplicateNetflix = (p, all) => p.provider_id === 1796 && all.some((q) => q.provider_id === 8);
+const isDuplicateNetflix = (p: TmdbProvider, all: TmdbProvider[]) => p.provider_id === 1796 && all.some((q) => q.provider_id === 8);
 
 const PROVIDER_GROUPS = [
   ['flatrate', '구독'],
@@ -105,7 +158,7 @@ const PROVIDER_GROUPS = [
   ['buy', '구매'],
 ];
 
-function normalizeProviders(raw) {
+function normalizeProviders(raw: TmdbDetail['watch/providers']) {
   const kr = raw?.results?.KR;
   if (!kr) return null;
 
@@ -124,10 +177,10 @@ function normalizeProviders(raw) {
 
 const VIDEO_TYPES = ['Trailer', 'Teaser'];
 const VIDEO_LANGS = ['ko', 'ja', 'en'];
-const rankOf = (list, value) => (list.includes(value) ? list.indexOf(value) : list.length);
+const rankOf = (list: string[], value: string) => (list.includes(value) ? list.indexOf(value) : list.length);
 
-function pickVideo(raw) {
-  const rank = (v) => [v.official ? 0 : 1, rankOf(VIDEO_TYPES, v.type), rankOf(VIDEO_LANGS, v.iso_639_1)];
+function pickVideo(raw: TmdbDetail['videos']) {
+  const rank = (v: TmdbVideo) => [v.official ? 0 : 1, rankOf(VIDEO_TYPES, v.type), rankOf(VIDEO_LANGS, v.iso_639_1)];
   const [best] = (raw?.results ?? [])
     .filter((v) => v.site === 'YouTube')
     .map((v) => ({ v, r: rank(v) }))
@@ -135,9 +188,9 @@ function pickVideo(raw) {
   return best ? { key: best.v.key, name: best.v.name } : null;
 }
 
-export async function fetchAnimeDetail({ type, id }) {
+export async function fetchAnimeDetail({ type, id }: { type: MediaType; id: number }) {
   const append = type === 'movie' ? 'watch/providers,release_dates,videos' : 'watch/providers,videos';
-  const raw = await tmdbGet(
+  const raw = await tmdbGet<TmdbDetail>(
     `/${type}/${id}`,
     { append_to_response: append, include_video_language: 'ko,ja,en,null' },
     { revalidate: REVALIDATE.detail },

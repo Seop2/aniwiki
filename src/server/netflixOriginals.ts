@@ -1,4 +1,5 @@
 import 'server-only';
+import type { MediaType, NetflixOriginal } from '@/types';
 import { ANIMATION_GENRE_ID } from '@/lib/catalog';
 import { MEDIA, normalize } from '@/lib/media';
 import { isNetflixOriginal, NETFLIX_NETWORK, NETFLIX_PROVIDERS } from '@/lib/netflix';
@@ -7,7 +8,7 @@ import { mapLimit, tmdbGet } from './tmdb';
 const MAX_PAGES = 30;
 const DAILY = { revalidate: 86400 };
 
-const candidateParams = (type) => ({
+const candidateParams = (type: MediaType) => ({
   with_genres: ANIMATION_GENRE_ID,
   watch_region: 'KR',
   with_watch_providers: NETFLIX_PROVIDERS.join('|'),
@@ -16,7 +17,7 @@ const candidateParams = (type) => ({
   ...(type === 'tv' && { with_networks: NETFLIX_NETWORK }),
 });
 
-async function candidates(type) {
+async function candidates(type: MediaType) {
   const params = candidateParams(type);
   const first = await tmdbGet(`/discover/${type}`, { ...params, page: 1 }, DAILY);
   const rest = Array.from({ length: Math.min(first.total_pages, MAX_PAGES) - 1 }, (_, i) => i + 2);
@@ -24,10 +25,10 @@ async function candidates(type) {
   return [first, ...pages].flatMap((p) => p.results);
 }
 
-async function originals(type) {
+async function originals(type: MediaType): Promise<NetflixOriginal[]> {
   const list = await candidates(type);
   const append = type === 'movie' ? { append_to_response: 'release_dates' } : {};
-  const details = await mapLimit(list, 10, (r) => tmdbGet(`/${type}/${r.id}`, append, DAILY));
+  const details = await mapLimit(list, 10, (r) => tmdbGet<Parameters<typeof isNetflixOriginal>[0]>(`/${type}/${r.id}`, append, DAILY));
   return list
     .filter((_, i) => isNetflixOriginal(details[i]))
     .map((r) => {

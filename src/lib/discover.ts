@@ -1,4 +1,10 @@
+import type { AnimeItem } from '@/types';
 import { SEED_BY_ID } from '../data/seeds';
+
+export interface SeedList {
+  seed: { id: number; title: string };
+  items: AnimeItem[];
+}
 
 export const GEM = {
   minVotes: 100,
@@ -15,9 +21,9 @@ export const GEM = {
 const ANIMATION_GENRE_ID = 16;
 const RECAP_RE = /총집편|리캡|recap|특별편|OVA/i;
 
-function rank(lists, exclude, maxVotes, today) {
+function rank(lists: SeedList[], exclude: Set<number>, maxVotes: number, today: number) {
   const cutoff = new Date(today - GEM.minAgeDays * 86400000).toISOString().slice(0, 10);
-  const byId = new Map();
+  const byId = new Map<number, { item: AnimeItem; weight: number; reasons: string[] }>();
 
   for (const { seed, items } of lists) {
     items.forEach((item, pos) => {
@@ -47,14 +53,14 @@ function rank(lists, exclude, maxVotes, today) {
     .slice(0, GEM.limit);
 }
 
-export function rankHiddenGems(lists, { exclude = new Set(), today = Date.now() } = {}) {
+export function rankHiddenGems(lists: SeedList[], { exclude = new Set<number>(), today = Date.now() } = {}) {
   const gems = rank(lists, exclude, GEM.maxVotes, today);
   return gems.length >= GEM.minResults ? gems : rank(lists, exclude, GEM.relaxedMaxVotes, today);
 }
 
-export function parseSeen(search) {
+export function parseSeen(search: string) {
   const raw = new URLSearchParams(search).get('seen') ?? '';
   return [...new Set(raw.split('.').map(Number))].filter((id) => SEED_BY_ID.has(id));
 }
 
-export const discoverPath = (ids) => (ids.length ? `/discover?seen=${ids.join('.')}` : '/discover');
+export const discoverPath = (ids: number[]) => (ids.length ? `/discover?seen=${ids.join('.')}` : '/discover');

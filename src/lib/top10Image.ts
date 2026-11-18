@@ -1,3 +1,4 @@
+import type { Top10, Top10Item } from '@/types';
 import { posterUrl } from './catalog';
 import { top10Title } from './share';
 
@@ -18,8 +19,8 @@ const CARD_H = 166;
 const POSTER_W = 92;
 const POSTER_H = 138;
 
-function loadImage(src) {
-  return new Promise((resolve) => {
+function loadImage(src: string | null) {
+  return new Promise<HTMLImageElement | null>((resolve) => {
     if (!src) return resolve(null);
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -29,8 +30,8 @@ function loadImage(src) {
   });
 }
 
-function wrapText(ctx, text, maxWidth, maxLines) {
-  const lines = [];
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number) {
+  const lines: string[] = [];
   let line = '';
   for (const ch of text) {
     if (ctx.measureText(line + ch).width > maxWidth && line) {
@@ -51,7 +52,7 @@ function wrapText(ctx, text, maxWidth, maxLines) {
   return lines;
 }
 
-function cornerMarks(ctx, x, y, w, h, size = 18) {
+function cornerMarks(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, size = 18) {
   ctx.fillStyle = C.text;
   for (const [cx, cy, dx, dy] of [[x, y, 1, 1], [x + w, y, -1, 1], [x, y + h, 1, -1], [x + w, y + h, -1, -1]]) {
     ctx.fillRect(dx > 0 ? cx : cx - size, dy > 0 ? cy : cy - 2, size, 2);
@@ -59,7 +60,7 @@ function cornerMarks(ctx, x, y, w, h, size = 18) {
   }
 }
 
-function drawCard(ctx, x, y, rank, item, img) {
+function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, rank: number, item: Top10Item | undefined, img: HTMLImageElement | null) {
   ctx.fillStyle = C.surface;
   ctx.fillRect(x, y, CARD_W, CARD_H);
   ctx.strokeStyle = C.border;
@@ -100,7 +101,7 @@ function drawCard(ctx, x, y, rank, item, img) {
   ctx.fillText(`${item.year ?? ''}  ·  ${item.type === 'movie' ? '극장판' : 'TV'}`, tx, ty + 4);
 }
 
-export async function renderTop10Image({ name, items }) {
+export async function renderTop10Image({ name, items }: Top10) {
   const title = top10Title(name);
   const allText = title + items.map((a) => a.title).join('') + '0123456789극장판TV·';
 
@@ -115,7 +116,7 @@ export async function renderTop10Image({ name, items }) {
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d')!;
 
   ctx.fillStyle = C.bg;
   ctx.fillRect(0, 0, W, H);
@@ -150,7 +151,7 @@ export async function renderTop10Image({ name, items }) {
   ctx.font = `600 28px ${DISPLAY}`;
   ctx.fillText('aniwiki.link', W - PAD, H - 66);
 
-  return new Promise((resolve, reject) =>
+  return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('IMAGE_FAILED'))), 'image/png'),
   );
 }
