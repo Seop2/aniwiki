@@ -4,7 +4,7 @@ import { posterUrl } from '../../lib/catalog';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
 import Poster from '../common/Poster';
 import { useAppState } from '../layout/AppState';
-import './DetailModal.css';
+import './Detail.css';
 
 const laftelSearchUrl = (title) => `https://laftel.net/search?keyword=${encodeURIComponent(title)}`;
 
