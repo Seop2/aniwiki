@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { AnimeSummary, MediaType } from '@/types';
 import RankingRow from './RankingRow';
-import './RankingTable.css';
+import s from './RankingTable.module.css';
 
 function Message({ children }: { children: ReactNode }) {
   return <tr><td colSpan={5} className="message">{children}</td></tr>;
@@ -10,11 +10,11 @@ function Message({ children }: { children: ReactNode }) {
 function SkeletonRows({ count = 8 }) {
   return Array.from({ length: count }, (_, i) => (
     <tr key={i} className="skeleton" aria-hidden>
-      <td className="col-rank"><i style={{ width: 16 }} /></td>
-      <td className="col-title"><div className="title-cell"><i className="poster" /><i style={{ width: '50%' }} /></div></td>
-      <td className="col-year"><i style={{ width: 36 }} /></td>
-      <td className="col-rating"><i style={{ width: 28 }} /></td>
-      <td className="col-votes"><i style={{ width: 48 }} /></td>
+      <td className={s.rank}><i style={{ width: 16 }} /></td>
+      <td><div className="title-cell"><i className="poster" /><i style={{ width: '50%' }} /></div></td>
+      <td className={s.year}><i style={{ width: 36 }} /></td>
+      <td className={s.rating}><i style={{ width: 28 }} /></td>
+      <td className={s.votes}><i style={{ width: 48 }} /></td>
     </tr>
   ));
 }
@@ -37,15 +37,15 @@ export default function RankingTable({ items, isPending, isError, error, hasNext
 
   return (
     <>
-      <div className="table-wrap corners">
-        <table className="ranking">
+      <div className={`${s.wrap} corners`}>
+        <table className={s.ranking}>
           <thead>
             <tr>
-              <th className="col-rank">순위</th>
-              <th className="col-title">제목</th>
-              <th className="col-year">연도</th>
-              <th className="col-rating">평점</th>
-              <th className="col-votes">투표수</th>
+              <th className={s.rank}>순위</th>
+              <th>제목</th>
+              <th className={s.year}>연도</th>
+              <th className={s.rating}>평점</th>
+              <th className={s.votes}>투표수</th>
             </tr>
           </thead>
           <tbody>
@@ -59,8 +59,8 @@ export default function RankingTable({ items, isPending, isError, error, hasNext
       </div>
 
       {hasNextPage && (
-        <div className="more">
-          <button type="button" className="btn-outline btn-more" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+        <div className={s.more}>
+          <button type="button" className={`btn-outline ${s.moreButton}`} onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
             {isFetchingNextPage ? '불러오는 중…' : '더 보기'}
           </button>
         </div>

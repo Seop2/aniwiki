@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import type { AnimeDetail } from '@/types';
+import s from './Detail.module.css';
 
 export default function Trailer({ video }: { video: NonNullable<AnimeDetail['video']> }) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className="detail-video">
+    <div className={s.video}>
       {playing ? (
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${video.key}?autoplay=1`}

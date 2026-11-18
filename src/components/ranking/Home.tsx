@@ -11,6 +11,7 @@ import { usePersistedIds } from '../../hooks/useSeen';
 import { useAppState } from '../layout/AppState';
 import Filters from './Filters';
 import RankingTable from './RankingTable';
+import s from './Home.module.css';
 
 export default function Home() {
   const pathname = usePathname();
@@ -35,7 +36,7 @@ export default function Home() {
 
   return (
     <>
-      <Link className="discover-cta corners" href="/discover">
+      <Link className={`${s.cta} corners`} href="/discover">
         <span className="eyebrow">숨은 명작 찾기</span>
         <strong>원피스·진격은 봤다면, 다음은 이거 →</strong>
       </Link>

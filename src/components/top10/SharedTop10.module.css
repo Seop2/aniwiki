@@ -1,0 +1,7 @@
+.head { align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.missing { font-size: 13px; color: var(--muted); }
+.share { --share-justify: center; display: flex; justify-content: center; padding: 32px 0 96px; text-align: center; }
+
+@media (max-width: 640px) {
+  .head :global(.btn-primary) { width: 100%; justify-content: center; }
+}

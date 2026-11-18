@@ -11,8 +11,8 @@ import { detailPath } from '../../lib/paths';
 import { useAppState } from '../layout/AppState';
 import Poster from '../common/Poster';
 import ShareActions from './ShareActions';
-import './SharedTop10.css';
-import '../ranking/RankingTable.css';
+import s from './SharedTop10.module.css';
+import t from '../ranking/RankingTable.module.css';
 
 export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType<typeof parseShareUrl>> }) {
   const router = useRouter();
@@ -28,8 +28,8 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
     .filter((d): d is AnimeDetail & { type: MediaType } => !!d);
 
   return (
-    <section className="shared">
-      <div className="list-head shared-head">
+    <section>
+      <div className={`list-head ${s.head}`}>
         <div>
           <p className="eyebrow">SHARED · TOP 10</p>
           <h2>{top10Title(shared.name)}</h2>
@@ -37,16 +37,16 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
         <button type="button" className="btn-primary corners" onClick={() => { router.push('/'); openTop10(); }}>나도 만들기</button>
       </div>
 
-      <div className="table-wrap corners">
-        <table className="ranking">
+      <div className={`${t.wrap} corners`}>
+        <table className={t.ranking}>
           <tbody>
             {results.map((r, i) => {
               const { type } = shared.items[i];
               const d = r.data;
               return (
                 <tr key={`${type}-${shared.items[i].id}`} className={d ? '' : 'skeleton'} aria-hidden={!d || undefined}>
-                  <td className="col-rank">{i + 1}</td>
-                  <td className="col-title">
+                  <td className={t.rank}>{i + 1}</td>
+                  <td>
                     {d ? (
                       <Link
                         className="title-cell title-button"
@@ -60,12 +60,12 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
                         </div>
                       </Link>
                     ) : r.isError ? (
-                      <span className="shared-missing">작품 정보를 불러오지 못했어요.</span>
+                      <span className={s.missing}>작품 정보를 불러오지 못했어요.</span>
                     ) : (
                       <div className="title-cell"><i className="poster" /><i style={{ width: '50%' }} /></div>
                     )}
                   </td>
-                  <td className="col-rating">{d && d.rating.toFixed(1)}</td>
+                  <td className={t.rating}>{d && d.rating.toFixed(1)}</td>
                 </tr>
               );
             })}
@@ -73,7 +73,7 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
         </table>
       </div>
 
-      <div className="shared-share">
+      <div className={s.share}>
         <ShareActions name={shared.name} items={loaded} disabled={isPending || loaded.length === 0} />
       </div>
     </section>

@@ -1,0 +1,29 @@
+.wrap { background: var(--surface); border: 1px solid var(--border); }
+.ranking { width: 100%; border-collapse: collapse; }
+.ranking th {
+  height: 34px; padding: 0 16px; text-align: left;
+  font-size: 12px; font-weight: 500; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.ranking td { padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
+.ranking td:global(.message) { padding: 48px 12px; }
+.ranking tbody tr:last-child td { border-bottom: 0; }
+.ranking tbody tr:not(:global(.skeleton)):hover { background: var(--surface-2); }
+
+.rank { width: 56px; }
+td.rank { font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+.year { width: 14%; }
+.rating { width: 14%; }
+td.rating { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--accent-text); }
+.votes { width: 14%; }
+td.votes { color: var(--muted); }
+
+.metaMobile { display: none; }
+
+.more { display: flex; justify-content: center; padding: 44px 0 96px; }
+.moreButton { height: 42px; width: 200px; font-size: 14px; }
+
+@media (max-width: 640px) {
+  .year, .votes { display: none; }
+  .metaMobile { display: block; }
+}

@@ -1,5 +1,6 @@
 import type { MediaType, OriginKey, ProviderKey, SortKey } from '@/types';
 import { MEDIA, ORIGINS, PROVIDERS, SORTS } from '../../lib/catalog';
+import s from './Filters.module.css';
 
 interface WatchProps {
   providers: ProviderKey[];
@@ -8,7 +9,6 @@ interface WatchProps {
   onOriginalChange: (original: boolean) => void;
   searching: boolean;
 }
-import './Filters.css';
 
 function WatchFilter({ providers, onProvidersChange, original, onOriginalChange, searching }: WatchProps) {
   const toggle = (key: ProviderKey) =>
@@ -18,14 +18,14 @@ function WatchFilter({ providers, onProvidersChange, original, onOriginalChange,
     <div className="field">
       <span className="field-label">
         볼 수 있는 곳
-        {searching && <span className="field-hint"> · 검색 결과에는 적용되지 않아요</span>}
+        {searching && <span className={s.hint}> · 검색 결과에는 적용되지 않아요</span>}
       </span>
-      <div className="provider-chips">
+      <div className={s.chips}>
         {PROVIDERS.map((p) => (
           <button
             key={p.key}
             type="button"
-            className="chip"
+            className={s.chip}
             aria-pressed={!searching && !original && providers.includes(p.key)}
             disabled={searching || original}
             onClick={() => toggle(p.key)}
@@ -33,10 +33,10 @@ function WatchFilter({ providers, onProvidersChange, original, onOriginalChange,
             {p.label}
           </button>
         ))}
-        <i className="chip-divider" aria-hidden />
+        <i className={s.divider} aria-hidden />
         <button
           type="button"
-          className="chip chip-netflix"
+          className={`${s.chip} ${s.netflix}`}
           aria-pressed={original}
           disabled={searching}
           onClick={() => onOriginalChange(!original)}
@@ -57,17 +57,16 @@ export default function Filters({ type, onTypeChange, origin, onOriginChange, so
   onSortChange: (sort: SortKey) => void;
 } & WatchProps) {
   return (
-    <div className="filters">
+    <div className={s.filters}>
       <div className="field">
         <span className="field-label">구분</span>
-        <div className="segmented" role="tablist">
+        <div className={s.segmented} role="tablist">
           {Object.entries(MEDIA).map(([key, { label }]) => (
             <button
               key={key}
               type="button"
               role="tab"
               aria-selected={type === key}
-              className={type === key ? 'active' : ''}
               onClick={() => onTypeChange(key as MediaType)}
             >
               {label}
@@ -78,14 +77,13 @@ export default function Filters({ type, onTypeChange, origin, onOriginChange, so
 
       <div className="field">
         <span className="field-label">제작 국가</span>
-        <div className="segmented" role="tablist">
+        <div className={s.segmented} role="tablist">
           {([['', { label: '전체' }], ...Object.entries(ORIGINS)] as [string, { label: string }][]).map(([key, { label }]) => (
             <button
               key={key}
               type="button"
               role="tab"
               aria-selected={!watch.searching && origin === key}
-              className={!watch.searching && origin === key ? 'active' : ''}
               disabled={watch.searching}
               onClick={() => onOriginChange(key as OriginKey | '')}
             >

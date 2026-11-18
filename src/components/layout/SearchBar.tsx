@@ -3,14 +3,14 @@
 import { Suspense, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { homePath, parseHomeParams } from '../../lib/paths';
-import './SearchBar.css';
+import s from './SearchBar.module.css';
 
 function SearchForm({ initial = '', onSearch }: { initial?: string; onSearch?: (q: string) => void }) {
   const [value, setValue] = useState(initial);
 
   return (
     <form
-      className="search"
+      className={s.search}
       role="search"
       action="/"
       onSubmit={(e) => {
@@ -40,7 +40,7 @@ function SearchForm({ initial = '', onSearch }: { initial?: string; onSearch?: (
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
         </svg>
-        <span className="search-label">검색</span>
+        <span className={s.label}>검색</span>
       </button>
     </form>
   );

@@ -1,0 +1,14 @@
+.cta {
+  display: flex; flex-direction: column; gap: 4px;
+  margin: 0 0 28px; padding: 18px 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: inherit; text-decoration: none;
+}
+.cta :global(.eyebrow) { margin: 0; }
+.cta strong { font-size: 18px; font-weight: 600; }
+.cta:hover { border-color: var(--accent); }
+.cta:hover strong { color: var(--accent-text); }
+
+@media (max-width: 640px) {
+  .cta strong { font-size: 16px; }
+}

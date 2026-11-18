@@ -4,7 +4,7 @@ import type { Top10Item } from '@/types';
 import { useKakao } from '../../hooks/useKakao';
 import { buildShareUrl, canShareLink, copyLink, shareImage, shareKakao, shareQuery, SITE_URL, top10Title, xIntentUrl } from '../../lib/share';
 import { renderTop10Image } from '../../lib/top10Image';
-import './ShareActions.css';
+import s from './ShareActions.module.css';
 
 const noop = () => () => {};
 
@@ -57,8 +57,8 @@ export default function ShareActions({ name, items, disabled }: { name: string; 
   const onShare = () => run('native', async () => (await navigator.share({ title, text: title, url }), ''));
 
   return (
-    <div className="share-actions">
-      <div className="share-buttons">
+    <div>
+      <div className={s.buttons}>
         {kakao.enabled && (
           <button type="button" className="btn-kakao" onClick={onKakao} disabled={disabled || !kakao.ready}>
             <KakaoIcon />
@@ -87,7 +87,7 @@ export default function ShareActions({ name, items, disabled }: { name: string; 
           X에 공유
         </a>
       </div>
-      <p className="share-status" role="status">{status}</p>
+      <p className={s.status} role="status">{status}</p>
     </div>
   );
 }
