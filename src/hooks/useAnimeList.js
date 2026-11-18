@@ -1,9 +1,7 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchAnimePage } from '../lib/apiClient';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { fetchAnimePage, fetchNetflixOriginals } from '../lib/apiClient';
 import { SORTS } from '../lib/catalog';
-import { listQueryKey } from '../lib/queryKeys';
-import { STALE_TIME } from '../lib/staleTimes';
-import { useNetflixOriginals } from './useNetflixOriginals';
+import { listQueryKey, STALE_TIME } from '../lib/queries';
 
 const ORIGINAL_MIN_VOTES = 200;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -27,7 +25,12 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
     enabled: !useOriginals,
   });
 
-  const originals = useNetflixOriginals({ enabled: useOriginals });
+  const originals = useQuery({
+    queryKey: ['netflix-originals'],
+    queryFn: fetchNetflixOriginals,
+    staleTime: STALE_TIME.build,
+    enabled: useOriginals,
+  });
 
   if (useOriginals) {
     const items = originals.data ? originalItems(originals.data, type, sort) : [];

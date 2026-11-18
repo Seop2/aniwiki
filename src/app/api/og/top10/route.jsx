@@ -1,13 +1,24 @@
 import { ImageResponse } from 'next/og';
 import { posterUrl } from '@/lib/catalog';
 import { parseShareUrl } from '@/lib/share';
-import { loadGoogleFont } from '@/server/ogFonts';
 import { fetchAnimeDetail } from '@/server/tmdb';
 
 const C = { bg: '#0f0f13', surface: '#17171d', line: '#24242c', text: '#ececf1', muted: '#8d8d99', accent: '#8b6dff', accentText: '#a48cff' };
 const SANS = 'Noto Sans KR';
 const DISPLAY = 'Barlow Condensed';
 const HEADLINE = '인생 애니 TOP 10';
+
+async function loadGoogleFont(family, weight, text) {
+  const css = await fetch(
+    `https://fonts.googleapis.com/css2?family=${family.replaceAll(' ', '+')}:wght@${weight}&text=${encodeURIComponent(text)}`,
+    { next: { revalidate: 86400 } },
+  ).then((r) => r.text());
+  const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1];
+  if (!url) throw new Error(`글꼴을 찾지 못했습니다: ${family}`);
+  const res = await fetch(url, { cache: 'force-cache' });
+  if (!res.ok) throw new Error(`글꼴을 받지 못했습니다: ${family} ${res.status}`);
+  return { name: family, weight, style: 'normal', data: await res.arrayBuffer() };
+}
 
 // 글꼴에는 실제로 그리는 글자만 담는다
 const loadFonts = (owner) => Promise.all([

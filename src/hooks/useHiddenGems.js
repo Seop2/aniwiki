@@ -3,7 +3,7 @@ import { useQueries } from '@tanstack/react-query';
 import { fetchRecommendations } from '../lib/apiClient';
 import { EXCLUDE_IDS, SEED_BY_ID } from '../data/seeds';
 import { rankHiddenGems } from '../lib/discover';
-import { STALE_TIME } from '../lib/staleTimes';
+import { STALE_TIME } from '../lib/queries';
 
 const PAGES = [1, 2];
 

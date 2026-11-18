@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { track } from '@vercel/analytics';
-import { useIsClient } from '../../hooks/useIsClient';
 import { buildShareUrl, canShareLink, copyLink, shareImage, top10Title, xIntentUrl } from '../../lib/share';
 import { renderTop10Image } from '../../lib/top10Image';
 import './ShareActions.css';
 
+const noop = () => () => {};
+
 export default function ShareActions({ name, items, disabled }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  const isClient = useIsClient();
+  const isClient = useSyncExternalStore(noop, () => true, () => false);
 
   const title = top10Title(name);
   const url = buildShareUrl({ name, items }, { local: isClient });

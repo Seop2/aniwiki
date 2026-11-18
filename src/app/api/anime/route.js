@@ -1,6 +1,6 @@
-import { PROVIDERS, SORTS } from '@/lib/catalog';
+import { MEDIA, PROVIDERS, SORTS } from '@/lib/catalog';
 import { fetchAnimePage, REVALIDATE } from '@/server/tmdb';
-import { badRequest, cachedJson, errorJson, isType, parsePage } from '@/server/respond';
+import { badRequest, cachedJson, errorJson, parsePage } from '@/server/respond';
 
 const MAX_QUERY = 100;
 
@@ -12,7 +12,7 @@ export async function GET(request) {
   const page = parsePage(params.get('page'));
   const providers = (params.get('providers') ?? '').split(',').filter((k) => PROVIDERS.some((p) => p.key === k));
 
-  if (!isType(type) || !Object.hasOwn(SORTS, sort) || !page || query.length > MAX_QUERY) return badRequest();
+  if (!Object.hasOwn(MEDIA, type) || !Object.hasOwn(SORTS, sort) || !page || query.length > MAX_QUERY) return badRequest();
 
   try {
     return cachedJson(await fetchAnimePage({ type, sort, query, page, providers }), REVALIDATE.list);

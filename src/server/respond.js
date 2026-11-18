@@ -1,8 +1,5 @@
 import 'server-only';
-import { MEDIA } from '@/lib/catalog';
 import { TmdbError } from './tmdb';
-
-export const isType = (type) => Object.hasOwn(MEDIA, type);
 
 export function parsePage(value) {
   const page = Number(value ?? 1);

@@ -2,7 +2,7 @@ import 'server-only';
 import { ANIMATION_GENRE_ID, PROVIDERS, SORTS } from '@/lib/catalog';
 import { normalize } from '@/lib/media';
 import { isNetflixOriginal } from '@/lib/netflix';
-import { STALE_TIME } from '@/lib/staleTimes';
+import { STALE_TIME } from '@/lib/queries';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchAnimeDetail } from '../lib/apiClient';
-import { detailQueryKey } from '../lib/queryKeys';
-import { STALE_TIME } from '../lib/staleTimes';
+import { detailQueryKey, STALE_TIME } from '../lib/queries';
 
 export const animeDetailQuery = (type, id) => ({
   queryKey: detailQueryKey(type, id),

@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import Home from '@/components/ranking/Home';
 import { parseHomeParams, toSearchParams } from '@/lib/paths';
-import { listQueryKey } from '@/lib/queryKeys';
+import { listQueryKey } from '@/lib/queries';
 import { fetchAnimePage } from '@/server/tmdb';
 
 const homeParams = async (searchParams) => parseHomeParams(toSearchParams(await searchParams));

@@ -32,9 +32,11 @@ npm run dev            # 배포 빌드 확인: npm run build && npm start
   - 일본 애니 · 평점 7.5↑ · 투표 100~1,500(유명작은 2,000~8,000) · 방영 1년 경과 · 총집편 제외, 1995년 이전은 점수 절반
   - 카드마다 추천 이유(「진격의 거인을 본 사람에게」)와 완결 · 화수, 「이미 봤어요」로 제외(localStorage)
   - 기준값은 `lib/discover.js`의 `GEM` 상수
-- **화면별 주소** (App Router): `/`(랭킹) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세) · `/discover?seen=…`(숨은 명작)
+- **화면별 주소** (App Router): `/?type=movie&sort=popular&q=…&original=1`(랭킹 · 검색, 기본값은 생략) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세) · `/discover?seen=…`(숨은 명작)
   - 작품 상세는 앱 안에서 열면 `@modal/(.)anime/…` 인터셉트 라우트로 모달(뒤 화면 유지, 뒤로가기로 닫힘), 주소로 바로 들어오면 서버에서 그린 페이지(제목 · 줄거리 · og:image, 10분 ISR)
-  - 필터 · 검색어 · 내 TOP 10은 layout의 `AppState` 컨텍스트에 있어 페이지를 오가도 유지
+  - 랭킹 필터 · 검색어는 주소에 있어 새로고침 · 링크 공유에도 유지. 필터 변경은 `history.replaceState`라 서버 왕복 없이 바로 반영
+  - 랭킹 첫 페이지는 서버에서 그림(시청처 필터 OTT 전체 기준). 저장된 시청처(localStorage)가 있으면 브라우저가 그 조건으로 다시 받음
+  - 내 TOP 10 · 상세 모달 미리보기는 layout의 `AppState` 컨텍스트
   - canonical은 페이지 metadata로(상세는 자기 주소, 쿼리로 바뀌는 화면은 쿼리 없는 주소), 알 수 없는 주소는 404
   - `<Analytics route path>`로 화면별 집계(무료 플랜). 숨은 명작 결과(`?seen=…`)는 `/discover/results`로 따로 세어 고르기 → 결과 전환을 볼 수 있음
 - **TMDB 토큰은 서버에만**: 브라우저는 `/api/anime` · `/api/anime/{type}/{id}` · `…/recommendations`를 부르고, 서버(`src/server/tmdb.js`)가 TMDB에 요청 · 정규화 · 캐시(React Query staleTime과 같은 시간, CDN `s-maxage`)
@@ -45,7 +47,7 @@ npm run dev            # 배포 빌드 확인: npm run build && npm start
 src/
 ├── app/                   # App Router
 │   ├── layout.jsx         # 메타 태그 · 글꼴 · 테마 스크립트, Providers > AppState > Shell + {modal}
-│   ├── page.jsx           # / 랭킹
+│   ├── page.jsx           # / 랭킹(첫 페이지 SSR)
 │   ├── discover/ top10/   # 숨은 명작 · 공유 TOP 10
 │   ├── anime/[type]/[id]/ # 작품 상세 페이지(SSR · ISR)
 │   ├── @modal/            # 앱 안에서 연 상세 모달((.)anime 인터셉트), 다른 화면에서는 비움
@@ -56,7 +58,7 @@ src/
 ├── server/                # 서버 전용(server-only)
 │   ├── tmdb.js            # TMDB 요청 · 정규화 · 캐시 시간
 │   ├── respond.js         # 라우트 입력 검증 · 응답 헬퍼
-│   ├── netflixOriginals.js · sitemapPaths.js · ogFonts.js
+│   ├── netflixOriginals.js · sitemapPaths.js
 ├── hooks/                 # useAnimeList(useInfiniteQuery) · useAnimeDetail · useMyTop10 · useSeen · useTheme …
 ├── data/seeds.js          # /discover에서 고를 수 있는 유명작 16편
 ├── lib/apiClient.js       # 브라우저용 데이터 요청(app/api/* 호출) — React Query 훅이 쓴다
@@ -64,14 +66,14 @@ src/
 ├── lib/discover.js        # 숨은 명작 필터 · 점수 계산(rankHiddenGems)
 ├── lib/media.js           # TMDB 응답 매핑(MEDIA, normalize)
 ├── lib/netflix.js         # 넷플릭스 오리지널 판별
-├── lib/paths.js           # 상세 주소 · 파라미터 검증
+├── lib/paths.js           # 랭킹 · 상세 주소 만들기 · 파라미터 검증
 ├── lib/storage.js         # localStorage 값을 하이드레이션 안전하게 읽는 useStoredValue
-├── lib/staleTimes.js      # React Query 캐시 유지 시간(staleTime) 모음 — 서버 캐시도 같은 값
+├── lib/queries.js         # React Query staleTime · 쿼리 키(서버 SSR과 공용) — 서버 캐시도 같은 시간
 ├── lib/share.js           # 공유 링크 인코딩/파싱, 이미지·링크 공유
 ├── lib/top10Image.js      # 공유 이미지 Canvas 렌더링
 ├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더에
 │   ├── common/            # Modal(모달 틀), Poster(포스터 · 빈 칸)
-│   ├── layout/            # Shell(헤더 · 로고 · 검색창), AppState(공유 상태), PageAnalytics, Header, SearchBar
+│   ├── layout/            # Shell(헤더 · 로고 · 검색창), AppState(내 TOP 10 · 모달 미리보기), PageAnalytics, Header, SearchBar
 │   ├── ranking/           # Home, Filters, RankingTable, RankingRow
 │   ├── detail/            # DetailContent(본문), DetailModal, DetailPage
 │   ├── top10/             # Top10Modal, SharedTop10, ShareActions

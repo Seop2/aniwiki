@@ -5,7 +5,7 @@ import DetailPage from '@/components/detail/DetailPage';
 import { posterUrl } from '@/lib/catalog';
 import { overviewSummary } from '@/lib/media';
 import { detailPath, parseDetailParams } from '@/lib/paths';
-import { detailQueryKey } from '@/lib/queryKeys';
+import { detailQueryKey } from '@/lib/queries';
 import { fetchAnimeDetail, TmdbError } from '@/server/tmdb';
 
 export const revalidate = 600;

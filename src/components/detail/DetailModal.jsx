@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
-import { useDocumentMeta } from '../../hooks/useDocumentMeta';
 import { overviewSummary } from '../../lib/media';
 import Modal from '../common/Modal';
 import { useAppState } from '../layout/AppState';
@@ -18,7 +17,22 @@ export default function DetailModal({ type, id }) {
 
   const { data } = useAnimeDetail({ type, id });
   const title = (data ?? item)?.title;
-  useDocumentMeta({ title: title && `${title} - ANIWIKI`, description: overviewSummary(data?.overview) });
+  const description = overviewSummary(data?.overview);
+
+  useEffect(() => {
+    if (!title) return;
+    const prev = document.title;
+    document.title = `${title} - ANIWIKI`;
+    return () => { document.title = prev; };
+  }, [title]);
+
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="description"]');
+    if (!meta || !description) return;
+    const prev = meta.content;
+    meta.content = description;
+    return () => { meta.content = prev; };
+  }, [description]);
 
   const close = () => {
     if (closing.current) return;
