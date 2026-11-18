@@ -1,4 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import type { AnimeItem, MediaType, NetflixOriginal, OriginKey, ProviderKey, SortKey } from '@/types';
 import { fetchAnimePage, fetchNetflixOriginals } from '../lib/apiClient';
 import { ORIGINS, SORTS } from '../lib/catalog';
 import { listQueryKey, STALE_TIME } from '../lib/queries';
@@ -6,15 +7,22 @@ import { listQueryKey, STALE_TIME } from '../lib/queries';
 const ORIGINAL_MIN_VOTES = 200;
 const today = () => new Date().toISOString().slice(0, 10);
 
-function originalItems(list, type, sort, origin) {
+function originalItems(list: NetflixOriginal[], type: MediaType, sort: SortKey, origin: OriginKey | '') {
   let items = list.filter((x) => x.type === type);
-  if (origin) items = items.filter((x) => ORIGINS[origin].langs.includes(x.originalLanguage));
+  if (origin) items = items.filter((x) => (ORIGINS[origin].langs as string[]).includes(x.originalLanguage));
   if (sort === 'rating') items = items.filter((x) => x.votes >= ORIGINAL_MIN_VOTES);
   if (sort === 'latest') items = items.filter((x) => x.date && x.date <= today());
   return items.sort(SORTS[sort].compare);
 }
 
-export function useAnimeList({ type, sort, query, providers = [], original = false, origin = '' }) {
+export function useAnimeList({ type, sort, query, providers = [], original = false, origin = '' }: {
+  type: MediaType;
+  sort: SortKey;
+  query: string;
+  providers?: ProviderKey[];
+  original?: boolean;
+  origin?: OriginKey | '';
+}) {
   const useOriginals = original && !query;
 
   const result = useInfiniteQuery({
@@ -48,7 +56,7 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
   }
 
   const pages = result.data?.pages ?? [];
-  let items = pages.flatMap((p) => p.items);
+  let items: AnimeItem[] = pages.flatMap((p) => p.items);
   if (query) items = [...items].sort(SORTS[sort].compare);
 
   const total = query ? items.length : (pages[0]?.totalResults ?? 0);
