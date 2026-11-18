@@ -50,8 +50,6 @@
 .detail-top10 { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 .detail-top10 .btn-primary, .detail-top10 .btn-outline { height: 36px; padding: 0 16px; font-size: 14px; }
 .detail-top10 span { font-size: 12px; color: var(--muted); }
-.detail-share { display: flex; align-items: center; gap: 8px; }
-.detail-share span { font-size: 12px; color: var(--accent-text); }
 
 @media (max-width: 640px) {
   .detail-backdrop { margin: -20px -16px -48px; height: 150px; }

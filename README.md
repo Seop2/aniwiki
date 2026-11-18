@@ -21,7 +21,7 @@ npm run dev            # 배포 빌드 확인: npm run build && npm start
   - TV: 방송사가 넷플릭스 하나뿐 / 극장판: 15개국 이상 "Netflix" 디지털 공개 + 일반 극장 개봉이 그보다 앞서지 않음 / 공통: 넷플릭스 제작사
   - 상세를 봐야 판별되므로 `src/server/netflixOriginals.js`가 목록을 만들고 `/netflix-originals.json` 라우트가 빌드 때 + 하루마다(ISR) 갱신
 - **PV 영상**: 상세에 TMDB `videos` 중 YouTube 하나(공식 > 예고편 > 티저, 한국어 > 일본어 > 영어, 같으면 먼저 공개된 것). 썸네일만 그리다 누르면 iframe
-- **카카오톡 공유**: TOP 10 · 작품 상세. `NEXT_PUBLIC_KAKAO_JS_KEY`(카카오 디벨로퍼스 JavaScript 키, 플랫폼 > Web에 사이트 도메인 등록)가 없으면 버튼을 숨김. 피드 이미지는 TOP 10은 `/api/og/top10`, 상세는 배경 이미지. 상세 공유는 `detail_share` 이벤트
+- **카카오톡 공유**: TOP 10. `NEXT_PUBLIC_KAKAO_JS_KEY`(카카오 디벨로퍼스 JavaScript 키)가 없으면 버튼을 숨김. 도메인은 두 곳에 등록: 플랫폼 키 > JavaScript 키 > JavaScript SDK 도메인(SDK 사용) · 앱 > 제품 링크 관리 > 웹 도메인(카드를 눌렀을 때 사이트로 이동, 빠지면 카드는 뜨는데 안 열림). 피드 이미지는 `/api/og/top10`
 - "더 보기" 무한 페이지네이션 (`useInfiniteQuery`)
 - 다크 모드 (localStorage 저장, 시스템 설정 기본값)
 - 모바일: 연도/투표수 컬럼을 제목 아래로 이동
