@@ -1,4 +1,4 @@
-import type { AnimeItem, MediaType, Top10, Top10Item } from '@/types';
+import type { AnimeSummary, MediaType, Top10, Top10Item } from '@/types';
 import { TOP10_MAX } from '../lib/share';
 import { useStoredValue } from '../lib/storage';
 
@@ -16,7 +16,7 @@ export function useMyTop10() {
   const { name, items } = state;
   const has = (type: MediaType, id: number) => items.some((a) => same(a, type, id));
 
-  const add = (type: MediaType, item: Pick<AnimeItem, 'id' | 'title' | 'year' | 'poster'>) =>
+  const add = (type: MediaType, item: Pick<AnimeSummary, 'id' | 'title' | 'year' | 'poster'>) =>
     setState((s) => {
       if (s.items.length >= TOP10_MAX || s.items.some((a) => same(a, type, item.id))) return s;
       const { id, title, year, poster } = item;

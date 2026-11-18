@@ -9,7 +9,8 @@ export type ProviderKey = (typeof PROVIDERS)[number]['key'];
 
 export type AnimeItem = ReturnType<typeof normalize>;
 export type AnimeDetail = Awaited<ReturnType<typeof fetchAnimeDetail>>;
-export type NetflixOriginal = Omit<AnimeItem, 'genreIds'> & { type: MediaType };
+export type AnimeSummary = Omit<AnimeItem, 'genreIds'>;
+export type NetflixOriginal = AnimeSummary & { type: MediaType };
 
 export interface HomeParams {
   type: MediaType;

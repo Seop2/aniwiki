@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import type { AnimeItem, MediaType, NetflixOriginal, OriginKey, ProviderKey, SortKey } from '@/types';
+import type { AnimeSummary, MediaType, NetflixOriginal, OriginKey, ProviderKey, SortKey } from '@/types';
 import { fetchAnimePage, fetchNetflixOriginals } from '../lib/apiClient';
 import { ORIGINS, SORTS } from '../lib/catalog';
 import { listQueryKey, STALE_TIME } from '../lib/queries';
@@ -56,7 +56,7 @@ export function useAnimeList({ type, sort, query, providers = [], original = fal
   }
 
   const pages = result.data?.pages ?? [];
-  let items: AnimeItem[] = pages.flatMap((p) => p.items);
+  let items: AnimeSummary[] = pages.flatMap((p) => p.items);
   if (query) items = [...items].sort(SORTS[sort].compare);
 
   const total = query ? items.length : (pages[0]?.totalResults ?? 0);

@@ -2,10 +2,10 @@ import { useStoredValue } from '../lib/storage';
 
 const SEEN_KEY = 'aniwiki-seen';
 const PICKS_KEY = 'aniwiki-discover-picks';
-const EMPTY: number[] = [];
+const EMPTY: never[] = [];
 
-export function usePersistedIds(key: string, isValid: (id: unknown) => boolean = Number.isInteger) {
-  return useStoredValue(key, (saved) => (Array.isArray(saved) ? (saved.filter(isValid) as number[]) : undefined), EMPTY);
+export function usePersistedIds<T = number>(key: string, isValid: (id: unknown) => boolean = Number.isInteger) {
+  return useStoredValue<T[]>(key, (saved) => (Array.isArray(saved) ? saved.filter(isValid) : undefined), EMPTY);
 }
 
 export function useSeen() {
