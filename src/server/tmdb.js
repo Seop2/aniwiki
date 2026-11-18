@@ -122,9 +122,26 @@ function normalizeProviders(raw) {
   return groups.length ? { link: kr.link, groups } : null;
 }
 
+const VIDEO_TYPES = ['Trailer', 'Teaser'];
+const VIDEO_LANGS = ['ko', 'ja', 'en'];
+const rankOf = (list, value) => (list.includes(value) ? list.indexOf(value) : list.length);
+
+function pickVideo(raw) {
+  const rank = (v) => [v.official ? 0 : 1, rankOf(VIDEO_TYPES, v.type), rankOf(VIDEO_LANGS, v.iso_639_1)];
+  const [best] = (raw?.results ?? [])
+    .filter((v) => v.site === 'YouTube')
+    .map((v) => ({ v, r: rank(v) }))
+    .sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.v.published_at.localeCompare(b.v.published_at));
+  return best ? { key: best.v.key, name: best.v.name } : null;
+}
+
 export async function fetchAnimeDetail({ type, id }) {
-  const append = type === 'movie' ? 'watch/providers,release_dates' : 'watch/providers';
-  const raw = await tmdbGet(`/${type}/${id}`, { append_to_response: append }, { revalidate: REVALIDATE.detail });
+  const append = type === 'movie' ? 'watch/providers,release_dates,videos' : 'watch/providers,videos';
+  const raw = await tmdbGet(
+    `/${type}/${id}`,
+    { append_to_response: append, include_video_language: 'ko,ja,en,null' },
+    { revalidate: REVALIDATE.detail },
+  );
 
   return {
     ...normalize(raw, type),
@@ -140,5 +157,6 @@ export async function fetchAnimeDetail({ type, id }) {
     runtime: raw.runtime,
     providers: normalizeProviders(raw['watch/providers']),
     netflixOriginal: isNetflixOriginal(raw),
+    video: pickVideo(raw.videos),
   };
 }

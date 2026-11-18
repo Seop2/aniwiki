@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { posterUrl } from '../../lib/catalog';
 import { useAnimeDetail } from '../../hooks/useAnimeDetail';
 import Poster from '../common/Poster';
@@ -44,6 +45,28 @@ function Providers({ providers }) {
         TMDB에서 시청 링크 보기 →
       </a>
     </>
+  );
+}
+
+function Trailer({ video }) {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <div className="detail-video">
+      {playing ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${video.key}?autoplay=1`}
+          title={video.name}
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+        />
+      ) : (
+        <button type="button" onClick={() => setPlaying(true)} aria-label={`${video.name} 재생`}>
+          <img src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`} alt="" loading="lazy" />
+          <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.6)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -123,6 +146,13 @@ export default function DetailContent({ type, id, item }) {
             {data.tagline && <p className="detail-tagline">{data.tagline}</p>}
             <p className="detail-overview">{data.overview || '줄거리 정보가 없습니다.'}</p>
           </section>
+
+          {data.video && (
+            <section className="detail-section">
+              <h3>PV</h3>
+              <Trailer key={data.video.key} video={data.video} />
+            </section>
+          )}
 
           <section className="detail-section">
             <h3>시청 가능 플랫폼</h3>
