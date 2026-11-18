@@ -14,7 +14,6 @@ export const PROVIDERS = [
 
 export const ORIGINS = {
   jp: { label: '일본', countries: 'JP', langs: ['ja'] },
-  kr: { label: '한국', countries: 'KR', langs: ['ko'] },
   west: { label: '서양', countries: 'US|GB|FR|CA|DE|ES|IT|BE|IE|AU', langs: ['en', 'fr', 'de', 'es', 'it'] },
 };
 
