@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { isPlainClick } from '../../lib/paths';
 import Top10Modal from '../top10/Top10Modal';
 import { useAppState } from './AppState';
 import Header from './Header';
@@ -27,10 +26,10 @@ export default function Shell({ children }) {
           <div>
             <p className="eyebrow">TMDB · TOP RATED · ANIMATION</p>
             <h1 className="logo">
-              <Link href="/" replace={pathname === '/'} onClick={(e) => isPlainClick(e) && app.resetHome()}>ANIWIKI</Link>
+              <Link href="/" replace={pathname === '/'} onClick={() => window.scrollTo({ top: 0 })}>ANIWIKI</Link>
             </h1>
           </div>
-          <SearchBar key={app.homeKey} onSearch={app.search} />
+          <SearchBar />
         </section>
 
         <hr className="divider" />

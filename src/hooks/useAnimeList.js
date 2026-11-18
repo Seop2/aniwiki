@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchAnimePage } from '../lib/apiClient';
 import { SORTS } from '../lib/catalog';
+import { listQueryKey } from '../lib/queryKeys';
 import { STALE_TIME } from '../lib/staleTimes';
 import { useNetflixOriginals } from './useNetflixOriginals';
 
@@ -14,20 +15,19 @@ function originalItems(list, type, sort) {
   return items.sort(SORTS[sort].compare);
 }
 
-/** ready: 저장된 시청처를 읽은 뒤(하이드레이션 뒤)에만 요청한다 — 빈 시청처로 한 번 받고 다시 받지 않게 */
-export function useAnimeList({ type, sort, query, providers = [], original = false, ready = true }) {
+export function useAnimeList({ type, sort, query, providers = [], original = false }) {
   const useOriginals = original && !query;
 
   const result = useInfiniteQuery({
-    queryKey: ['anime', type, query ? { query } : { sort, providers }],
+    queryKey: listQueryKey(type, query, sort, providers),
     queryFn: ({ pageParam }) => fetchAnimePage({ type, sort, query, providers, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (last) => (last.page < last.totalPages ? last.page + 1 : undefined),
     staleTime: STALE_TIME.list,
-    enabled: ready && !useOriginals,
+    enabled: !useOriginals,
   });
 
-  const originals = useNetflixOriginals({ enabled: ready && useOriginals });
+  const originals = useNetflixOriginals({ enabled: useOriginals });
 
   if (useOriginals) {
     const items = originals.data ? originalItems(originals.data, type, sort) : [];
