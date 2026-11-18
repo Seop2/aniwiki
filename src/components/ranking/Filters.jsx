@@ -1,4 +1,4 @@
-import { MEDIA, PROVIDERS, SORTS } from '../../lib/catalog';
+import { MEDIA, ORIGINS, PROVIDERS, SORTS } from '../../lib/catalog';
 import './Filters.css';
 
 function WatchFilter({ providers, onProvidersChange, original, onOriginalChange, searching }) {
@@ -39,7 +39,7 @@ function WatchFilter({ providers, onProvidersChange, original, onOriginalChange,
   );
 }
 
-export default function Filters({ type, onTypeChange, sort, onSortChange, ...watch }) {
+export default function Filters({ type, onTypeChange, origin, onOriginChange, sort, onSortChange, ...watch }) {
   return (
     <div className="filters">
       <div className="field">
@@ -53,6 +53,25 @@ export default function Filters({ type, onTypeChange, sort, onSortChange, ...wat
               aria-selected={type === key}
               className={type === key ? 'active' : ''}
               onClick={() => onTypeChange(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="field">
+        <span className="field-label">제작 국가</span>
+        <div className="segmented" role="tablist">
+          {[['', { label: '전체' }], ...Object.entries(ORIGINS)].map(([key, { label }]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={!watch.searching && origin === key}
+              className={!watch.searching && origin === key ? 'active' : ''}
+              disabled={watch.searching}
+              onClick={() => onOriginChange(key)}
             >
               {label}
             </button>

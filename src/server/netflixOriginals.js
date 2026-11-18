@@ -31,7 +31,7 @@ async function originals(type) {
   return list
     .filter((_, i) => isNetflixOriginal(details[i]))
     .map((r) => {
-      const { genreIds, originalLanguage, ...item } = normalize(r, type);
+      const { genreIds, ...item } = normalize(r, type);
       return { type, ...item };
     });
 }

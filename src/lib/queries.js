@@ -9,4 +9,5 @@ export const STALE_TIME = {
 
 export const detailQueryKey = (type, id) => ['anime-detail', type, id];
 
-export const listQueryKey = (type, query, sort, providers) => ['anime', type, query ? { query } : { sort, providers }];
+export const listQueryKey = (type, query, sort, providers, origin = '') =>
+  ['anime', type, query ? { query } : { sort, providers, origin }];

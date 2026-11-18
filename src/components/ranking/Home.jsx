@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { MEDIA, PROVIDERS, SORTS } from '../../lib/catalog';
+import { MEDIA, ORIGINS, PROVIDERS, SORTS } from '../../lib/catalog';
 import { homePath, parseHomeParams } from '../../lib/paths';
 import { useAnimeList } from '../../hooks/useAnimeList';
 import { usePersistedIds } from '../../hooks/useSeen';
@@ -20,17 +20,17 @@ export default function Home() {
   // 상세 모달이 열리면 주소가 /anime/…로 바뀌므로, 그동안은 마지막 랭킹 조건을 유지한다
   const last = useRef(null);
   if (pathname === '/' || !last.current) last.current = parseHomeParams(searchParams);
-  const { type, sort, q, original } = last.current;
+  const { type, sort, q, original, origin } = last.current;
 
   const setFilter = (next) => window.history.replaceState(null, '', homePath({ ...last.current, ...next }));
-  const list = useAnimeList({ type, sort, query: q, providers, original });
+  const list = useAnimeList({ type, sort, query: q, providers, original, origin });
 
   const watchLabel = original
     ? '넷플릭스 오리지널'
     : PROVIDERS.filter((p) => providers.includes(p.key)).map((p) => p.label).join('·');
   const heading = q
     ? `“${q}” 검색 결과`
-    : [MEDIA[type].label, SORTS[sort].label, watchLabel].filter(Boolean).join(' · ');
+    : [MEDIA[type].label, ORIGINS[origin]?.label, SORTS[sort].label, watchLabel].filter(Boolean).join(' · ');
 
   return (
     <>
@@ -42,6 +42,8 @@ export default function Home() {
       <Filters
         type={type}
         onTypeChange={(value) => setFilter({ type: value })}
+        origin={origin}
+        onOriginChange={(value) => setFilter({ origin: value })}
         sort={sort}
         onSortChange={(value) => setFilter({ sort: value })}
         providers={providers}

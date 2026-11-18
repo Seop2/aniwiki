@@ -12,6 +12,12 @@ export const PROVIDERS = [
   { key: 'watcha', label: '왓챠', ids: [97] },
 ];
 
+export const ORIGINS = {
+  jp: { label: '일본', countries: 'JP', langs: ['ja'] },
+  kr: { label: '한국', countries: 'KR', langs: ['ko'] },
+  west: { label: '서양', countries: 'US|GB|FR|CA|DE|ES|IT|BE|IE|AU', langs: ['en', 'fr', 'de', 'es', 'it'] },
+};
+
 export const posterUrl = (path, size = 'w92') =>
   path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
 

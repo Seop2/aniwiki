@@ -1,5 +1,5 @@
 import 'server-only';
-import { ANIMATION_GENRE_ID, PROVIDERS, SORTS } from '@/lib/catalog';
+import { ANIMATION_GENRE_ID, ORIGINS, PROVIDERS, SORTS } from '@/lib/catalog';
 import { normalize } from '@/lib/media';
 import { isNetflixOriginal } from '@/lib/netflix';
 import { STALE_TIME } from '@/lib/queries';
@@ -56,7 +56,7 @@ function providerParams(keys) {
   return { watch_region: 'KR', with_watch_providers: ids.join('|'), with_watch_monetization_types: 'flatrate|free|ads' };
 }
 
-export async function fetchAnimePage({ type, sort, query, page, providers = [] }) {
+export async function fetchAnimePage({ type, sort, query, page, providers = [], origin = '' }) {
   const data = query
     ? await tmdbGet(`/search/${type}`, { query, page })
     : await tmdbGet(`/discover/${type}`, {
@@ -64,6 +64,7 @@ export async function fetchAnimePage({ type, sort, query, page, providers = [] }
         page,
         ...SORTS[sort].params(type),
         ...providerParams(providers),
+        with_origin_country: ORIGINS[origin]?.countries,
       });
 
   const results = query

@@ -14,6 +14,7 @@ npm run dev            # 배포 빌드 확인: npm run build && npm start
 - TV 시리즈 / 극장판 전환 (`/discover/{tv|movie}?with_genres=16`)
 - 정렬: 평점순(투표 200표 이상) · 인기순 · 투표수순 · 최신순
 - 제목 검색 (`/search/{tv|movie}` → 애니메이션 장르만 필터, 정렬은 클라이언트)
+- 제작 국가: 전체 · 일본 · 한국 · 서양 (`?origin=jp|kr|west`, `with_origin_country`, 서양은 미국 · 영국 · 프랑스 등 OR). 검색에는 미적용, 넷플릭스 오리지널 목록은 원어(`original_language`)로 거름
 - **볼 수 있는 곳**: 넷플릭스 · 디즈니+ · 티빙 · 왓챠 칩으로 한국에서 구독으로 볼 수 있는 작품만 (`watch_region=KR&with_watch_providers=…`, 여러 개는 OR, 선택은 localStorage 저장, 검색에는 미적용). 아무것도 안 고르면 이 서비스들 중 한 곳이라도 있는 작품만 랭킹에 나옴. 라프텔은 TMDB에 없음. 크런치롤은 한국에서 대부분 재생이 안 되는데 TMDB에는 있다고 나와 필터 · 상세 모두에서 숨김
 - **넷플릭스 오리지널**: 한국 넷플릭스에 있는 오리지널만 모아 보기 + 상세 배지. 판별은 `lib/netflix.js`의 `isNetflixOriginal`
   - network 213(Netflix)은 "어느 나라든 넷플릭스 방영"이라 쓰지 않는다(예: 타코피의 원죄 — 한국은 라프텔 독점)

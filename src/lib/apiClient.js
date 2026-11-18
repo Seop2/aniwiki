@@ -14,8 +14,8 @@ async function getJson(path, params = {}) {
   return res.json();
 }
 
-export const fetchAnimePage = ({ type, sort, query, page, providers = [] }) =>
-  getJson('/api/anime', query ? { type, query, page } : { type, sort, page, providers: providers.join(',') });
+export const fetchAnimePage = ({ type, sort, query, page, providers = [], origin = '' }) =>
+  getJson('/api/anime', query ? { type, query, page } : { type, sort, page, providers: providers.join(','), origin });
 
 export const fetchRecommendations = ({ type, id, page = 1 }) =>
   getJson(`/api/anime/${type}/${id}/recommendations`, { page });
