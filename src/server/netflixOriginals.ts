@@ -1,6 +1,6 @@
 import 'server-only';
 import type { MediaType, NetflixOriginal } from '@/types';
-import { ANIMATION_GENRE_ID } from '@/lib/catalog';
+import { ANIMATION_GENRE_ID, today } from '@/lib/catalog';
 import { MEDIA, normalize } from '@/lib/media';
 import { isNetflixOriginal, NETFLIX_NETWORK, NETFLIX_PROVIDERS } from '@/lib/netflix';
 import { mapLimit, tmdbGet } from './tmdb';
@@ -13,7 +13,7 @@ const candidateParams = (type: MediaType) => ({
   watch_region: 'KR',
   with_watch_providers: NETFLIX_PROVIDERS.join('|'),
   with_watch_monetization_types: 'flatrate|ads',
-  [`${MEDIA[type].dateParam}.lte`]: new Date().toISOString().slice(0, 10),
+  [`${MEDIA[type].dateParam}.lte`]: today(),
   ...(type === 'tv' && { with_networks: NETFLIX_NETWORK }),
 });
 

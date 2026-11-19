@@ -21,7 +21,7 @@ export const ORIGINS = {
 export const posterUrl = (path: string | null | undefined, size = 'w92') =>
   path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
 
-const today = () => new Date().toISOString().slice(0, 10);
+export const today = () => new Date().toISOString().slice(0, 10);
 
 interface Sortable {
   rating: number;

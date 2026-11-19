@@ -1,12 +1,13 @@
 import type { AnimeItem } from '@/types';
 import { SEED_BY_ID } from '../data/seeds';
+import { ANIMATION_GENRE_ID } from './catalog';
 
 export interface SeedList {
   seed: { id: number; title: string };
   items: AnimeItem[];
 }
 
-export const GEM = {
+const GEM = {
   minVotes: 100,
   maxVotes: 1500,
   relaxedMaxVotes: 3000,
@@ -18,7 +19,6 @@ export const GEM = {
   minResults: 8,
 };
 
-const ANIMATION_GENRE_ID = 16;
 const RECAP_RE = /총집편|리캡|recap|특별편|OVA/i;
 
 function rank(lists: SeedList[], exclude: Set<number>, maxVotes: number, today: number) {

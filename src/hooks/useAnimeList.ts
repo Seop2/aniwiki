@@ -1,11 +1,10 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import type { AnimeSummary, MediaType, NetflixOriginal, OriginKey, ProviderKey, SortKey } from '@/types';
 import { fetchAnimePage, fetchNetflixOriginals } from '../lib/apiClient';
-import { ORIGINS, SORTS } from '../lib/catalog';
+import { ORIGINS, SORTS, today } from '../lib/catalog';
 import { listQueryKey, STALE_TIME } from '../lib/queries';
 
 const ORIGINAL_MIN_VOTES = 200;
-const today = () => new Date().toISOString().slice(0, 10);
 
 function originalItems(list: NetflixOriginal[], type: MediaType, sort: SortKey, origin: OriginKey | '') {
   let items = list.filter((x) => x.type === type);

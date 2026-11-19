@@ -15,7 +15,7 @@ export const REVALIDATE = {
 
 type Params = Record<string, string | number | undefined>;
 
-export interface TmdbList {
+interface TmdbList {
   page: number;
   results: TmdbListItem[];
   total_pages: number;
