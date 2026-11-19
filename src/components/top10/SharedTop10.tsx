@@ -74,7 +74,7 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
       </div>
 
       <div className={s.share}>
-        <ShareActions name={shared.name} items={loaded} disabled={isPending || loaded.length === 0} />
+        <ShareActions name={shared.name} items={loaded} disabled={isPending || loaded.length === 0} center />
       </div>
     </section>
   );

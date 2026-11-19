@@ -11,8 +11,8 @@
   background: var(--surface-2); border: 1px solid var(--border);
 }
 .info { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.info h2 { margin: 0; padding-right: 36px; font-size: 26px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
-.muted { margin: 0; font-size: 13px; color: var(--muted); }
+.info h2 { margin: 0; padding-right: 36px; font-size: 26px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; overflow-wrap: anywhere; }
+.muted { margin: 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
 .rating { display: flex; align-items: baseline; gap: 8px; margin: 2px 0; }
 .rating strong { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--accent-text); line-height: 1; }
 .rating span { font-size: 13px; color: var(--muted); }
@@ -49,7 +49,7 @@
 
 .top10 { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 .top10 :global(.btn-primary), .top10 :global(.btn-outline) { height: 36px; padding: 0 16px; font-size: 14px; }
-.top10 span { font-size: 12px; color: var(--muted); }
+.top10 > span { font-size: 12px; color: var(--muted); }
 
 .page { max-width: 720px; margin: 0 auto 64px; background: var(--surface); border: 1px solid var(--border); }
 .page .info h2 { padding-right: 0; }

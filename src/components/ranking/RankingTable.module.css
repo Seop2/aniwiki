@@ -21,7 +21,8 @@ td.votes { color: var(--muted); }
 .metaMobile { display: none; }
 
 .more { display: flex; justify-content: center; padding: 44px 0 96px; }
-.moreButton { height: 42px; width: 200px; font-size: 14px; }
+.more .moreButton { height: 42px; width: 200px; font-size: 14px; }
+.more .moreButton:disabled { opacity: .6; }
 
 @media (max-width: 640px) {
   .year, .votes { display: none; }
