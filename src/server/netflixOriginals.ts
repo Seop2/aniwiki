@@ -38,7 +38,6 @@ async function originals(type: MediaType): Promise<NetflixOriginal[]> {
 }
 
 export async function buildNetflixOriginals() {
-  // TV와 극장판은 서로 독립이라 동시에 만든다(각각 후보 · 상세 수백 건)
   const [tv, movie] = await Promise.all([originals('tv'), originals('movie')]);
   return [...tv, ...movie];
 }

@@ -16,7 +16,6 @@ export default async function Page({ searchParams }: PageProps<'/'>) {
   const { type, sort, q, original, origin } = await homeParams(searchParams);
   const queryClient = new QueryClient();
 
-  // 서버는 저장된 시청처를 모르므로 필터 OTT 전체 기준으로 그린다. 실패하면 브라우저가 다시 받는다
   if (q || !original) {
     try {
       const page = await fetchAnimePage({ type, sort, query: q, page: 1, origin });

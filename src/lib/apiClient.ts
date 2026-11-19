@@ -1,7 +1,5 @@
 import type { AnimeDetail, AnimeItem, AnimePage, MediaType, NetflixOriginal, OriginKey, ProviderKey, SortKey } from '@/types';
 
-// 브라우저에서 부르는 데이터 요청(app/api/* 호출). TMDB는 서버(src/server/tmdb.ts)가 대신 불러 토큰이 노출되지 않는다
-
 async function getJson<T>(path: string, params: Record<string, string | number | undefined> = {}): Promise<T> {
   const search = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {

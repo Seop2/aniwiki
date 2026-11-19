@@ -91,5 +91,12 @@ src/
 scripts/og-image.html      # public/og-image.png 원본
 ```
 
+`public/og-image.png` 재생성:
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
+  --window-size=1200,630 --virtual-time-budget=5000 \
+  --screenshot=public/og-image.png scripts/og-image.html
+```
+
 ## 주의
 - TMDB discover는 최대 500페이지까지만 조회됩니다.

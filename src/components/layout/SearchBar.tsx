@@ -55,7 +55,6 @@ function UrlSearchForm() {
   return <SearchForm key={current.q} initial={current.q} onSearch={(q) => router.push(homePath({ ...current, q }))} />;
 }
 
-// 정적으로 그리는 페이지(작품 상세 등)에서는 주소 쿼리를 브라우저에서만 읽을 수 있어 Suspense가 필요하다
 export default function SearchBar() {
   return (
     <Suspense fallback={<SearchForm />}>

@@ -22,13 +22,11 @@ async function loadGoogleFont(family: string, weight: 600 | 800, text: string) {
   return { name: family, weight, style: 'normal' as const, data: await res.arrayBuffer() };
 }
 
-// 글꼴에는 실제로 그리는 글자만 담는다
 const loadFonts = (owner: string) => Promise.all([
   loadGoogleFont(SANS, 800, owner + HEADLINE),
   loadGoogleFont(DISPLAY, 600, 'ANIME / INDEX MY TOP 10 aniwiki.link 0123456789'),
 ]);
 
-// 포스터를 data URL로 받아 둔다. 실패하면 그 칸만 비운다
 async function loadPoster(item: { type: MediaType; id: number }) {
   try {
     const { poster } = await fetchAnimeDetail(item);
@@ -54,7 +52,6 @@ export async function GET(request: NextRequest) {
     }),
     Promise.all(shared.items.map(loadPoster)),
   ]);
-  // 글꼴 없이는 한글이 깨지므로 기본 미리보기 이미지로 보낸다(캐시하지 않아 다음 요청에서 다시 시도)
   if (!fonts) return Response.redirect(new URL('/og-image.png', request.url), 307);
 
   return new ImageResponse(

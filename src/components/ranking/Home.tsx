@@ -19,7 +19,6 @@ export default function Home() {
   const { openDetail } = useAppState();
   const [providers, setProviders] = usePersistedIds<ProviderKey>('aniwiki-providers', (k) => PROVIDERS.some((p) => p.key === k));
 
-  // 상세 모달이 열리면 주소가 /anime/…로 바뀌므로, 그동안은 마지막 랭킹 조건을 유지한다
   const last = useRef<HomeParams>(null);
   if (pathname === '/' || !last.current) last.current = parseHomeParams(searchParams);
   const { type, sort, q, original, origin } = last.current;

@@ -16,7 +16,7 @@ export default function Shell({ children }: { children: ReactNode }) {
 
   const openDiscover = () => {
     router.push('/discover');
-    window.scrollTo({ top: 0 }); // /discover에서 다시 눌러도(같은 주소) 맨 위로
+    window.scrollTo({ top: 0 });
   };
 
   return (
