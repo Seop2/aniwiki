@@ -1,4 +1,19 @@
-.buttons { display: flex; flex-wrap: wrap; gap: 8px; }
-.center { justify-content: center; }
-.buttons :global(.btn-primary), .buttons :global(.btn-outline), .buttons :global(.btn-kakao) { height: 40px; }
-.status { min-height: 18px; margin: 10px 0 0; font-size: 13px; color: var(--accent-text); }
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.center {
+  justify-content: center;
+}
+.buttons :global(.btn-primary),
+.buttons :global(.btn-outline),
+.buttons :global(.btn-kakao) {
+  height: 40px;
+}
+.status {
+  min-height: 18px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--accent-text);
+}

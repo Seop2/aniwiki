@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Error({ retry }: { retry: () => void }) {
   return (
@@ -10,7 +10,9 @@ export default function Error({ retry }: { retry: () => void }) {
         <h2>페이지를 불러오지 못했어요</h2>
         <p className="message">잠시 후 다시 시도해 주세요.</p>
         <p>
-          <button type="button" className="btn-primary" onClick={() => retry()}>다시 시도</button>{' '}
+          <button type="button" className="btn-primary" onClick={() => retry()}>
+            다시 시도
+          </button>{" "}
           <Link href="/">랭킹으로 돌아가기 →</Link>
         </p>
       </div>

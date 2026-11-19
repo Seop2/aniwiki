@@ -1,20 +1,24 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useQueries } from '@tanstack/react-query';
-import type { AnimeDetail, MediaType } from '@/types';
-import { MEDIA } from '../../lib/catalog';
-import { animeDetailQuery } from '../../hooks/useAnimeDetail';
-import { type parseShareUrl, top10Title } from '../../lib/share';
-import { detailPath } from '../../lib/paths';
-import { useAppState } from '../layout/AppState';
-import Poster from '../common/Poster';
-import ShareActions from './ShareActions';
-import s from './SharedTop10.module.css';
-import t from '../ranking/RankingTable.module.css';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQueries } from "@tanstack/react-query";
+import type { AnimeDetail, MediaType } from "@/types";
+import { MEDIA } from "../../lib/catalog";
+import { animeDetailQuery } from "../../hooks/useAnimeDetail";
+import { type parseShareUrl, top10Title } from "../../lib/share";
+import { detailPath } from "../../lib/paths";
+import { useAppState } from "../layout/AppState";
+import Poster from "../common/Poster";
+import ShareActions from "./ShareActions";
+import s from "./SharedTop10.module.css";
+import t from "../ranking/RankingTable.module.css";
 
-export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType<typeof parseShareUrl>> }) {
+export default function SharedTop10({
+  shared,
+}: {
+  shared: NonNullable<ReturnType<typeof parseShareUrl>>;
+}) {
   const router = useRouter();
   const { openDetail, openTop10 } = useAppState();
 
@@ -34,7 +38,16 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
           <p className="eyebrow">SHARED · TOP 10</p>
           <h2>{top10Title(shared.name)}</h2>
         </div>
-        <button type="button" className="btn-primary corners" onClick={() => { router.push('/'); openTop10(); }}>나도 만들기</button>
+        <button
+          type="button"
+          className="btn-primary corners"
+          onClick={() => {
+            router.push("/");
+            openTop10();
+          }}
+        >
+          나도 만들기
+        </button>
       </div>
 
       <div className={`${t.wrap} corners`}>
@@ -44,7 +57,11 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
               const { type } = shared.items[i];
               const d = r.data;
               return (
-                <tr key={`${type}-${shared.items[i].id}`} className={d ? '' : 'skeleton'} aria-hidden={!d || undefined}>
+                <tr
+                  key={`${type}-${shared.items[i].id}`}
+                  className={d ? "" : "skeleton"}
+                  aria-hidden={!d || undefined}
+                >
                   <td className={t.rank}>{i + 1}</td>
                   <td>
                     {d ? (
@@ -56,13 +73,20 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
                         <Poster path={d.poster} width="36" height="54" />
                         <div className="title-text">
                           <strong>{d.title}</strong>
-                          <span>{d.year} · {MEDIA[type].label}</span>
+                          <span>
+                            {d.year} · {MEDIA[type].label}
+                          </span>
                         </div>
                       </Link>
                     ) : r.isError ? (
-                      <span className={s.missing}>작품 정보를 불러오지 못했어요.</span>
+                      <span className={s.missing}>
+                        작품 정보를 불러오지 못했어요.
+                      </span>
                     ) : (
-                      <div className="title-cell"><i className="poster" /><i style={{ width: '50%' }} /></div>
+                      <div className="title-cell">
+                        <i className="poster" />
+                        <i style={{ width: "50%" }} />
+                      </div>
                     )}
                   </td>
                   <td className={t.rating}>{d && d.rating.toFixed(1)}</td>
@@ -74,7 +98,12 @@ export default function SharedTop10({ shared }: { shared: NonNullable<ReturnType
       </div>
 
       <div className={s.share}>
-        <ShareActions name={shared.name} items={loaded} disabled={isPending || loaded.length === 0} center />
+        <ShareActions
+          name={shared.name}
+          items={loaded}
+          disabled={isPending || loaded.length === 0}
+          center
+        />
       </div>
     </section>
   );

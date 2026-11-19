@@ -1,9 +1,12 @@
-import type { NextRequest } from 'next/server';
-import { fetchAnimeDetail, REVALIDATE } from '@/server/tmdb';
-import { parseDetailParams } from '@/lib/paths';
-import { badRequest, cachedJson, errorJson } from '@/server/respond';
+import type { NextRequest } from "next/server";
+import { fetchAnimeDetail, REVALIDATE } from "@/server/tmdb";
+import { parseDetailParams } from "@/lib/paths";
+import { badRequest, cachedJson, errorJson } from "@/server/respond";
 
-export async function GET(_request: NextRequest, { params }: RouteContext<'/api/anime/[type]/[id]'>) {
+export async function GET(
+  _request: NextRequest,
+  { params }: RouteContext<"/api/anime/[type]/[id]">,
+) {
   const { type, id } = await params;
   const detail = parseDetailParams(type, id);
   if (!detail) return badRequest();

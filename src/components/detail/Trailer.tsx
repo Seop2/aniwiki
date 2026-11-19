@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { AnimeDetail } from '@/types';
-import s from './Detail.module.css';
+import { useState } from "react";
+import type { AnimeDetail } from "@/types";
+import s from "./Detail.module.css";
 
-export default function Trailer({ video }: { video: NonNullable<AnimeDetail['video']> }) {
+export default function Trailer({
+  video,
+}: {
+  video: NonNullable<AnimeDetail["video"]>;
+}) {
   const [playing, setPlaying] = useState(false);
 
   return (
@@ -17,9 +21,20 @@ export default function Trailer({ video }: { video: NonNullable<AnimeDetail['vid
           allowFullScreen
         />
       ) : (
-        <button type="button" onClick={() => setPlaying(true)} aria-label={`${video.name} 재생`}>
-          <img src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`} alt="" loading="lazy" />
-          <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.6)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          aria-label={`${video.name} 재생`}
+        >
+          <img
+            src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`}
+            alt=""
+            loading="lazy"
+          />
+          <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden>
+            <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.6)" />
+            <path d="M10 8v8l6-4z" fill="#fff" />
+          </svg>
         </button>
       )}
     </div>

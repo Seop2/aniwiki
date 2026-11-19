@@ -39,7 +39,7 @@ npm run typecheck   # next typegen && tsc --noEmit — PageProps · RouteContext
 
 ## 규칙
 
-- 설명 주석과 한 번만 쓰는 추상화 · 타입은 만들지 않는다. 한 곳에서만 쓰는 타입은 인라인으로 쓰고, 공용 타입만 `src/types.ts`에 둔다.
+- 한 곳에서만 쓰는 타입은 인라인으로 쓰고, 공용 타입만 `src/types.ts`에 둔다.
 - TMDB network 213(Netflix)만 보고 넷플릭스 오리지널로 판단하지 않는다. 판별 규칙은 `lib/netflix.ts`의 `isNetflixOriginal`에 있다(README 참고).
 - 커밋 메시지는 한국어로 쓴다.
 - 코드를 바꾸면 무엇을, 왜 바꿨는지 3줄로 설명할 것

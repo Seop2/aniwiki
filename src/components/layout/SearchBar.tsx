@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { Suspense, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { homePath, parseHomeParams } from '../../lib/paths';
-import s from './SearchBar.module.css';
+import { Suspense, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { homePath, parseHomeParams } from "../../lib/paths";
+import s from "./SearchBar.module.css";
 
-function SearchForm({ initial = '', onSearch }: { initial?: string; onSearch?: (q: string) => void }) {
+function SearchForm({
+  initial = "",
+  onSearch,
+}: {
+  initial?: string;
+  onSearch?: (q: string) => void;
+}) {
   const [value, setValue] = useState(initial);
 
   return (
@@ -50,9 +56,17 @@ function UrlSearchForm() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = parseHomeParams(pathname === '/' ? searchParams : new URLSearchParams());
+  const current = parseHomeParams(
+    pathname === "/" ? searchParams : new URLSearchParams(),
+  );
 
-  return <SearchForm key={current.q} initial={current.q} onSearch={(q) => router.push(homePath({ ...current, q }))} />;
+  return (
+    <SearchForm
+      key={current.q}
+      initial={current.q}
+      onSearch={(q) => router.push(homePath({ ...current, q }))}
+    />
+  );
 }
 
 export default function SearchBar() {

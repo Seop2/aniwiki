@@ -17,21 +17,36 @@ export interface TmdbReleaseDates {
 
 function isNetflixFirstMovie(releaseDates: TmdbReleaseDates | undefined) {
   const countries = releaseDates?.results ?? [];
-  const isNetflix = (r: ReleaseDate) => r.type === 4 && r.note.trim().toLowerCase() === 'netflix';
-  const netflixCountries = countries.filter((c) => c.release_dates.some(isNetflix)).length;
+  const isNetflix = (r: ReleaseDate) =>
+    r.type === 4 && r.note.trim().toLowerCase() === "netflix";
+  const netflixCountries = countries.filter((c) =>
+    c.release_dates.some(isNetflix),
+  ).length;
   if (netflixCountries < WORLDWIDE_RELEASE_COUNTRIES) return false;
 
   const earliest = (pred: (r: ReleaseDate) => boolean) =>
-    Math.min(...countries.flatMap((c) => c.release_dates.filter(pred).map((r) => Date.parse(r.release_date))));
-  return earliest((r) => r.type === 3) + THEATRICAL_GRACE_DAYS * DAY >= earliest(isNetflix);
+    Math.min(
+      ...countries.flatMap((c) =>
+        c.release_dates.filter(pred).map((r) => Date.parse(r.release_date)),
+      ),
+    );
+  return (
+    earliest((r) => r.type === 3) + THEATRICAL_GRACE_DAYS * DAY >=
+    earliest(isNetflix)
+  );
 }
 
-export function isNetflixOriginal({ networks = [], production_companies = [], release_dates }: {
+export function isNetflixOriginal({
+  networks = [],
+  production_companies = [],
+  release_dates,
+}: {
   networks?: { id: number }[];
   production_companies?: { id: number }[];
   release_dates?: TmdbReleaseDates;
 }) {
-  if (production_companies.some((c) => NETFLIX_COMPANIES.includes(c.id))) return true;
+  if (production_companies.some((c) => NETFLIX_COMPANIES.includes(c.id)))
+    return true;
   if (networks.length === 1 && networks[0].id === NETFLIX_NETWORK) return true;
   return isNetflixFirstMovie(release_dates);
 }

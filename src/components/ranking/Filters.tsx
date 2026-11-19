@@ -1,6 +1,6 @@
-import type { MediaType, OriginKey, ProviderKey, SortKey } from '@/types';
-import { MEDIA, ORIGINS, PROVIDERS, SORTS } from '../../lib/catalog';
-import s from './Filters.module.css';
+import type { MediaType, OriginKey, ProviderKey, SortKey } from "@/types";
+import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "../../lib/catalog";
+import s from "./Filters.module.css";
 
 interface WatchProps {
   providers: ProviderKey[];
@@ -10,15 +10,27 @@ interface WatchProps {
   searching: boolean;
 }
 
-function WatchFilter({ providers, onProvidersChange, original, onOriginalChange, searching }: WatchProps) {
+function WatchFilter({
+  providers,
+  onProvidersChange,
+  original,
+  onOriginalChange,
+  searching,
+}: WatchProps) {
   const toggle = (key: ProviderKey) =>
-    onProvidersChange(providers.includes(key) ? providers.filter((k) => k !== key) : [...providers, key]);
+    onProvidersChange(
+      providers.includes(key)
+        ? providers.filter((k) => k !== key)
+        : [...providers, key],
+    );
 
   return (
     <div className="field">
       <span className="field-label">
         볼 수 있는 곳
-        {searching && <span className={s.hint}> · 검색 결과에는 적용되지 않아요</span>}
+        {searching && (
+          <span className={s.hint}> · 검색 결과에는 적용되지 않아요</span>
+        )}
       </span>
       <div className={s.chips}>
         {PROVIDERS.map((p) => (
@@ -48,11 +60,19 @@ function WatchFilter({ providers, onProvidersChange, original, onOriginalChange,
   );
 }
 
-export default function Filters({ type, onTypeChange, origin, onOriginChange, sort, onSortChange, ...watch }: {
+export default function Filters({
+  type,
+  onTypeChange,
+  origin,
+  onOriginChange,
+  sort,
+  onSortChange,
+  ...watch
+}: {
   type: MediaType;
   onTypeChange: (type: MediaType) => void;
-  origin: OriginKey | '';
-  onOriginChange: (origin: OriginKey | '') => void;
+  origin: OriginKey | "";
+  onOriginChange: (origin: OriginKey | "") => void;
   sort: SortKey;
   onSortChange: (sort: SortKey) => void;
 } & WatchProps) {
@@ -78,14 +98,19 @@ export default function Filters({ type, onTypeChange, origin, onOriginChange, so
       <div className="field">
         <span className="field-label">제작 국가</span>
         <div className={s.segmented} role="tablist">
-          {([['', { label: '전체' }], ...Object.entries(ORIGINS)] as [string, { label: string }][]).map(([key, { label }]) => (
+          {(
+            [["", { label: "전체" }], ...Object.entries(ORIGINS)] as [
+              string,
+              { label: string },
+            ][]
+          ).map(([key, { label }]) => (
             <button
               key={key}
               type="button"
               role="tab"
               aria-selected={!watch.searching && origin === key}
               disabled={watch.searching}
-              onClick={() => onOriginChange(key as OriginKey | '')}
+              onClick={() => onOriginChange(key as OriginKey | "")}
             >
               {label}
             </button>
@@ -95,9 +120,14 @@ export default function Filters({ type, onTypeChange, origin, onOriginChange, so
 
       <label className="field">
         <span className="field-label">정렬</span>
-        <select value={sort} onChange={(e) => onSortChange(e.target.value as SortKey)}>
+        <select
+          value={sort}
+          onChange={(e) => onSortChange(e.target.value as SortKey)}
+        >
           {Object.entries(SORTS).map(([key, { label }]) => (
-            <option key={key} value={key}>{label}</option>
+            <option key={key} value={key}>
+              {label}
+            </option>
           ))}
         </select>
       </label>

@@ -9,8 +9,15 @@ interface Window {
     init(key: string): void;
     Share: {
       sendDefault(options: {
-        objectType: 'feed';
-        content: { title: string; description?: string; imageUrl: string; imageWidth?: number; imageHeight?: number; link: KakaoLink };
+        objectType: "feed";
+        content: {
+          title: string;
+          description?: string;
+          imageUrl: string;
+          imageWidth?: number;
+          imageHeight?: number;
+          link: KakaoLink;
+        };
         buttons?: { title: string; link: KakaoLink }[];
       }): void;
     };

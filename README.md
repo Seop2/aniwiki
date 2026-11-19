@@ -77,7 +77,7 @@ src/
 ├── lib/top10Image.ts      # 공유 이미지 Canvas 렌더링
 ├── types.ts               # 공용 타입(MediaType · AnimeItem · AnimeDetail · Top10 …), 값에서 뽑아 쓴다
 ├── global.d.ts            # window.Kakao · 환경 변수 타입
-├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더에
+├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더의 *.module.css
 │   ├── common/            # Modal(모달 틀), Poster(포스터 · 빈 칸)
 │   ├── layout/            # Shell(헤더 · 로고 · 검색창), AppState(내 TOP 10 · 모달 미리보기), PageAnalytics, Header, SearchBar
 │   ├── ranking/           # Home, Filters, RankingTable, RankingRow
@@ -87,7 +87,7 @@ src/
 └── styles/                # layout에서 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
     ├── tokens.css         # 디자인 토큰(:root / [data-theme=dark])
     ├── base.css           # 리셋 · body · focus
-    └── ui.css             # 여러 컴포넌트가 함께 쓰는 것(버튼, 크롭 마크, 작품 행, 스켈레톤, 모달 틀)
+    └── ui.css             # 여러 컴포넌트가 함께 쓰는 것(버튼, 크롭 마크, 작품 행, 스켈레톤, 모달 안쪽 여백 · 섹션)
 scripts/og-image.html      # public/og-image.png 원본
 ```
 

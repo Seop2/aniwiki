@@ -10,12 +10,12 @@
   --accent-text: #6a48f0;
   --on-accent: #ffffff;
   --mark: #17171c;
-  --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
-  --font-display: 'Barlow Condensed', 'Pretendard Variable', sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Pretendard Variable", sans-serif;
   color-scheme: light;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
   --bg: #0f0f13;
   --surface: #17171d;
   --surface-2: #22222a;

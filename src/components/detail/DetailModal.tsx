@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import type { MediaType } from '@/types';
-import { useAnimeDetail } from '../../hooks/useAnimeDetail';
-import { overviewSummary } from '../../lib/media';
-import Modal from '../common/Modal';
-import { useAppState } from '../layout/AppState';
-import DetailContent from './DetailContent';
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import type { MediaType } from "@/types";
+import { useAnimeDetail } from "../../hooks/useAnimeDetail";
+import { overviewSummary } from "../../lib/media";
+import Modal from "../common/Modal";
+import { useAppState } from "../layout/AppState";
+import DetailContent from "./DetailContent";
 
-export default function DetailModal({ type, id }: { type: MediaType; id: number }) {
+export default function DetailModal({
+  type,
+  id,
+}: {
+  type: MediaType;
+  id: number;
+}) {
   const router = useRouter();
   const { preview } = useAppState();
   const closing = useRef(false);
 
-  const item = preview?.type === type && preview.item.id === id ? preview.item : undefined;
+  const item =
+    preview?.type === type && preview.item.id === id ? preview.item : undefined;
 
   const { data } = useAnimeDetail({ type, id });
   const title = (data ?? item)?.title;
@@ -24,15 +31,21 @@ export default function DetailModal({ type, id }: { type: MediaType; id: number 
     if (!title) return;
     const prev = document.title;
     document.title = `${title} - ANIWIKI`;
-    return () => { document.title = prev; };
+    return () => {
+      document.title = prev;
+    };
   }, [title]);
 
   useEffect(() => {
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    const meta = document.querySelector<HTMLMetaElement>(
+      'meta[name="description"]',
+    );
     if (!meta || !description) return;
     const prev = meta.content;
     meta.content = description;
-    return () => { meta.content = prev; };
+    return () => {
+      meta.content = prev;
+    };
   }, [description]);
 
   const close = () => {

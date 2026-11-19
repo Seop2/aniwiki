@@ -1,58 +1,198 @@
-.discover { padding-bottom: 96px; }
-:global(.list-head).head { align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-.sub { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+.discover {
+  padding-bottom: 96px;
+}
+:global(.list-head).head {
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
 
 .seedGrid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px;
-  margin: 20px 0 0; padding: 0; list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 14px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
 }
 .seed {
-  position: relative; display: flex; flex-direction: column; gap: 8px; width: 100%;
-  padding: 0; border: 0; background: none; color: inherit; text-align: left;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
 }
 .seed img {
-  width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; display: block;
-  background: var(--surface-2); outline: 1px solid var(--border); outline-offset: -1px;
-  transition: opacity .15s;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--surface-2);
+  outline: 1px solid var(--border);
+  outline-offset: -1px;
+  transition: opacity 0.15s;
 }
-.seedTitle { font-size: 13px; line-height: 1.35; }
-.seed:hover img { outline-color: var(--muted); }
-.seed[aria-pressed='true'] img { outline: 3px solid var(--accent); outline-offset: -3px; }
-.seed[aria-pressed='true'] .seedTitle { color: var(--accent-text); font-weight: 600; }
+.seedTitle {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.seed:hover img {
+  outline-color: var(--muted);
+}
+.seed[aria-pressed="true"] img {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+.seed[aria-pressed="true"] .seedTitle {
+  color: var(--accent-text);
+  font-weight: 600;
+}
 .seedCheck {
-  position: absolute; top: 8px; right: 8px; display: grid; place-items: center;
-  width: 28px; height: 28px; background: var(--accent); color: var(--on-accent);
-  font-style: normal; font-weight: 700;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-style: normal;
+  font-weight: 700;
 }
 .submit {
-  position: sticky; bottom: 0; display: flex; justify-content: center;
-  margin-top: 24px; padding: 16px 0; background: linear-gradient(transparent, var(--bg) 40%);
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 16px 0;
+  background: linear-gradient(transparent, var(--bg) 40%);
 }
 
-.seedChips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
-.seedChips li { padding: 4px 10px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; }
+.seedChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.seedChips li {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+}
 
-.gemList { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
+.gemList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
 .gemCard {
-  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-  background: var(--surface); border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
-.gemMain { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
-.gemMain:hover strong { color: var(--accent-text); }
-.gemRank { width: 28px; flex: none; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 22px; }
-.gemPoster { width: 72px; height: 108px; flex: none; object-fit: cover; background: var(--surface-2); display: block; }
-:global(.skeleton) i.gemPoster { height: 108px; }
-.gemText { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.gemText strong { font-size: 16px; font-weight: 600; }
-.gemMeta { font-size: 13px; color: var(--muted); }
-.burden { margin-left: 6px; padding: 1px 6px; border: 1px solid var(--border); font-size: 12px; }
-.burden[aria-hidden] { border-color: transparent; }
-.gemReason { font-size: 13px; color: var(--accent-text); }
-.gemCard .gemSeen { flex: none; height: 32px; font-size: 13px; color: var(--muted); }
+.gemMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.gemMain:hover strong {
+  color: var(--accent-text);
+}
+.gemRank {
+  width: 28px;
+  flex: none;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+}
+.gemPoster {
+  width: 72px;
+  height: 108px;
+  flex: none;
+  object-fit: cover;
+  background: var(--surface-2);
+  display: block;
+}
+:global(.skeleton) i.gemPoster {
+  height: 108px;
+}
+.gemText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.gemText strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+.gemMeta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.burden {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+.burden[aria-hidden] {
+  border-color: transparent;
+}
+.gemReason {
+  font-size: 13px;
+  color: var(--accent-text);
+}
+.gemCard .gemSeen {
+  flex: none;
+  height: 32px;
+  font-size: 13px;
+  color: var(--muted);
+}
 
 @media (max-width: 640px) {
-  .seedGrid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .gemCard { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
-  .gemPoster { width: 56px; height: 84px; }
-  .gemSeen { align-self: flex-end; }
+  .seedGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .gemCard {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px;
+  }
+  .gemPoster {
+    width: 56px;
+    height: 84px;
+  }
+  .gemSeen {
+    align-self: flex-end;
+  }
 }

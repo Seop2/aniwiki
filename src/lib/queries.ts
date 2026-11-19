@@ -1,4 +1,4 @@
-import type { MediaType, OriginKey, ProviderKey, SortKey } from '@/types';
+import type { MediaType, OriginKey, ProviderKey, SortKey } from "@/types";
 
 const MINUTE = 60 * 1000;
 
@@ -9,7 +9,16 @@ export const STALE_TIME = {
   build: Infinity,
 };
 
-export const detailQueryKey = (type: MediaType, id: number) => ['anime-detail', type, id];
+export const detailQueryKey = (type: MediaType, id: number) => [
+  "anime-detail",
+  type,
+  id,
+];
 
-export const listQueryKey = (type: MediaType, query: string, sort: SortKey, providers: ProviderKey[], origin: OriginKey | '' = '') =>
-  ['anime', type, query ? { query } : { sort, providers, origin }];
+export const listQueryKey = (
+  type: MediaType,
+  query: string,
+  sort: SortKey,
+  providers: ProviderKey[],
+  origin: OriginKey | "" = "",
+) => ["anime", type, query ? { query } : { sort, providers, origin }];

@@ -1,15 +1,15 @@
-import type { MEDIA, normalize } from './lib/media';
-import type { ORIGINS, PROVIDERS, SORTS } from './lib/catalog';
-import type { fetchAnimeDetail } from './server/tmdb';
+import type { MEDIA, normalize } from "./lib/media";
+import type { ORIGINS, PROVIDERS, SORTS } from "./lib/catalog";
+import type { fetchAnimeDetail } from "./server/tmdb";
 
 export type MediaType = keyof typeof MEDIA;
 export type SortKey = keyof typeof SORTS;
 export type OriginKey = keyof typeof ORIGINS;
-export type ProviderKey = (typeof PROVIDERS)[number]['key'];
+export type ProviderKey = (typeof PROVIDERS)[number]["key"];
 
 export type AnimeItem = ReturnType<typeof normalize>;
 export type AnimeDetail = Awaited<ReturnType<typeof fetchAnimeDetail>>;
-export type AnimeSummary = Omit<AnimeItem, 'genreIds'>;
+export type AnimeSummary = Omit<AnimeItem, "genreIds">;
 export type NetflixOriginal = AnimeSummary & { type: MediaType };
 
 export interface HomeParams {
@@ -17,7 +17,7 @@ export interface HomeParams {
   sort: SortKey;
   q: string;
   original: boolean;
-  origin: OriginKey | '';
+  origin: OriginKey | "";
 }
 
 export interface AnimePage {

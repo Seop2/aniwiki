@@ -1,8 +1,20 @@
-import type { MediaType } from '@/types';
+import type { MediaType } from "@/types";
 
 export const MEDIA = {
-  tv: { label: 'TV 시리즈', title: 'name', original: 'original_name', date: 'first_air_date', dateParam: 'first_air_date' },
-  movie: { label: '극장판', title: 'title', original: 'original_title', date: 'release_date', dateParam: 'primary_release_date' },
+  tv: {
+    label: "TV 시리즈",
+    title: "name",
+    original: "original_name",
+    date: "first_air_date",
+    dateParam: "first_air_date",
+  },
+  movie: {
+    label: "극장판",
+    title: "title",
+    original: "original_title",
+    date: "release_date",
+    dateParam: "primary_release_date",
+  },
 } as const;
 
 export interface TmdbListItem {
@@ -26,10 +38,10 @@ export function normalize(raw: TmdbListItem, type: MediaType) {
   const date = raw[m.date] || null;
   return {
     id: raw.id,
-    title: raw[m.title] ?? '',
-    originalTitle: raw[m.original] ?? '',
+    title: raw[m.title] ?? "",
+    originalTitle: raw[m.original] ?? "",
     date,
-    year: date ? date.slice(0, 4) : '—',
+    year: date ? date.slice(0, 4) : "—",
     rating: raw.vote_average ?? 0,
     votes: raw.vote_count ?? 0,
     popularity: raw.popularity ?? 0,
@@ -40,4 +52,6 @@ export function normalize(raw: TmdbListItem, type: MediaType) {
 }
 
 export const overviewSummary = (overview: string | null | undefined) =>
-  (overview && overview.length > 150 ? `${overview.slice(0, 150)}…` : overview) || undefined;
+  (overview && overview.length > 150
+    ? `${overview.slice(0, 150)}…`
+    : overview) || undefined;
