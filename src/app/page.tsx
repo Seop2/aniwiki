@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import Home from "@/components/ranking/Home";
+import Home from "@/components/Home";
 import { parseHomeParams, toSearchParams } from "@/lib/paths";
 import { listQueryKey } from "@/lib/queries";
 import { fetchAnimePage } from "@/server/tmdb";
@@ -24,10 +24,13 @@ export async function generateMetadata({
 
 export default async function Page({ searchParams }: PageProps<"/">) {
   const { type, sort, q, original, origin } = await homeParams(searchParams);
+
+  //서버 QueryClient 생성
   const queryClient = new QueryClient();
 
   if (q || !original) {
     try {
+      //랭킹 1페이지 받음
       const page = await fetchAnimePage({
         type,
         sort,
@@ -35,6 +38,8 @@ export default async function Page({ searchParams }: PageProps<"/">) {
         page: 1,
         origin,
       });
+
+      //임시 캐시에 저장
       queryClient.setQueryData(listQueryKey(type, q, sort, [], origin), {
         pages: [page],
         pageParams: [1],
@@ -43,6 +48,7 @@ export default async function Page({ searchParams }: PageProps<"/">) {
   }
 
   return (
+    //캐시를 JSON으로 바꿔 브라우저로
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Home />
     </HydrationBoundary>

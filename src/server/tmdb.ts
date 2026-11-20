@@ -1,11 +1,5 @@
 import "server-only";
-import type {
-  AnimePage,
-  MediaType,
-  OriginKey,
-  ProviderKey,
-  SortKey,
-} from "@/types";
+import type { AnimePage, DetailParams, ListParams, ProviderKey } from "@/types";
 import { ANIMATION_GENRE_ID, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
 import { normalize, type TmdbListItem } from "@/lib/media";
 import { isNetflixOriginal, type TmdbReleaseDates } from "@/lib/netflix";
@@ -13,10 +7,13 @@ import { STALE_TIME } from "@/lib/queries";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
+export const MAX_PAGE = 500;
+
 export const REVALIDATE = {
   list: STALE_TIME.list / 1000,
   detail: STALE_TIME.detail / 1000,
   recommendations: STALE_TIME.recommendations / 1000,
+  daily: 86400,
 };
 
 type Params = Record<string, string | number | undefined>;
@@ -140,14 +137,7 @@ export async function fetchAnimePage({
   page,
   providers = [],
   origin = "",
-}: {
-  type: MediaType;
-  sort: SortKey;
-  query: string;
-  page: number;
-  providers?: ProviderKey[];
-  origin?: OriginKey | "";
-}): Promise<AnimePage> {
+}: ListParams): Promise<AnimePage> {
   const data = query
     ? await tmdbGet(`/search/${type}`, { query, page })
     : await tmdbGet(`/discover/${type}`, {
@@ -165,7 +155,7 @@ export async function fetchAnimePage({
   return {
     items: results.map((r) => normalize(r, type)),
     page: data.page,
-    totalPages: Math.min(data.total_pages, 500),
+    totalPages: Math.min(data.total_pages, MAX_PAGE),
     totalResults: data.total_results,
   };
 }
@@ -174,11 +164,7 @@ export async function fetchRecommendations({
   type,
   id,
   page = 1,
-}: {
-  type: MediaType;
-  id: number;
-  page?: number;
-}) {
+}: DetailParams & { page?: number }) {
   const data = await tmdbGet(
     `/${type}/${id}/recommendations`,
     { page },
@@ -256,13 +242,7 @@ function pickVideo(raw: TmdbDetail["videos"]) {
   return best ? { key: best.v.key, name: best.v.name } : null;
 }
 
-export async function fetchAnimeDetail({
-  type,
-  id,
-}: {
-  type: MediaType;
-  id: number;
-}) {
+export async function fetchAnimeDetail({ type, id }: DetailParams) {
   const append =
     type === "movie"
       ? "watch/providers,release_dates,videos"

@@ -1,4 +1,4 @@
-import { useStoredValue } from "../lib/storage";
+import { useStoredValue } from "@/lib/storage";
 
 const SEEN_KEY = "aniwiki-seen";
 const PICKS_KEY = "aniwiki-discover-picks";

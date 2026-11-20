@@ -2,11 +2,9 @@ import type {
   AnimeDetail,
   AnimeItem,
   AnimePage,
-  MediaType,
+  DetailParams,
+  ListParams,
   NetflixOriginal,
-  OriginKey,
-  ProviderKey,
-  SortKey,
 } from "@/types";
 
 async function getJson<T>(
@@ -33,14 +31,7 @@ export const fetchAnimePage = ({
   page,
   providers = [],
   origin = "",
-}: {
-  type: MediaType;
-  sort: SortKey;
-  query: string;
-  page: number;
-  providers?: ProviderKey[];
-  origin?: OriginKey | "";
-}) =>
+}: ListParams) =>
   getJson<AnimePage>(
     "/api/anime",
     query
@@ -52,20 +43,11 @@ export const fetchRecommendations = ({
   type,
   id,
   page = 1,
-}: {
-  type: MediaType;
-  id: number;
-  page?: number;
-}) =>
+}: DetailParams & { page?: number }) =>
   getJson<AnimeItem[]>(`/api/anime/${type}/${id}/recommendations`, { page });
 
-export const fetchAnimeDetail = ({
-  type,
-  id,
-}: {
-  type: MediaType;
-  id: number;
-}) => getJson<AnimeDetail>(`/api/anime/${type}/${id}`);
+export const fetchAnimeDetail = ({ type, id }: DetailParams) =>
+  getJson<AnimeDetail>(`/api/anime/${type}/${id}`);
 
 export const fetchNetflixOriginals = () =>
-  getJson<NetflixOriginal[]>("/netflix-originals.json");
+  getJson<NetflixOriginal[]>("/api/netflix-originals");

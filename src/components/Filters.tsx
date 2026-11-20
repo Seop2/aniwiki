@@ -1,6 +1,50 @@
 import type { MediaType, OriginKey, ProviderKey, SortKey } from "@/types";
-import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "../../lib/catalog";
+import { toggleIn } from "@/lib/array";
+import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
 import s from "./Filters.module.css";
+
+const optionsOf = <K extends string>(obj: Record<K, { label: string }>) =>
+  (Object.keys(obj) as K[]).map((key) => ({ key, label: obj[key].label }));
+
+const TYPE_OPTIONS = optionsOf(MEDIA);
+const ORIGIN_OPTIONS = [
+  { key: "" as const, label: "전체" },
+  ...optionsOf(ORIGINS),
+];
+
+function Segmented<K extends string>({
+  label,
+  options,
+  value,
+  onChange,
+  disabled = false,
+}: {
+  label: string;
+  options: { key: K; label: string }[];
+  value: K;
+  onChange: (key: K) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="field">
+      <span className="field-label">{label}</span>
+      <div className={s.segmented} role="tablist">
+        {options.map((o) => (
+          <button
+            key={o.key}
+            type="button"
+            role="tab"
+            aria-selected={!disabled && value === o.key}
+            disabled={disabled}
+            onClick={() => onChange(o.key)}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface WatchProps {
   providers: ProviderKey[];
@@ -17,13 +61,6 @@ function WatchFilter({
   onOriginalChange,
   searching,
 }: WatchProps) {
-  const toggle = (key: ProviderKey) =>
-    onProvidersChange(
-      providers.includes(key)
-        ? providers.filter((k) => k !== key)
-        : [...providers, key],
-    );
-
   return (
     <div className="field">
       <span className="field-label">
@@ -40,7 +77,7 @@ function WatchFilter({
             className={s.chip}
             aria-pressed={!searching && !original && providers.includes(p.key)}
             disabled={searching || original}
-            onClick={() => toggle(p.key)}
+            onClick={() => onProvidersChange(toggleIn(providers, p.key))}
           >
             {p.label}
           </button>
@@ -78,45 +115,20 @@ export default function Filters({
 } & WatchProps) {
   return (
     <div className={s.filters}>
-      <div className="field">
-        <span className="field-label">구분</span>
-        <div className={s.segmented} role="tablist">
-          {Object.entries(MEDIA).map(([key, { label }]) => (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={type === key}
-              onClick={() => onTypeChange(key as MediaType)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Segmented
+        label="구분"
+        options={TYPE_OPTIONS}
+        value={type}
+        onChange={onTypeChange}
+      />
 
-      <div className="field">
-        <span className="field-label">제작 국가</span>
-        <div className={s.segmented} role="tablist">
-          {(
-            [["", { label: "전체" }], ...Object.entries(ORIGINS)] as [
-              string,
-              { label: string },
-            ][]
-          ).map(([key, { label }]) => (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={!watch.searching && origin === key}
-              disabled={watch.searching}
-              onClick={() => onOriginChange(key as OriginKey | "")}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Segmented
+        label="제작 국가"
+        options={ORIGIN_OPTIONS}
+        value={origin}
+        onChange={onOriginChange}
+        disabled={watch.searching}
+      />
 
       <label className="field">
         <span className="field-label">정렬</span>

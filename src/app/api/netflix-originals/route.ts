@@ -12,7 +12,7 @@ export async function GET() {
   } catch (e) {
     if (process.env.NEXT_PHASE !== PHASE_PRODUCTION_BUILD) throw e;
     console.warn(
-      `빈 netflix-originals.json으로 빌드합니다 (${(e as Error).message})`,
+      `빈 넷플릭스 오리지널 목록으로 빌드합니다 (${(e as Error).message})`,
     );
     return Response.json([]);
   }

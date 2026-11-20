@@ -8,6 +8,7 @@ const shareOrigin = (local: boolean) =>
   local && process.env.NODE_ENV === "development" ? location.origin : SITE_URL;
 
 export const TOP10_MAX = 10;
+export const NAME_MAX = 20;
 
 export const top10Title = (name: string | undefined) =>
   `${name?.trim() || "나"}의 인생 애니 TOP 10`;
@@ -45,7 +46,7 @@ export function parseShareUrl(search: string) {
   }
 
   return items.length
-    ? { name: (params.get("name") ?? "").slice(0, 20), items }
+    ? { name: (params.get("name") ?? "").slice(0, NAME_MAX), items }
     : null;
 }
 

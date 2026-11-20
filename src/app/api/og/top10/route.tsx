@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import type { MediaType } from "@/types";
 import { posterUrl } from "@/lib/catalog";
 import { parseShareUrl } from "@/lib/share";
-import { fetchAnimeDetail } from "@/server/tmdb";
+import { fetchAnimeDetail, REVALIDATE } from "@/server/tmdb";
 
 const C = {
   bg: "#0f0f13",
@@ -21,7 +21,7 @@ const HEADLINE = "인생 애니 TOP 10";
 async function loadGoogleFont(family: string, weight: 600 | 800, text: string) {
   const css = await fetch(
     `https://fonts.googleapis.com/css2?family=${family.replaceAll(" ", "+")}:wght@${weight}&text=${encodeURIComponent(text)}`,
-    { next: { revalidate: 86400 } },
+    { next: { revalidate: REVALIDATE.daily } },
   ).then((r) => r.text());
   const url = css.match(
     /src: url\((.+?)\) format\('(?:opentype|truetype)'\)/,

@@ -1,7 +1,7 @@
 "use client";
 
-import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 
 const DETAIL_RE = /^\/anime\/(tv|movie)\/\d+$/;
 

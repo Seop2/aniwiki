@@ -1,9 +1,9 @@
 import "server-only";
-import { TmdbError } from "./tmdb";
+import { MAX_PAGE, TmdbError } from "./tmdb";
 
 export function parsePage(value: string | null) {
   const page = Number(value ?? 1);
-  return Number.isInteger(page) && page >= 1 && page <= 500 ? page : null;
+  return Number.isInteger(page) && page >= 1 && page <= MAX_PAGE ? page : null;
 }
 
 export const badRequest = () =>

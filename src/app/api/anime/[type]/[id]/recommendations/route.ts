@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
-import { fetchRecommendations, REVALIDATE } from "@/server/tmdb";
 import { parseDetailParams } from "@/lib/paths";
 import { badRequest, cachedJson, errorJson, parsePage } from "@/server/respond";
+import { fetchRecommendations, REVALIDATE } from "@/server/tmdb";
 
 export async function GET(
   request: NextRequest,

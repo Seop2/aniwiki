@@ -2,7 +2,7 @@ import "server-only";
 import type { MediaType, SortKey } from "@/types";
 import { SEEDS } from "@/data/seeds";
 import { ANIMATION_GENRE_ID, SORTS } from "@/lib/catalog";
-import { tmdbGet } from "./tmdb";
+import { REVALIDATE, tmdbGet } from "./tmdb";
 
 const LISTS: [MediaType, SortKey, number][] = [
   ["tv", "rating", 5],
@@ -18,7 +18,7 @@ async function fetchIds(type: MediaType, sort: SortKey, page: number) {
     ...SORTS[sort].params(type),
   };
   const data = await tmdbGet(`/discover/${type}`, params, {
-    revalidate: 86400,
+    revalidate: REVALIDATE.daily,
   });
   return data.results.map((r) => `/anime/${type}/${r.id}`);
 }

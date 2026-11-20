@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef } from "react";
+import Icon from "./Icon";
 import s from "./Modal.module.css";
 
 export default function Modal({
@@ -39,17 +40,9 @@ export default function Modal({
           onClick={onClose}
           aria-label="닫기"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden
-          >
+          <Icon size={18}>
             <path d="M18 6 6 18M6 6l12 12" />
-          </svg>
+          </Icon>
         </button>
         {children}
       </div>

@@ -1,31 +1,26 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import Top10Modal from "../top10/Top10Modal";
-import { useAppState } from "./AppState";
+import { usePathname } from "next/navigation";
+import Top10Modal from "@/components/top10/Top10Modal";
+import { useTop10Store } from "@/stores/top10";
+import { useUiStore } from "@/stores/ui";
 import Header from "./Header";
 import SearchBar from "./SearchBar";
 import s from "./Shell.module.css";
 
 export default function Shell({ children }: { children: ReactNode }) {
-  const app = useAppState();
-  const router = useRouter();
+  const top10Open = useUiStore((s) => s.top10Open);
   const pathname = usePathname();
 
-  const openDiscover = () => {
-    router.push("/discover");
-    window.scrollTo({ top: 0 });
-  };
+  useEffect(() => {
+    useTop10Store.persist.rehydrate();
+  }, []);
 
   return (
     <>
-      <Header
-        top10Count={app.top10.items.length}
-        onOpenTop10={app.openTop10}
-        onOpenDiscover={openDiscover}
-      />
+      <Header />
       <main className="container">
         <section className={s.hero}>
           <div>
@@ -48,9 +43,7 @@ export default function Shell({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      {app.top10Open && (
-        <Top10Modal top10={app.top10} onClose={app.closeTop10} />
-      )}
+      {top10Open && <Top10Modal />}
     </>
   );
 }

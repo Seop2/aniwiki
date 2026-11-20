@@ -1,11 +1,9 @@
 import type { NextRequest } from "next/server";
 import type { OriginKey, ProviderKey } from "@/types";
 import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
-import { isKey } from "@/lib/paths";
-import { fetchAnimePage, REVALIDATE } from "@/server/tmdb";
+import { isKey, MAX_QUERY } from "@/lib/paths";
 import { badRequest, cachedJson, errorJson, parsePage } from "@/server/respond";
-
-const MAX_QUERY = 100;
+import { fetchAnimePage, REVALIDATE } from "@/server/tmdb";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;

@@ -1,5 +1,5 @@
-import type { MEDIA, normalize } from "./lib/media";
 import type { ORIGINS, PROVIDERS, SORTS } from "./lib/catalog";
+import type { MEDIA, normalize } from "./lib/media";
 import type { fetchAnimeDetail } from "./server/tmdb";
 
 export type MediaType = keyof typeof MEDIA;
@@ -18,6 +18,20 @@ export interface HomeParams {
   q: string;
   original: boolean;
   origin: OriginKey | "";
+}
+
+export interface DetailParams {
+  type: MediaType;
+  id: number;
+}
+
+export interface ListParams {
+  type: MediaType;
+  sort: SortKey;
+  query: string;
+  page: number;
+  providers?: ProviderKey[];
+  origin?: OriginKey | "";
 }
 
 export interface AnimePage {

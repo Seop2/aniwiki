@@ -1,5 +1,5 @@
 import type { AnimeItem } from "@/types";
-import { SEED_BY_ID } from "../data/seeds";
+import { SEED_BY_ID } from "@/data/seeds";
 import { ANIMATION_GENRE_ID } from "./catalog";
 
 export interface SeedList {

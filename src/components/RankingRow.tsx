@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { AnimeSummary, MediaType } from "@/types";
-import { detailPath } from "../../lib/paths";
-import Poster from "../common/Poster";
+import Poster from "@/components/common/Poster";
+import { detailPath } from "@/lib/paths";
 import s from "./RankingTable.module.css";
 
 export default function RankingRow({
@@ -19,7 +19,7 @@ export default function RankingRow({
 
   return (
     <tr>
-      <td className={s.rank}>{rank}</td>
+      <td className="col-rank">{rank}</td>
       <td>
         <Link
           className="title-cell title-button"
@@ -37,7 +37,7 @@ export default function RankingRow({
         </Link>
       </td>
       <td className={s.year}>{item.year}</td>
-      <td className={s.rating}>{item.rating.toFixed(1)}</td>
+      <td className="col-rating">{item.rating.toFixed(1)}</td>
       <td className={s.votes}>{item.votes.toLocaleString()}표</td>
     </tr>
   );

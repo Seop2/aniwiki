@@ -1,19 +1,16 @@
-import type { useMyTop10 } from "../../hooks/useMyTop10";
-import { MEDIA } from "../../lib/catalog";
-import { TOP10_MAX, top10Title } from "../../lib/share";
-import Modal from "../common/Modal";
-import Poster from "../common/Poster";
+import Icon from "@/components/common/Icon";
+import Modal from "@/components/common/Modal";
+import Poster from "@/components/common/Poster";
+import { MEDIA } from "@/lib/catalog";
+import { NAME_MAX, TOP10_MAX, top10Title } from "@/lib/share";
+import { useTop10Store } from "@/stores/top10";
+import { useUiStore } from "@/stores/ui";
 import ShareActions from "./ShareActions";
 import s from "./Top10Modal.module.css";
 
-export default function Top10Modal({
-  top10,
-  onClose,
-}: {
-  top10: ReturnType<typeof useMyTop10>;
-  onClose: () => void;
-}) {
-  const { name, items, move, remove, setName } = top10;
+export default function Top10Modal() {
+  const { name, items, move, remove, setName } = useTop10Store();
+  const onClose = useUiStore((s) => s.closeTop10);
 
   return (
     <Modal className={s.dialog} labelledBy="top10-title" onClose={onClose}>
@@ -29,7 +26,7 @@ export default function Top10Modal({
         <input
           type="text"
           value={name}
-          maxLength={20}
+          maxLength={NAME_MAX}
           onChange={(e) => setName(e.target.value)}
           placeholder="공유 이미지에 표시될 이름"
         />
@@ -58,17 +55,9 @@ export default function Top10Modal({
                   disabled={i === 0}
                   aria-label={`${a.title} 위로`}
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    aria-hidden
-                  >
+                  <Icon strokeWidth={2.2}>
                     <path d="m18 15-6-6-6 6" />
-                  </svg>
+                  </Icon>
                 </button>
                 <button
                   type="button"
@@ -76,34 +65,18 @@ export default function Top10Modal({
                   disabled={i === items.length - 1}
                   aria-label={`${a.title} 아래로`}
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    aria-hidden
-                  >
+                  <Icon strokeWidth={2.2}>
                     <path d="m6 9 6 6 6-6" />
-                  </svg>
+                  </Icon>
                 </button>
                 <button
                   type="button"
                   onClick={() => remove(a.type, a.id)}
                   aria-label={`${a.title} 빼기`}
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    aria-hidden
-                  >
+                  <Icon strokeWidth={2.2}>
                     <path d="M18 6 6 18M6 6l12 12" />
-                  </svg>
+                  </Icon>
                 </button>
               </div>
             </li>

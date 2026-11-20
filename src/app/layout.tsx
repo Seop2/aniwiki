@@ -1,12 +1,11 @@
 import "@/styles/tokens.css";
 import "@/styles/base.css";
 import "@/styles/ui.css";
-import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { themeInitScript } from "@/lib/theme";
-import { AppStateProvider } from "@/components/layout/AppState";
+import type { Metadata, Viewport } from "next";
 import PageAnalytics from "@/components/layout/PageAnalytics";
 import Shell from "@/components/layout/Shell";
+import { themeInitScript } from "@/lib/theme";
 import Providers from "./providers";
 
 const DESCRIPTION =
@@ -75,10 +74,8 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
       </head>
       <body>
         <Providers>
-          <AppStateProvider>
-            <Shell>{children}</Shell>
-            {modal}
-          </AppStateProvider>
+          <Shell>{children}</Shell>
+          {modal}
         </Providers>
         <Suspense fallback={null}>
           <PageAnalytics />

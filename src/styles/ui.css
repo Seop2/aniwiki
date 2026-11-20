@@ -164,6 +164,57 @@ a.btn-outline {
   outline-offset: 2px;
 }
 
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.rank-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rank-table th {
+  height: 34px;
+  padding: 0 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.rank-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  vertical-align: middle;
+}
+.rank-table td.message {
+  padding: 48px 12px;
+}
+.rank-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.rank-table tbody tr:not(.skeleton):hover {
+  background: var(--surface-2);
+}
+
+.rank-table .col-rank {
+  width: 56px;
+}
+.rank-table td.col-rank {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+}
+.rank-table .col-rating {
+  width: 14%;
+}
+.rank-table td.col-rating {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--accent-text);
+}
+
 .message {
   text-align: center;
   padding: 48px 12px;

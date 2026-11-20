@@ -1,7 +1,8 @@
 import { useState, useSyncExternalStore } from "react";
 import { track } from "@vercel/analytics";
 import type { Top10Item } from "@/types";
-import { useKakao } from "../../hooks/useKakao";
+import Icon from "@/components/common/Icon";
+import { useKakao } from "@/hooks/useKakao";
 import {
   buildShareUrl,
   canShareLink,
@@ -12,8 +13,8 @@ import {
   SITE_URL,
   top10Title,
   xIntentUrl,
-} from "../../lib/share";
-import { renderTop10Image } from "../../lib/top10Image";
+} from "@/lib/share";
+import { renderTop10Image } from "@/lib/top10Image";
 import s from "./ShareActions.module.css";
 
 const noop = () => () => {};
@@ -124,19 +125,11 @@ export default function ShareActions({
           onClick={onImage}
           disabled={disabled || busy}
         >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden
-          >
+          <Icon size={15}>
             <rect x="3" y="3" width="18" height="18" />
             <circle cx="9" cy="9" r="2" />
             <path d="m21 15-5-5L5 21" />
-          </svg>
+          </Icon>
           이미지 저장
         </button>
         <button
@@ -145,18 +138,10 @@ export default function ShareActions({
           onClick={onCopy}
           disabled={disabled}
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden
-          >
+          <Icon>
             <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" />
             <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" />
-          </svg>
+          </Icon>
           링크 복사
         </button>
         {isClient && canShareLink() && (

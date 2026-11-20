@@ -16,7 +16,7 @@ function Message({ children }: { children: ReactNode }) {
 function SkeletonRows({ count = 8 }) {
   return Array.from({ length: count }, (_, i) => (
     <tr key={i} className="skeleton" aria-hidden>
-      <td className={s.rank}>
+      <td className="col-rank">
         <i style={{ width: 16 }} />
       </td>
       <td>
@@ -28,7 +28,7 @@ function SkeletonRows({ count = 8 }) {
       <td className={s.year}>
         <i style={{ width: 36 }} />
       </td>
-      <td className={s.rating}>
+      <td className="col-rating">
         <i style={{ width: 28 }} />
       </td>
       <td className={s.votes}>
@@ -68,14 +68,14 @@ export default function RankingTable({
 
   return (
     <>
-      <div className={`${s.wrap} corners`}>
-        <table className={s.ranking}>
+      <div className="table-wrap corners">
+        <table className="rank-table">
           <thead>
             <tr>
-              <th className={s.rank}>순위</th>
+              <th className="col-rank">순위</th>
               <th>제목</th>
               <th className={s.year}>연도</th>
-              <th className={s.rating}>평점</th>
+              <th className="col-rating">평점</th>
               <th className={s.votes}>투표수</th>
             </tr>
           </thead>

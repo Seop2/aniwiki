@@ -7,9 +7,9 @@ import type {
   ProviderKey,
   SortKey,
 } from "@/types";
-import { fetchAnimePage, fetchNetflixOriginals } from "../lib/apiClient";
-import { ORIGINS, SORTS, today } from "../lib/catalog";
-import { listQueryKey, STALE_TIME } from "../lib/queries";
+import { fetchAnimePage, fetchNetflixOriginals } from "@/lib/apiClient";
+import { ORIGINS, SORTS, today } from "@/lib/catalog";
+import { listQueryKey, STALE_TIME } from "@/lib/queries";
 
 const ORIGINAL_MIN_VOTES = 200;
 

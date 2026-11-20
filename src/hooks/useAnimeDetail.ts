@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import type { MediaType } from "@/types";
-import { fetchAnimeDetail } from "../lib/apiClient";
-import { detailQueryKey, STALE_TIME } from "../lib/queries";
+import type { DetailParams, MediaType } from "@/types";
+import { fetchAnimeDetail } from "@/lib/apiClient";
+import { detailQueryKey, STALE_TIME } from "@/lib/queries";
 
 export const animeDetailQuery = (type: MediaType, id: number) => ({
   queryKey: detailQueryKey(type, id),
@@ -9,6 +9,6 @@ export const animeDetailQuery = (type: MediaType, id: number) => ({
   staleTime: STALE_TIME.detail,
 });
 
-export function useAnimeDetail({ type, id }: { type: MediaType; id: number }) {
+export function useAnimeDetail({ type, id }: DetailParams) {
   return useQuery({ ...animeDetailQuery(type, id), enabled: !!id });
 }

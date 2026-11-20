@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { MediaType } from "@/types";
-import { useAnimeDetail } from "../../hooks/useAnimeDetail";
-import { overviewSummary } from "../../lib/media";
-import Modal from "../common/Modal";
-import { useAppState } from "../layout/AppState";
+import Modal from "@/components/common/Modal";
+import { useAnimeDetail } from "@/hooks/useAnimeDetail";
+import { overviewSummary } from "@/lib/media";
+import { useUiStore } from "@/stores/ui";
 import DetailContent from "./DetailContent";
 
 export default function DetailModal({
@@ -17,7 +17,7 @@ export default function DetailModal({
   id: number;
 }) {
   const router = useRouter();
-  const { preview } = useAppState();
+  const preview = useUiStore((s) => s.preview);
   const closing = useRef(false);
 
   const item =

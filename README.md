@@ -1,102 +1,141 @@
 # ANIWIKI
 
-TMDB 애니메이션 랭킹/검색 사이트 (Next.js 16 App Router + React 19 + TanStack Query v5 + TypeScript)
+**한국에서 볼 수 있는 애니메이션을 평점 · 인기 순위로 찾아 주는 사이트**
 
-## 실행
+🔗 **https://www.aniwiki.link**
 
-```bash
-npm install
-cp .env.example .env   # TMDB_TOKEN(v4 Read Access Token) 또는 TMDB_API_KEY(v3 API Key) 입력 — 서버에서만 쓴다
-npm run dev            # 배포 빌드 확인: npm run build && npm start
-npm run typecheck      # 타입 검사(next typegen + tsc)
-```
+![랭킹 화면](docs/images/ranking.jpg)
 
-## 기능
-- TV 시리즈 / 극장판 전환 (`/discover/{tv|movie}?with_genres=16`)
-- 정렬: 평점순(투표 200표 이상) · 인기순 · 투표수순 · 최신순
-- 제목 검색 (`/search/{tv|movie}` → 애니메이션 장르만 필터, 정렬은 클라이언트)
-- 제작 국가: 전체 · 일본 · 서양 (`?origin=jp|west`, `with_origin_country`, 서양은 미국 · 영국 · 프랑스 등 OR). 검색에는 미적용, 넷플릭스 오리지널 목록은 원어(`original_language`)로 거름
-- **볼 수 있는 곳**: 넷플릭스 · 디즈니+ · 티빙 · 왓챠 칩으로 한국에서 구독으로 볼 수 있는 작품만 (`watch_region=KR&with_watch_providers=…`, 여러 개는 OR, 선택은 localStorage 저장, 검색에는 미적용). 아무것도 안 고르면 이 서비스들 중 한 곳이라도 있는 작품만 랭킹에 나옴. 라프텔은 TMDB에 없음. 크런치롤은 한국에서 대부분 재생이 안 되는데 TMDB에는 있다고 나와 필터 · 상세 모두에서 숨김
-- **넷플릭스 오리지널**: 한국 넷플릭스에 있는 오리지널만 모아 보기 + 상세 배지. 판별은 `lib/netflix.ts`의 `isNetflixOriginal`
-  - network 213(Netflix)은 "어느 나라든 넷플릭스 방영"이라 쓰지 않는다(예: 타코피의 원죄 — 한국은 라프텔 독점)
-  - TV: 방송사가 넷플릭스 하나뿐 / 극장판: 15개국 이상 "Netflix" 디지털 공개 + 일반 극장 개봉이 그보다 앞서지 않음 / 공통: 넷플릭스 제작사
-  - 상세를 봐야 판별되므로 `src/server/netflixOriginals.ts`가 목록을 만들고 `/netflix-originals.json` 라우트가 빌드 때 + 하루마다(ISR) 갱신
-- **PV 영상**: 상세에 TMDB `videos` 중 YouTube 하나(공식 > 예고편 > 티저, 한국어 > 일본어 > 영어, 같으면 먼저 공개된 것). 썸네일만 그리다 누르면 iframe
-- **카카오톡 공유**: TOP 10. `NEXT_PUBLIC_KAKAO_JS_KEY`(카카오 디벨로퍼스 JavaScript 키)가 없으면 버튼을 숨김. 도메인은 두 곳에 등록: 플랫폼 키 > JavaScript 키 > JavaScript SDK 도메인(SDK 사용) · 앱 > 제품 링크 관리 > 웹 도메인(카드를 눌렀을 때 사이트로 이동, 빠지면 카드는 뜨는데 안 열림). 피드 이미지는 `/api/og/top10`
-- "더 보기" 무한 페이지네이션 (`useInfiniteQuery`)
-- 다크 모드 (localStorage 저장, 시스템 설정 기본값)
-- 모바일: 연도/투표수 컬럼을 제목 아래로 이동
-- **나만의 인생 애니 TOP 10**: 상세 모달에서 담고, 헤더 「내 TOP 10」에서 순서 편집 · 닉네임 입력 (localStorage 저장)
-  - 공유 이미지(1080×1350 PNG, Canvas로 직접 그림) 저장 / 모바일은 시스템 공유 시트로 바로 공유
-  - 공유 링크 `/top10?top10=t1429.m372058&name=…` (예전 `/?top10=…`는 `next.config` redirect) — 작품 ID만 담고, 받는 쪽에서 TMDB로 불러와 읽기 전용 화면 표시
-  - 링크 미리보기 이미지는 `/api/og/top10?…`(next/og `ImageResponse`)가 담긴 작품 포스터로 그림
-  - 링크 복사 · X 공유 · Web Share API, 공유 방식별 `top10_share` 이벤트(Vercel Analytics — Pro 플랜에서만 기록)
-- **숨은 명작 찾기** (`/discover`): 본 유명작(원피스 · 나루토 · 진격 등 16편)을 포스터 그리드에서 고르면 덜 알려진 명작 20편 추천
-  - 고른 작품들의 TMDB 추천 목록(각 40편)을 합산 — 여러 작품에서, 앞 순위로 추천될수록 높은 점수
-  - 일본 애니 · 평점 7.5↑ · 투표 100~1,500(유명작은 2,000~8,000) · 방영 1년 경과 · 총집편 제외, 1995년 이전은 점수 절반
-  - 카드마다 추천 이유(「진격의 거인을 본 사람에게」)와 완결 · 화수, 「이미 봤어요」로 제외(localStorage)
-  - 기준값은 `lib/discover.ts`의 `GEM` 상수
-- **화면별 주소** (App Router): `/?type=movie&sort=popular&q=…&original=1`(랭킹 · 검색, 기본값은 생략) · `/top10?…`(공유 TOP 10) · `/anime/{tv|movie}/{id}`(작품 상세) · `/discover?seen=…`(숨은 명작)
-  - 작품 상세는 앱 안에서 열면 `@modal/(.)anime/…` 인터셉트 라우트로 모달(뒤 화면 유지, 뒤로가기로 닫힘), 주소로 바로 들어오면 서버에서 그린 페이지(제목 · 줄거리 · og:image, 10분 ISR)
-  - 랭킹 필터 · 검색어는 주소에 있어 새로고침 · 링크 공유에도 유지. 필터 변경은 `history.replaceState`라 서버 왕복 없이 바로 반영
-  - 랭킹 첫 페이지는 서버에서 그림(시청처 필터 OTT 전체 기준). 저장된 시청처(localStorage)가 있으면 브라우저가 그 조건으로 다시 받음
-  - 내 TOP 10 · 상세 모달 미리보기는 layout의 `AppState` 컨텍스트
-  - canonical은 페이지 metadata로(상세는 자기 주소, 쿼리로 바뀌는 화면은 쿼리 없는 주소), 알 수 없는 주소는 404
-  - `<Analytics route path>`로 화면별 집계(무료 플랜). 숨은 명작 결과(`?seen=…`)는 `/discover/results`로 따로 세어 고르기 → 결과 전환을 볼 수 있음
-- **TMDB 토큰은 서버에만**: 브라우저는 `/api/anime` · `/api/anime/{type}/{id}` · `…/recommendations`를 부르고, 서버(`src/server/tmdb.ts`)가 TMDB에 요청 · 정규화 · 캐시(React Query staleTime과 같은 시간, CDN `s-maxage`)
-- **사이트맵**: `app/sitemap.ts`가 TMDB 평점순 · 인기순 상위 작품과 시드 작품의 상세 주소를 담아 하루마다 갱신. TMDB 요청이 실패하면 고정 주소만 담음
+## 왜 만들었나
+
+애니메이션 평점은 해외 사이트에 모여 있고, 그 작품을 한국 어느 OTT에서 볼 수 있는지는 따로 찾아야 합니다. 넷플릭스 오리지널인지, 유명작을 다 본 뒤에 볼 만한 작품이 무엇인지도 한 번에 알기 어렵습니다.
+
+ANIWIKI는 TMDB 데이터를 한국 기준으로 다시 걸러서 이런 질문에 한 화면으로 답합니다.
+
+- 지금 **내가 구독한 OTT**(넷플릭스 · 디즈니+ · 티빙 · 왓챠)에서 볼 수 있는 작품 중 평점이 높은 것은?
+- 한국 넷플릭스에 있는 **진짜 넷플릭스 오리지널**은?
+- 원피스 · 진격의 거인을 봤다면 **다음에 볼 숨은 명작**은?
+
+## 주요 기능
+
+| 작품 상세                            | 숨은 명작 찾기                         | 공유 TOP 10                           |
+| ------------------------------------ | -------------------------------------- | ------------------------------------- |
+| ![작품 상세](docs/images/detail.jpg) | ![숨은 명작](docs/images/discover.jpg) | ![공유 TOP 10](docs/images/top10.jpg) |
+
+- **랭킹 · 검색**: TV 시리즈 / 극장판, 평점 · 인기 · 투표수 · 최신순, 제작 국가(일본 · 서양), 시청 가능한 OTT로 거르기. 조건은 주소에 남아 새로고침하거나 링크를 공유해도 유지됩니다.
+- **넷플릭스 오리지널 모아 보기**: TMDB 데이터를 그대로 믿지 않고 자체 규칙으로 판별합니다([트러블슈팅](#트러블슈팅) 참고).
+- **작품 상세**: 줄거리 · PV 영상 · 한국 시청처. 앱 안에서는 모달로 열고, 주소로 바로 들어오면 서버에서 그린 페이지로 보여 줍니다(검색엔진 · 링크 미리보기 대응).
+- **숨은 명작 찾기**: 본 유명작을 고르면 그 작품들의 TMDB 추천을 합산해서, 평점은 높지만 덜 알려진 작품 20편을 추천합니다.
+- **나만의 인생 애니 TOP 10**: 담고, 순서를 바꾸고, 이미지(Canvas) · 링크 · 카카오톡 · X로 공유합니다.
+- 다크 모드, 모바일 레이아웃, 사이트맵 · canonical 같은 SEO 설정.
+
+## 기술 스택과 선택 이유
+
+| 기술                          | 이유                                                                                                                                                                                                                             |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Next.js 16** (App Router)   | 처음엔 Vite SPA였는데, TMDB 토큰을 브라우저에서 빼고 작품 상세를 서버에서 그리려고 옮겼습니다. Route Handler가 TMDB 프록시 역할을 하고, 인터셉트 라우트로 "앱 안에서는 모달, 주소로 들어오면 페이지"를 한 컴포넌트로 처리합니다. |
+| **TanStack Query v5**         | "더 보기" 무한 페이지네이션, 캐시, 서버에서 미리 받은 데이터 넘기기(`HydrationBoundary`)를 한 라이브러리로 해결합니다.                                                                                                           |
+| **zustand**                   | 내 TOP 10 · 모달 상태를 전역으로 두되, 컴포넌트가 필요한 값만 골라 구독해서 불필요한 리렌더를 줄입니다. `persist`로 localStorage 저장도 함께 처리합니다.                                                                         |
+| **TypeScript** (strict)       | JS에서 옮겼습니다. 정렬 · 국가 같은 상수에서 타입을 뽑아 써서, 상수만 고치면 타입도 따라 바뀝니다.                                                                                                                               |
+| **CSS Modules** + 디자인 토큰 | 런타임 비용 없이 컴포넌트별로 스타일을 격리하고, `[data-theme]`로 다크 모드를 전환합니다.                                                                                                                                        |
+| **Vercel**                    | `main`에 푸시하면 바로 배포되고, ISR(하루마다 갱신)과 Web Analytics를 씁니다.                                                                                                                                                    |
 
 ## 구조
-```
-src/
-├── app/                   # App Router
-│   ├── layout.tsx         # 메타 태그 · 글꼴 · 테마 스크립트, Providers > AppState > Shell + {modal}
-│   ├── page.tsx           # / 랭킹(첫 페이지 SSR)
-│   ├── discover/ top10/   # 숨은 명작 · 공유 TOP 10
-│   ├── anime/[type]/[id]/ # 작품 상세 페이지(SSR · ISR)
-│   ├── @modal/            # 앱 안에서 연 상세 모달((.)anime 인터셉트), 다른 화면에서는 비움
-│   ├── api/anime/…        # TMDB 프록시(입력 검증)
-│   ├── api/og/top10/      # 공유 TOP 10 미리보기 이미지
-│   ├── netflix-originals.json/ sitemap.ts
-│   └── providers.tsx      # QueryClient
-├── server/                # 서버 전용(server-only)
-│   ├── tmdb.ts            # TMDB 요청 · 정규화 · 캐시 시간
-│   ├── respond.ts         # 라우트 입력 검증 · 응답 헬퍼
-│   ├── netflixOriginals.ts · sitemapPaths.ts
-├── hooks/                 # useAnimeList(useInfiniteQuery) · useAnimeDetail · useMyTop10 · useSeen · useTheme …
-├── data/seeds.ts          # /discover에서 고를 수 있는 유명작 16편
-├── lib/apiClient.ts       # 브라우저용 데이터 요청(app/api/* 호출) — React Query 훅이 쓴다
-├── lib/catalog.ts         # PROVIDERS · SORTS · posterUrl (화면 · 서버 공용)
-├── lib/discover.ts        # 숨은 명작 필터 · 점수 계산(rankHiddenGems)
-├── lib/media.ts           # TMDB 응답 매핑(MEDIA, normalize)
-├── lib/netflix.ts         # 넷플릭스 오리지널 판별
-├── lib/paths.ts           # 랭킹 · 상세 주소 만들기 · 파라미터 검증
-├── lib/storage.ts         # localStorage 값을 하이드레이션 안전하게 읽는 useStoredValue
-├── lib/queries.ts         # React Query staleTime · 쿼리 키(서버 SSR과 공용) — 서버 캐시도 같은 시간
-├── lib/share.ts           # 공유 링크 인코딩/파싱, 이미지·링크 공유
-├── lib/top10Image.ts      # 공유 이미지 Canvas 렌더링
-├── types.ts               # 공용 타입(MediaType · AnimeItem · AnimeDetail · Top10 …), 값에서 뽑아 쓴다
-├── global.d.ts            # window.Kakao · 환경 변수 타입
-├── components/            # 기능별 폴더. 각 컴포넌트의 CSS는 같은 폴더의 *.module.css
-│   ├── common/            # Modal(모달 틀), Poster(포스터 · 빈 칸)
-│   ├── layout/            # Shell(헤더 · 로고 · 검색창), AppState(내 TOP 10 · 모달 미리보기), PageAnalytics, Header, SearchBar
-│   ├── ranking/           # Home, Filters, RankingTable, RankingRow
-│   ├── detail/            # DetailContent(본문), DetailModal, DetailPage
-│   ├── top10/             # Top10Modal, SharedTop10, ShareActions
-│   └── discover/          # Discover
-└── styles/                # layout에서 먼저 import (공통 → 컴포넌트 순서로 덮어쓰기)
-    ├── tokens.css         # 디자인 토큰(:root / [data-theme=dark])
-    ├── base.css           # 리셋 · body · focus
-    └── ui.css             # 여러 컴포넌트가 함께 쓰는 것(버튼, 크롭 마크, 작품 행, 스켈레톤, 모달 안쪽 여백 · 섹션)
-scripts/og-image.html      # public/og-image.png 원본
+
+```mermaid
+flowchart LR
+  B[브라우저] -->|lib/apiClient| R["app/api/* (Route Handler)"]
+  P["page.tsx (서버 렌더)"] --> S
+  R --> S["server/tmdb.ts<br/>요청 · 정규화 · 캐시"]
+  S -->|토큰은 서버에만| T[(TMDB API)]
+  P -->|HydrationBoundary| B
 ```
 
-`public/og-image.png` 재생성:
+```
+src/
+├── app/          라우팅만 (페이지, API 라우트, @modal 인터셉트 모달, sitemap)
+├── server/       서버 전용 (TMDB 요청 · 넷플릭스 오리지널 목록 · 사이트맵)
+├── lib/          상수 · 순수 함수 (정렬/국가 카탈로그, 주소 파싱, 공유, 숨은 명작 점수)
+├── hooks/        React Query 훅 등
+├── stores/       zustand (내 TOP 10, UI 상태)
+├── components/   랭킹 화면(Home · Filters · RankingTable)과 기능별 폴더 (detail · top10 · discover · layout · common)
+└── styles/       디자인 토큰 · 공통 스타일
+```
+
+## 트러블슈팅
+
+**1. 넷플릭스 오리지널이 아닌 작품이 오리지널로 나왔다**
+
+- 문제: TMDB에서 방송사(network)가 Netflix인 작품을 오리지널로 표시했더니, 「타코피의 원죄」처럼 한국에서는 라프텔 독점인 작품이 섞였습니다.
+- 원인: TMDB의 network 213은 "어느 나라든 넷플릭스에서 방영"이라는 뜻일 뿐, 오리지널이라는 뜻이 아니었습니다.
+- 해결: 판별 규칙을 따로 만들었습니다(`lib/netflix.ts`).
+  - TV: 방송사가 넷플릭스 하나뿐일 때
+  - 극장판: 15개국 이상에 넷플릭스로 공개됐고, 극장 개봉이 그보다 먼저가 아닐 때
+  - 공통: 넷플릭스 제작사가 참여했을 때
+- 이 판별에는 작품마다 상세 정보가 필요해서, 서버가 빌드 때와 하루에 한 번 목록을 만들어 둡니다(ISR).
+
+**2. TMDB 토큰이 브라우저에 노출됐다**
+
+- 문제: Vite SPA에서는 TMDB를 브라우저가 직접 불러서, 토큰이 번들에 포함됐습니다.
+- 해결: Next.js로 옮기고 모든 TMDB 요청을 서버 Route Handler로 보냈습니다. 서버 코드에는 `server-only`를 걸어, 실수로 클라이언트에서 import하면 빌드가 실패하게 했습니다.
+
+**3. localStorage 값 때문에 하이드레이션 오류가 났다**
+
+- 문제: 내 TOP 10 · 선택한 OTT는 localStorage에 있는데, 서버는 이 값을 모릅니다. 그래서 서버 HTML과 브라우저 첫 화면이 달라졌습니다.
+- 해결:
+  - 일반 값은 `useSyncExternalStore`로 읽습니다. 서버용 값과 브라우저용 값을 따로 줄 수 있어서, 하이드레이션이 끝난 뒤에 저장된 값으로 바뀝니다.
+  - zustand는 `skipHydration`으로 자동 복원을 끄고, 마운트 후에 `rehydrate()`합니다.
+
+**4. TMDB에는 있다고 나오는데 한국에서 볼 수 없었다**
+
+- 문제: 크런치롤은 TMDB 한국 시청처에 자주 나오지만, 실제로는 한국에서 대부분 재생되지 않습니다. 라프텔은 TMDB에 아예 없습니다.
+- 해결: 크런치롤은 필터와 상세에서 숨기고, 상세에 「라프텔에서 검색」 링크를 따로 달았습니다.
+
+**5. 카카오톡 공유 카드가 뜨는데 눌러도 열리지 않았다**
+
+- 원인: 카카오 디벨로퍼스에서 도메인을 두 곳에 등록해야 하는데, 한 곳이 빠져 있었습니다.
+  - 플랫폼 키 > JavaScript 키 > JavaScript SDK 도메인
+  - 앱 > 제품 링크 관리 > 웹 도메인
+- 해결: 두 곳 모두에 도메인을 등록했습니다.
+
+## 로컬에서 실행
+
+Node.js 20.9 이상이 필요합니다.
+
+```bash
+git clone https://github.com/Seop2/aniwiki.git
+cd aniwiki
+npm install
+cp .env.example .env
+```
+
+`.env`에 [TMDB API 설정](https://www.themoviedb.org/settings/api)에서 받은 값을 넣습니다.
+
+- `TMDB_TOKEN`(API Read Access Token)이나 `TMDB_API_KEY` 둘 중 하나만 있으면 됩니다.
+- `NEXT_PUBLIC_KAKAO_JS_KEY`는 선택입니다. 없으면 카카오톡 공유 버튼이 숨겨집니다.
+
+```bash
+npm run dev          # http://localhost:3000
+npm run typecheck    # 타입 검사
+npm run build && npm start   # 배포용 빌드 확인
+```
+
+<details>
+<summary>기타 참고</summary>
+
+- 숨은 명작 기준값(평점 · 투표 수 · 방영 후 경과 기간 등)은 `lib/discover.ts`의 `GEM` 상수에 있습니다.
+- TMDB discover API는 최대 500페이지까지만 조회됩니다.
+- `public/og-image.png`는 `scripts/og-image.html`을 아래 명령으로 캡처해서 다시 만듭니다.
+
 ```bash
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --hide-scrollbars \
   --window-size=1200,630 --virtual-time-budget=5000 \
   --screenshot=public/og-image.png scripts/og-image.html
 ```
 
-## 주의
-- TMDB discover는 최대 500페이지까지만 조회됩니다.
+</details>
+
+## 만든 사람 · 데이터 출처
+
+- 만든 사람: [Seop2](https://github.com/Seop2)
+- 작품 정보 · 이미지: [TMDB](https://www.themoviedb.org). This product uses the TMDB API but is not endorsed or certified by TMDB.

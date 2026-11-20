@@ -7,10 +7,10 @@ import {
   NETFLIX_NETWORK,
   NETFLIX_PROVIDERS,
 } from "@/lib/netflix";
-import { mapLimit, tmdbGet } from "./tmdb";
+import { mapLimit, REVALIDATE, tmdbGet } from "./tmdb";
 
 const MAX_PAGES = 30;
-const DAILY = { revalidate: 86400 };
+const DAILY = { revalidate: REVALIDATE.daily };
 
 const candidateParams = (type: MediaType) => ({
   with_genres: ANIMATION_GENRE_ID,

@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { AnimeSummary } from "@/types";
-import { posterUrl } from "../../lib/catalog";
-import { SEEDS, SEED_BY_ID } from "../../data/seeds";
-import { discoverPath, type rankHiddenGems } from "../../lib/discover";
-import { detailPath } from "../../lib/paths";
-import { useAnimeDetail } from "../../hooks/useAnimeDetail";
-import { useHiddenGems } from "../../hooks/useHiddenGems";
-import { useDiscoverPicks, useSeen } from "../../hooks/useSeen";
-import { useAppState } from "../layout/AppState";
-import Poster from "../common/Poster";
+import Poster from "@/components/common/Poster";
+import { SEEDS, SEED_BY_ID } from "@/data/seeds";
+import { useAnimeDetail } from "@/hooks/useAnimeDetail";
+import { useHiddenGems } from "@/hooks/useHiddenGems";
+import { useDiscoverPicks, useSeen } from "@/hooks/useSeen";
+import { toggleIn } from "@/lib/array";
+import { posterUrl } from "@/lib/catalog";
+import { discoverPath, type rankHiddenGems } from "@/lib/discover";
+import { detailPath } from "@/lib/paths";
+import { useUiStore } from "@/stores/ui";
 import s from "./Discover.module.css";
 
 const RECOMMENDED_PICKS = 3;
@@ -50,12 +52,11 @@ function SeedPicker({
                 aria-pressed={on}
                 onClick={() => onToggle(seed.id)}
               >
-                <img
-                  src={posterUrl(seed.poster, "w185")!}
+                <Image
+                  src={posterUrl(seed.poster, "w342")!}
                   alt=""
-                  width="185"
-                  height="278"
-                  loading="lazy"
+                  width={185}
+                  height={278}
                 />
                 <span className={s.seedTitle}>{seed.title}</span>
                 {on && (
@@ -218,7 +219,7 @@ function GemResults({
 
 export default function Discover({ seen }: { seen: number[] }) {
   const router = useRouter();
-  const { openDetail } = useAppState();
+  const openDetail = useUiStore((s) => s.openDetail);
   const onSelect = (item: AnimeSummary) => openDetail("tv", item);
   const [savedPicks, setSavedPicks] = useDiscoverPicks();
   const [touched, setPicks] = useState<number[] | null>(null);
@@ -229,10 +230,7 @@ export default function Discover({ seen }: { seen: number[] }) {
     if (seen.length) setSavedPicks(seen);
   }, [seenKey]);
 
-  const toggle = (id: number) =>
-    setPicks(
-      picks.includes(id) ? picks.filter((x) => x !== id) : [...picks, id],
-    );
+  const toggle = (id: number) => setPicks(toggleIn(picks, id));
 
   const submit = () => router.push(discoverPath(picks));
 

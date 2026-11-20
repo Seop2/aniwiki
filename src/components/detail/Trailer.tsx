@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { AnimeDetail } from "@/types";
 import s from "./Detail.module.css";
 
@@ -26,10 +27,11 @@ export default function Trailer({
           onClick={() => setPlaying(true)}
           aria-label={`${video.name} 재생`}
         >
-          <img
+          <Image
             src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`}
             alt=""
-            loading="lazy"
+            fill
+            sizes="480px"
           />
           <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden>
             <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.6)" />

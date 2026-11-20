@@ -2,6 +2,8 @@ import type { HomeParams, MediaType } from "@/types";
 import { ORIGINS, SORTS } from "./catalog";
 import { MEDIA } from "./media";
 
+export const MAX_QUERY = 100;
+
 export const isKey = <T extends object>(obj: T, key: unknown): key is keyof T =>
   typeof key === "string" && Object.hasOwn(obj, key);
 
@@ -21,7 +23,7 @@ export function parseHomeParams(params: URLSearchParams): HomeParams {
   return {
     type: isKey(MEDIA, type) ? type : "tv",
     sort: isKey(SORTS, sort) ? sort : "rating",
-    q: (params.get("q") ?? "").trim().slice(0, 100),
+    q: (params.get("q") ?? "").trim().slice(0, MAX_QUERY),
     original: params.get("original") === "1",
     origin: isKey(ORIGINS, origin) ? origin : "",
   };

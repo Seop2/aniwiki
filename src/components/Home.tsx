@@ -4,11 +4,11 @@ import { useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { HomeParams, ProviderKey } from "@/types";
-import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "../../lib/catalog";
-import { homePath, parseHomeParams } from "../../lib/paths";
-import { useAnimeList } from "../../hooks/useAnimeList";
-import { usePersistedIds } from "../../hooks/useSeen";
-import { useAppState } from "../layout/AppState";
+import { useAnimeList } from "@/hooks/useAnimeList";
+import { usePersistedIds } from "@/hooks/useSeen";
+import { MEDIA, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
+import { homePath, parseHomeParams } from "@/lib/paths";
+import { useUiStore } from "@/stores/ui";
 import Filters from "./Filters";
 import RankingTable from "./RankingTable";
 import s from "./Home.module.css";
@@ -16,7 +16,7 @@ import s from "./Home.module.css";
 export default function Home() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { openDetail } = useAppState();
+  const openDetail = useUiStore((s) => s.openDetail);
   const [providers, setProviders] = usePersistedIds<ProviderKey>(
     "aniwiki-providers",
     (k) => PROVIDERS.some((p) => p.key === k),

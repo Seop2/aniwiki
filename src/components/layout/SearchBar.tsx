@@ -2,7 +2,8 @@
 
 import { Suspense, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { homePath, parseHomeParams } from "../../lib/paths";
+import Icon from "@/components/common/Icon";
+import { homePath, parseHomeParams } from "@/lib/paths";
 import s from "./SearchBar.module.css";
 
 function SearchForm({
@@ -34,18 +35,10 @@ function SearchForm({
         aria-label="작품 제목 검색"
       />
       <button type="submit" className="btn-primary corners" aria-label="검색">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          aria-hidden
-        >
+        <Icon strokeWidth={2.2}>
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
-        </svg>
+        </Icon>
         <span className={s.label}>검색</span>
       </button>
     </form>

@@ -4,15 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueries } from "@tanstack/react-query";
 import type { AnimeDetail, MediaType } from "@/types";
-import { MEDIA } from "../../lib/catalog";
-import { animeDetailQuery } from "../../hooks/useAnimeDetail";
-import { type parseShareUrl, top10Title } from "../../lib/share";
-import { detailPath } from "../../lib/paths";
-import { useAppState } from "../layout/AppState";
-import Poster from "../common/Poster";
+import Poster from "@/components/common/Poster";
+import { animeDetailQuery } from "@/hooks/useAnimeDetail";
+import { MEDIA } from "@/lib/catalog";
+import { detailPath } from "@/lib/paths";
+import { type parseShareUrl, top10Title } from "@/lib/share";
+import { useUiStore } from "@/stores/ui";
 import ShareActions from "./ShareActions";
 import s from "./SharedTop10.module.css";
-import t from "../ranking/RankingTable.module.css";
 
 export default function SharedTop10({
   shared,
@@ -20,7 +19,7 @@ export default function SharedTop10({
   shared: NonNullable<ReturnType<typeof parseShareUrl>>;
 }) {
   const router = useRouter();
-  const { openDetail, openTop10 } = useAppState();
+  const { openDetail, openTop10 } = useUiStore.getState();
 
   const results = useQueries({
     queries: shared.items.map(({ type, id }) => animeDetailQuery(type, id)),
@@ -50,8 +49,8 @@ export default function SharedTop10({
         </button>
       </div>
 
-      <div className={`${t.wrap} corners`}>
-        <table className={t.ranking}>
+      <div className="table-wrap corners">
+        <table className="rank-table">
           <tbody>
             {results.map((r, i) => {
               const { type } = shared.items[i];
@@ -62,7 +61,7 @@ export default function SharedTop10({
                   className={d ? "" : "skeleton"}
                   aria-hidden={!d || undefined}
                 >
-                  <td className={t.rank}>{i + 1}</td>
+                  <td className="col-rank">{i + 1}</td>
                   <td>
                     {d ? (
                       <Link
@@ -89,7 +88,7 @@ export default function SharedTop10({
                       </div>
                     )}
                   </td>
-                  <td className={t.rating}>{d && d.rating.toFixed(1)}</td>
+                  <td className="col-rating">{d && d.rating.toFixed(1)}</td>
                 </tr>
               );
             })}

@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import type { AnimeDetail, AnimeSummary, MediaType } from "@/types";
-import { posterUrl } from "../../lib/catalog";
-import { useAnimeDetail } from "../../hooks/useAnimeDetail";
-import Poster from "../common/Poster";
-import { useAppState } from "../layout/AppState";
+import Poster from "@/components/common/Poster";
+import { useAnimeDetail } from "@/hooks/useAnimeDetail";
+import { posterUrl } from "@/lib/catalog";
+import { TOP10_MAX } from "@/lib/share";
+import { useInTop10, useTop10Store } from "@/stores/top10";
 import Trailer from "./Trailer";
 import s from "./Detail.module.css";
 
@@ -63,12 +65,11 @@ function Providers({ providers }: { providers: AnimeDetail["providers"] }) {
             {group.items.map((p) => (
               <li key={p.id} className={s.provider}>
                 {p.logo ? (
-                  <img
+                  <Image
                     src={posterUrl(p.logo, "w92")!}
                     alt=""
-                    width="40"
-                    height="40"
-                    loading="lazy"
+                    width={28}
+                    height={28}
                   />
                 ) : (
                   <i className={s.providerLogoEmpty} aria-hidden />
@@ -102,9 +103,11 @@ function DetailHead({
   d: Shown;
   data?: AnimeDetail;
 }) {
-  const { top10 } = useAppState();
+  const { add, remove } = useTop10Store.getState();
+  const count = useTop10Store((s) => s.items.length);
+  const isFull = count >= TOP10_MAX;
   const showOriginal = d.originalTitle && d.originalTitle !== d.title;
-  const inTop10 = top10.has(type, id);
+  const inTop10 = useInTop10(type, id);
 
   return (
     <div className={s.head}>
@@ -114,6 +117,7 @@ function DetailHead({
         size="w342"
         width="140"
         height="210"
+        loading="eager"
       />
       <div className={s.info}>
         <h2 id="detail-title">{d.title}</h2>
@@ -143,17 +147,15 @@ function DetailHead({
           <button
             type="button"
             className={inTop10 ? "btn-outline" : "btn-primary"}
-            onClick={() =>
-              inTop10 ? top10.remove(type, id) : top10.add(type, d)
-            }
-            disabled={!inTop10 && top10.isFull}
+            onClick={() => (inTop10 ? remove(type, id) : add(type, d))}
+            disabled={!inTop10 && isFull}
           >
             {inTop10 ? "TOP 10에서 빼기" : "내 TOP 10에 추가"}
           </button>
           <span>
-            {!inTop10 && top10.isFull
+            {!inTop10 && isFull
               ? "TOP 10이 가득 찼어요"
-              : `${top10.items.length}/10`}
+              : `${count}/${TOP10_MAX}`}
           </span>
         </div>
       </div>

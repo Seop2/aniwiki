@@ -4,6 +4,7 @@ import { type ReactNode, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Providers({ children }: { children: ReactNode }) {
+  //브라우저 QueryClient 생성
   const [queryClient] = useState(
     () =>
       new QueryClient({
