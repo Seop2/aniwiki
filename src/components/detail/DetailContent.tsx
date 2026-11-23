@@ -97,30 +97,36 @@ function DetailHead({
   id,
   d,
   data,
+  asPage,
 }: {
   type: MediaType;
   id: number;
   d: Shown;
   data?: AnimeDetail;
+  asPage?: boolean;
 }) {
   const { add, remove } = useTop10Store.getState();
   const count = useTop10Store((s) => s.items.length);
   const isFull = count >= TOP10_MAX;
   const showOriginal = d.originalTitle && d.originalTitle !== d.title;
   const inTop10 = useInTop10(type, id);
+  const Title = asPage ? "h1" : "h2";
 
   return (
     <div className={s.head}>
       <Poster
         className={s.poster}
         path={d.poster}
+        alt={`${d.title} 포스터`}
         size="w342"
         width="140"
         height="210"
         loading="eager"
       />
       <div className={s.info}>
-        <h2 id="detail-title">{d.title}</h2>
+        <Title id="detail-title" className={s.title}>
+          {d.title}
+        </Title>
         {showOriginal && <p className={s.muted}>{d.originalTitle}</p>}
         <p className={s.muted}>{metaOf(type, d)}</p>
         <p className={s.rating}>
@@ -215,10 +221,12 @@ export default function DetailContent({
   type,
   id,
   item,
+  asPage,
 }: {
   type: MediaType;
   id: number;
   item?: AnimeSummary;
+  asPage?: boolean;
 }) {
   const { data, isPending, isError } = useAnimeDetail({ type, id });
   const d = data ?? item;
@@ -236,7 +244,7 @@ export default function DetailContent({
           aria-hidden
         />
       )}
-      <DetailHead type={type} id={id} d={d} data={data} />
+      <DetailHead type={type} id={id} d={d} data={data} asPage={asPage} />
       {isError ? (
         <DetailError />
       ) : isPending ? (

@@ -29,7 +29,7 @@ export default function Trailer({
         >
           <Image
             src={`https://i.ytimg.com/vi/${video.key}/hqdefault.jpg`}
-            alt=""
+            alt={`${video.name} 썸네일`}
             fill
             sizes="480px"
           />

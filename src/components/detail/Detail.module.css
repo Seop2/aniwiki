@@ -26,7 +26,7 @@
   flex-direction: column;
   gap: 6px;
 }
-.info h2 {
+.title {
   margin: 0;
   padding-right: 36px;
   font-size: 26px;
@@ -208,7 +208,7 @@
   background: var(--surface);
   border: 1px solid var(--border);
 }
-.page .info h2 {
+.page .title {
   padding-right: 0;
 }
 .back {
@@ -237,7 +237,7 @@
     width: 110px;
     height: 165px;
   }
-  .info h2 {
+  .title {
     font-size: 22px;
   }
 }

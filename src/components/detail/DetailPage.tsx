@@ -17,7 +17,7 @@ export default function DetailPage({
       </Link>
       <article className={`${s.page} corners`}>
         <div className="detail-inner">
-          <DetailContent type={type} id={id} />
+          <DetailContent type={type} id={id} asPage />
         </div>
       </article>
     </>

@@ -13,6 +13,7 @@ import s from "./Shell.module.css";
 export default function Shell({ children }: { children: ReactNode }) {
   const top10Open = useUiStore((s) => s.top10Open);
   const pathname = usePathname();
+  const Logo = pathname.startsWith("/anime/") ? "p" : "h1";
 
   useEffect(() => {
     useTop10Store.persist.rehydrate();
@@ -25,7 +26,7 @@ export default function Shell({ children }: { children: ReactNode }) {
         <section className={s.hero}>
           <div>
             <p className="eyebrow">TMDB · TOP RATED · ANIMATION</p>
-            <h1 className={s.logo}>
+            <Logo className={s.logo}>
               <Link
                 href="/"
                 replace={pathname === "/"}
@@ -33,7 +34,7 @@ export default function Shell({ children }: { children: ReactNode }) {
               >
                 ANIWIKI
               </Link>
-            </h1>
+            </Logo>
           </div>
           <SearchBar />
         </section>
