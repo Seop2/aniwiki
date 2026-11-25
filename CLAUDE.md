@@ -30,6 +30,7 @@ npm run build
 - 넷플릭스 오리지널을 TMDB network 213만 보고 판단하지 않는다. 판별은 `lib/netflix.ts`의 `isNetflixOriginal`로만 한다. 이유: 213은 "어느 나라든 넷플릭스 방영"이라, 한국은 라프텔 독점인 「타코피의 원죄」도 오리지널로 잡힌다.
 - 캐시 시간은 `lib/queries.ts`의 `STALE_TIME` 한 곳에서만 바꾼다. 서버 `revalidate`와 CDN `s-maxage`도 이 값을 쓴다.
 - 정렬 · 국가 · 시청처를 추가할 때는 `lib/catalog.ts` 상수만 고친다. `src/types.ts`의 `SortKey` 같은 타입이 이 값에서 자동으로 나온다.
+- 다크 테마 색은 `styles/tokens.css`와 `lib/colors.ts`의 `DARK`를 함께 고친다. 이유: TOP 10 이미지(canvas)와 OG 이미지는 CSS 변수를 읽지 못해 TS 상수를 쓴다.
 - 여러 컴포넌트가 함께 쓰는 CSS는 `styles/ui.css`의 전역 클래스로 둔다. 다른 폴더의 `*.module.css`를 import하지 않는다.
 - import 경로는 다른 폴더면 `@/…`, 같은 폴더면 `./…`로 쓴다. 순서는 외부 패키지 → `@/types` → 나머지 `@/` → `./` → CSS. 이유: `../../`를 쓰면 파일을 옮길 때마다 경로가 깨진다.
 - 한 곳에서만 쓰는 타입 · 헬퍼 · 컴포넌트는 따로 빼지 않고 쓰는 곳에 둔다. 공용 타입만 `src/types.ts`에 둔다.

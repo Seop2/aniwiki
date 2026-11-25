@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/share";
 import { animePaths } from "@/server/sitemapPaths";
 
-const ORIGIN = "https://www.aniwiki.link";
 const STATIC_PATHS = ["/", "/discover"];
 
 export const revalidate = 86400;
@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   const lastModified = new Date();
   return [...STATIC_PATHS, ...anime].map((p) => ({
-    url: `${ORIGIN}${p}`,
+    url: `${SITE_URL}${p}`,
     lastModified,
   }));
 }

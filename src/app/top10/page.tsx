@@ -12,7 +12,7 @@ export async function generateMetadata({
 }: PageProps<"/top10">): Promise<Metadata> {
   const shared = await sharedOf(searchParams);
   if (!shared) return {};
-  const title = `${top10Title(shared.name)} - ANIWIKI`;
+  const title = top10Title(shared.name);
   const image = {
     url: `/api/og/top10?${shareQuery(shared)}`,
     width: 1200,

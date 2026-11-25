@@ -32,7 +32,7 @@ export async function generateMetadata({
 }: PageProps<"/anime/[type]/[id]">): Promise<Metadata> {
   const { type: rawType, id: rawId } = await params;
   const { type, id, data } = await load(rawType, rawId);
-  const title = `${data.title} - ANIWIKI`;
+  const title = data.title;
   const description = overviewSummary(data.overview);
   const image =
     posterUrl(data.backdrop, "w780") ?? posterUrl(data.poster, "w500");

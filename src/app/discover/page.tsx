@@ -4,7 +4,7 @@ import { parseSeen } from "@/lib/discover";
 import { toSearchParams } from "@/lib/paths";
 
 export const metadata: Metadata = {
-  title: "숨은 명작 찾기 - ANIWIKI",
+  title: "숨은 명작 찾기",
   description:
     "원피스 · 진격의 거인처럼 본 유명작을 고르면, 그 팬들이 본 덜 알려진 명작 애니메이션을 추천해 드려요.",
   alternates: { canonical: "/discover" },

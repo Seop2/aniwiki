@@ -17,7 +17,7 @@ export async function generateMetadata({
 }: PageProps<"/">): Promise<Metadata> {
   const { q } = await homeParams(searchParams);
   return {
-    ...(q && { title: `“${q}” 검색 결과 - ANIWIKI` }),
+    ...(q && { title: `“${q}” 검색 결과` }),
     alternates: { canonical: "/" },
   };
 }

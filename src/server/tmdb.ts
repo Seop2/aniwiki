@@ -2,7 +2,11 @@ import "server-only";
 import type { AnimePage, DetailParams, ListParams, ProviderKey } from "@/types";
 import { ANIMATION_GENRE_ID, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
 import { normalize, type TmdbListItem } from "@/lib/media";
-import { isNetflixOriginal, type TmdbReleaseDates } from "@/lib/netflix";
+import {
+  isNetflixOriginal,
+  NETFLIX_PROVIDERS,
+  type TmdbReleaseDates,
+} from "@/lib/netflix";
 import { STALE_TIME } from "@/lib/queries";
 
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -184,8 +188,10 @@ const TV_STATUS: Record<string, string> = {
 
 const HIDDEN_PROVIDERS = [283];
 
+const [NETFLIX_ID, NETFLIX_ADS_ID] = NETFLIX_PROVIDERS;
 const isDuplicateNetflix = (p: TmdbProvider, all: TmdbProvider[]) =>
-  p.provider_id === 1796 && all.some((q) => q.provider_id === 8);
+  p.provider_id === NETFLIX_ADS_ID &&
+  all.some((q) => q.provider_id === NETFLIX_ID);
 
 const PROVIDER_GROUPS = [
   ["flatrate", "구독"],

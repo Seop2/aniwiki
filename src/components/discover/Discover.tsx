@@ -30,7 +30,7 @@ function SeedPicker({
 }) {
   return (
     <section className={s.discover}>
-      <div className={`list-head ${s.head}`}>
+      <div className="list-head is-wrap">
         <div>
           <p className="eyebrow">DISCOVER · HIDDEN GEMS</p>
           <h2>본 작품을 골라 주세요</h2>
@@ -166,7 +166,7 @@ function GemResults({
 
   return (
     <section className={s.discover}>
-      <div className={`list-head ${s.head}`}>
+      <div className="list-head is-wrap">
         <div>
           <p className="eyebrow">DISCOVER · HIDDEN GEMS</p>
           <h2>이거 봤으면, 다음은 이거</h2>

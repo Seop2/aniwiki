@@ -107,6 +107,11 @@ a.btn-outline {
   gap: 12px;
   margin: 26px 0 14px;
 }
+.list-head.is-wrap {
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 .list-head h2 {
   margin: 0;
   font-size: 28px;

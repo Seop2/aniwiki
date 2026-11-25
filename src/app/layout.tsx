@@ -5,12 +5,18 @@ import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 import PageAnalytics from "@/components/layout/PageAnalytics";
 import Shell from "@/components/layout/Shell";
+import { DARK } from "@/lib/colors";
+import { SITE_URL } from "@/lib/share";
 import { themeInitScript } from "@/lib/theme";
 import Providers from "./providers";
 
 const DESCRIPTION =
   "평점 · 인기 · 최신순으로 TV 시리즈와 극장판 애니메이션 랭킹을 한눈에 확인하세요.";
-const OG_TITLE = "ANIWIKI — 애니메이션 랭킹";
+const TITLE_TEMPLATE = "%s - ANIWIKI";
+const OG_TITLE = {
+  default: "ANIWIKI — 애니메이션 랭킹",
+  template: TITLE_TEMPLATE,
+};
 const OG_IMAGE = {
   url: "/og-image.png",
   width: 1200,
@@ -19,8 +25,11 @@ const OG_IMAGE = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.aniwiki.link"),
-  title: "ANIWIKI - 애니메이션 랭킹 · 평점 · 인기순",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "ANIWIKI - 애니메이션 랭킹 · 평점 · 인기순",
+    template: TITLE_TEMPLATE,
+  },
   description: DESCRIPTION,
   icons: {
     icon: [
@@ -50,7 +59,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#0f0f13" };
+export const viewport: Viewport = { themeColor: DARK.bg };
 
 export default function RootLayout({ children, modal }: LayoutProps<"/">) {
   return (

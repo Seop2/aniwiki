@@ -32,7 +32,7 @@ export default function SharedTop10({
 
   return (
     <section>
-      <div className={`list-head ${s.head}`}>
+      <div className={`list-head is-wrap ${s.head}`}>
         <div>
           <p className="eyebrow">SHARED · TOP 10</p>
           <h2>{top10Title(shared.name)}</h2>

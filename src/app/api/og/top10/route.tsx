@@ -2,18 +2,10 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import type { MediaType } from "@/types";
 import { posterUrl } from "@/lib/catalog";
+import { DARK as C } from "@/lib/colors";
 import { parseShareUrl } from "@/lib/share";
 import { fetchAnimeDetail, REVALIDATE } from "@/server/tmdb";
 
-const C = {
-  bg: "#0f0f13",
-  surface: "#17171d",
-  line: "#24242c",
-  text: "#ececf1",
-  muted: "#8d8d99",
-  accent: "#8b6dff",
-  accentText: "#a48cff",
-};
 const SANS = "Noto Sans KR";
 const DISPLAY = "Barlow Condensed";
 const HEADLINE = "인생 애니 TOP 10";

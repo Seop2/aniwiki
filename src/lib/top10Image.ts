@@ -1,20 +1,11 @@
 import type { Top10, Top10Item } from "@/types";
 import { posterUrl } from "./catalog";
+import { DARK as C } from "./colors";
 import { top10Title } from "./share";
 
 const W = 1080;
 const H = 1350;
 const PAD = 72;
-const C = {
-  bg: "#0f0f13",
-  surface: "#17171d",
-  surface2: "#22222a",
-  border: "#2e2e37",
-  text: "#ececf1",
-  muted: "#8d8d99",
-  accent: "#8b6dff",
-  accentText: "#a48cff",
-};
 const SANS = '"Pretendard Variable", Pretendard, system-ui, sans-serif';
 const DISPLAY = '"Barlow Condensed", "Pretendard Variable", sans-serif';
 

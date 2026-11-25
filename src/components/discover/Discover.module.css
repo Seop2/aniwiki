@@ -1,11 +1,6 @@
 .discover {
   padding-bottom: 96px;
 }
-:global(.list-head).head {
-  align-items: flex-end;
-  gap: 16px;
-  flex-wrap: wrap;
-}
 .sub {
   margin: 8px 0 0;
   font-size: 14px;

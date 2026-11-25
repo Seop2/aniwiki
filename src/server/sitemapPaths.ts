@@ -2,6 +2,7 @@ import "server-only";
 import type { MediaType, SortKey } from "@/types";
 import { SEEDS } from "@/data/seeds";
 import { ANIMATION_GENRE_ID, SORTS } from "@/lib/catalog";
+import { detailPath } from "@/lib/paths";
 import { REVALIDATE, tmdbGet } from "./tmdb";
 
 const LISTS: [MediaType, SortKey, number][] = [
@@ -20,13 +21,13 @@ async function fetchIds(type: MediaType, sort: SortKey, page: number) {
   const data = await tmdbGet(`/discover/${type}`, params, {
     revalidate: REVALIDATE.daily,
   });
-  return data.results.map((r) => `/anime/${type}/${r.id}`);
+  return data.results.map((r) => detailPath(type, r.id));
 }
 
 export async function animePaths() {
   const pages = LISTS.flatMap(([type, sort, count]) =>
     Array.from({ length: count }, (_, i) => fetchIds(type, sort, i + 1)),
   );
-  const seeds = SEEDS.map((s) => `/anime/tv/${s.id}`);
+  const seeds = SEEDS.map((s) => detailPath("tv", s.id));
   return [...new Set([...seeds, ...(await Promise.all(pages)).flat()])];
 }
