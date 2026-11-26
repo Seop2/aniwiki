@@ -1,7 +1,6 @@
 import Icon from "@/components/common/Icon";
 import Modal from "@/components/common/Modal";
-import Poster from "@/components/common/Poster";
-import { MEDIA } from "@/lib/catalog";
+import TitleCell, { yearAndType } from "@/components/common/TitleCell";
 import { NAME_MAX, TOP10_MAX, top10Title } from "@/lib/share";
 import { useTop10Store } from "@/stores/top10";
 import { useUiStore } from "@/stores/ui";
@@ -41,13 +40,9 @@ export default function Top10Modal() {
           {items.map((a, i) => (
             <li key={`${a.type}-${a.id}`} className={s.item}>
               <span className={s.rank}>{i + 1}</span>
-              <Poster path={a.poster} width="36" height="54" loading="lazy" />
-              <div className="title-text">
-                <strong>{a.title}</strong>
-                <span>
-                  {a.year} · {MEDIA[a.type].label}
-                </span>
-              </div>
+              <TitleCell poster={a.poster} title={a.title}>
+                <span>{yearAndType(a.year, a.type)}</span>
+              </TitleCell>
               <div className={s.controls}>
                 <button
                   type="button"

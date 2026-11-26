@@ -6,13 +6,12 @@ import type { Metadata, Viewport } from "next";
 import PageAnalytics from "@/components/layout/PageAnalytics";
 import Shell from "@/components/layout/Shell";
 import { DARK } from "@/lib/colors";
-import { SITE_URL } from "@/lib/share";
+import { SITE_URL, TITLE_TEMPLATE } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
 import Providers from "./providers";
 
 const DESCRIPTION =
   "평점 · 인기 · 최신순으로 TV 시리즈와 극장판 애니메이션 랭킹을 한눈에 확인하세요.";
-const TITLE_TEMPLATE = "%s - ANIWIKI";
 const OG_TITLE = {
   default: "ANIWIKI — 애니메이션 랭킹",
   template: TITLE_TEMPLATE,

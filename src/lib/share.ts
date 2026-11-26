@@ -1,17 +1,20 @@
 import type { MediaType, Top10 } from "@/types";
+import { SITE_URL } from "./site";
 
 const PREFIX = { tv: "t", movie: "m" } as const;
 const TYPE_OF = { t: "tv", m: "movie" } as const;
 
-export const SITE_URL = "https://www.aniwiki.link";
 const shareOrigin = (local: boolean) =>
   local && process.env.NODE_ENV === "development" ? location.origin : SITE_URL;
 
 export const TOP10_MAX = 10;
 export const NAME_MAX = 20;
 
+export const TOP10_HEADLINE = "인생 애니 TOP 10";
+export const ownerOf = (name: string | undefined) =>
+  `${name?.trim() || "나"}의`;
 export const top10Title = (name: string | undefined) =>
-  `${name?.trim() || "나"}의 인생 애니 TOP 10`;
+  `${ownerOf(name)} ${TOP10_HEADLINE}`;
 
 export function shareQuery({
   name,

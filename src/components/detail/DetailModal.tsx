@@ -6,6 +6,7 @@ import type { MediaType } from "@/types";
 import Modal from "@/components/common/Modal";
 import { useAnimeDetail } from "@/hooks/useAnimeDetail";
 import { overviewSummary } from "@/lib/media";
+import { pageTitle } from "@/lib/site";
 import { useUiStore } from "@/stores/ui";
 import DetailContent from "./DetailContent";
 
@@ -30,7 +31,7 @@ export default function DetailModal({
   useEffect(() => {
     if (!title) return;
     const prev = document.title;
-    document.title = `${title} - ANIWIKI`;
+    document.title = pageTitle(title);
     return () => {
       document.title = prev;
     };

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import SharedTop10 from "@/components/top10/SharedTop10";
 import { toSearchParams } from "@/lib/paths";
 import { parseShareUrl, shareQuery, top10Title } from "@/lib/share";
+import { pageTitle } from "@/lib/site";
 
 const sharedOf = async (searchParams: PageProps<"/top10">["searchParams"]) =>
   parseShareUrl(toSearchParams(await searchParams).toString());
@@ -19,11 +20,12 @@ export async function generateMetadata({
     height: 630,
     alt: title,
   };
+  const absolute = { absolute: pageTitle(title) };
   return {
-    title,
+    title: absolute,
     alternates: { canonical: "/" },
-    openGraph: { title, images: [image] },
-    twitter: { title, images: [image.url] },
+    openGraph: { title: absolute, images: [image] },
+    twitter: { title: absolute, images: [image.url] },
   };
 }
 

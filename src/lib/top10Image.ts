@@ -2,6 +2,7 @@ import type { Top10, Top10Item } from "@/types";
 import { posterUrl } from "./catalog";
 import { DARK as C } from "./colors";
 import { top10Title } from "./share";
+import { SITE_HOST } from "./site";
 
 const W = 1080;
 const H = 1350;
@@ -136,7 +137,7 @@ export async function renderTop10Image({ name, items }: Top10) {
     document.fonts.load(`700 64px ${DISPLAY}`, "0123456789"),
     document.fonts.load(
       `600 30px ${DISPLAY}`,
-      "ANIWIKI MY TOP 10 aniwiki.link",
+      `ANIWIKI MY TOP 10 ${SITE_HOST}`,
     ),
     document.fonts.load(`700 27px ${SANS}`, allText),
     document.fonts.load(`500 22px ${SANS}`, allText),
@@ -188,7 +189,7 @@ export async function renderTop10Image({ name, items }: Top10) {
   ctx.textAlign = "right";
   ctx.fillStyle = C.text;
   ctx.font = `600 28px ${DISPLAY}`;
-  ctx.fillText("aniwiki.link", W - PAD, H - 66);
+  ctx.fillText(SITE_HOST, W - PAD, H - 66);
 
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(

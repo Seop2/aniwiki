@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/share";
+import { SITE_URL } from "@/lib/site";
 import { animePaths } from "@/server/sitemapPaths";
 
 const STATIC_PATHS = ["/", "/discover"];

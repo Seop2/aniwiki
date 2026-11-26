@@ -7,6 +7,7 @@ import {
 import Home from "@/components/Home";
 import { parseHomeParams, toSearchParams } from "@/lib/paths";
 import { listQueryKey } from "@/lib/queries";
+import { pageTitle } from "@/lib/site";
 import { fetchAnimePage } from "@/server/tmdb";
 
 const homeParams = async (searchParams: PageProps<"/">["searchParams"]) =>
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }: PageProps<"/">): Promise<Metadata> {
   const { q } = await homeParams(searchParams);
   return {
-    ...(q && { title: `“${q}” 검색 결과` }),
+    ...(q && { title: { absolute: pageTitle(`“${q}” 검색 결과`) } }),
     alternates: { canonical: "/" },
   };
 }

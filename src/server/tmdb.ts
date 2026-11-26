@@ -1,10 +1,18 @@
 import "server-only";
-import type { AnimePage, DetailParams, ListParams, ProviderKey } from "@/types";
+import type {
+  AnimePage,
+  DetailParams,
+  ListParams,
+  MediaType,
+  ProviderKey,
+} from "@/types";
 import { ANIMATION_GENRE_ID, ORIGINS, PROVIDERS, SORTS } from "@/lib/catalog";
 import { normalize, type TmdbListItem } from "@/lib/media";
 import {
   isNetflixOriginal,
-  NETFLIX_PROVIDERS,
+  NETFLIX_ADS_ID,
+  NETFLIX_ID,
+  originalAppend,
   type TmdbReleaseDates,
 } from "@/lib/netflix";
 import { STALE_TIME } from "@/lib/queries";
@@ -124,14 +132,27 @@ export async function mapLimit<T, R>(
   return out;
 }
 
+export const discoverAnime = (
+  type: MediaType,
+  params: Params,
+  options?: { revalidate?: number },
+) =>
+  tmdbGet(
+    `/discover/${type}`,
+    { with_genres: ANIMATION_GENRE_ID, ...params },
+    options,
+  );
+
+export const watchParams = (ids: readonly number[], monetization: string) => ({
+  watch_region: "KR",
+  with_watch_providers: ids.join("|"),
+  with_watch_monetization_types: monetization,
+});
+
 function providerParams(keys: ProviderKey[]) {
   const picked = PROVIDERS.filter((p) => keys.includes(p.key));
   const ids = (picked.length ? picked : PROVIDERS).flatMap((p) => p.ids);
-  return {
-    watch_region: "KR",
-    with_watch_providers: ids.join("|"),
-    with_watch_monetization_types: "flatrate|free|ads",
-  };
+  return watchParams(ids, "flatrate|free|ads");
 }
 
 export async function fetchAnimePage({
@@ -144,8 +165,7 @@ export async function fetchAnimePage({
 }: ListParams): Promise<AnimePage> {
   const data = query
     ? await tmdbGet(`/search/${type}`, { query, page })
-    : await tmdbGet(`/discover/${type}`, {
-        with_genres: ANIMATION_GENRE_ID,
+    : await discoverAnime(type, {
         page,
         ...SORTS[sort].params(type),
         ...providerParams(providers),
@@ -188,7 +208,6 @@ const TV_STATUS: Record<string, string> = {
 
 const HIDDEN_PROVIDERS = [283];
 
-const [NETFLIX_ID, NETFLIX_ADS_ID] = NETFLIX_PROVIDERS;
 const isDuplicateNetflix = (p: TmdbProvider, all: TmdbProvider[]) =>
   p.provider_id === NETFLIX_ADS_ID &&
   all.some((q) => q.provider_id === NETFLIX_ID);
@@ -249,13 +268,13 @@ function pickVideo(raw: TmdbDetail["videos"]) {
 }
 
 export async function fetchAnimeDetail({ type, id }: DetailParams) {
-  const append =
-    type === "movie"
-      ? "watch/providers,release_dates,videos"
-      : "watch/providers,videos";
+  const append = ["watch/providers", "videos", ...originalAppend(type)];
   const raw = await tmdbGet<TmdbDetail>(
     `/${type}/${id}`,
-    { append_to_response: append, include_video_language: "ko,ja,en,null" },
+    {
+      append_to_response: append.join(","),
+      include_video_language: "ko,ja,en,null",
+    },
     { revalidate: REVALIDATE.detail },
   );
 

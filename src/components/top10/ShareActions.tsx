@@ -10,10 +10,10 @@ import {
   shareImage,
   shareKakao,
   shareQuery,
-  SITE_URL,
   top10Title,
   xIntentUrl,
 } from "@/lib/share";
+import { SITE_URL } from "@/lib/site";
 import { renderTop10Image } from "@/lib/top10Image";
 import s from "./ShareActions.module.css";
 

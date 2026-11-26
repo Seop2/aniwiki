@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { AnimeSummary, MediaType } from "@/types";
-import Poster from "@/components/common/Poster";
+import TitleCell from "@/components/common/TitleCell";
 import { detailPath } from "@/lib/paths";
 import s from "./RankingTable.module.css";
 
@@ -26,14 +26,12 @@ export default function RankingRow({
           href={detailPath(type, item.id)}
           onClick={() => onSelect(item)}
         >
-          <Poster path={item.poster} loading="lazy" width="36" height="54" />
-          <div className="title-text">
-            <strong>{item.title}</strong>
+          <TitleCell poster={item.poster} title={item.title}>
             {showOriginal && <span>{item.originalTitle}</span>}
             <span className={s.metaMobile}>
               {item.year} · {item.votes.toLocaleString()}표
             </span>
-          </div>
+          </TitleCell>
         </Link>
       </td>
       <td className={s.year}>{item.year}</td>

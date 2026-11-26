@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueries } from "@tanstack/react-query";
 import type { AnimeDetail, MediaType } from "@/types";
-import Poster from "@/components/common/Poster";
+import TitleCell, {
+  TitleCellSkeleton,
+  yearAndType,
+} from "@/components/common/TitleCell";
 import { animeDetailQuery } from "@/hooks/useAnimeDetail";
-import { MEDIA } from "@/lib/catalog";
 import { detailPath } from "@/lib/paths";
 import { type parseShareUrl, top10Title } from "@/lib/share";
 import { useUiStore } from "@/stores/ui";
@@ -69,23 +71,16 @@ export default function SharedTop10({
                         href={detailPath(type, d.id)}
                         onClick={() => openDetail(type, d)}
                       >
-                        <Poster path={d.poster} width="36" height="54" />
-                        <div className="title-text">
-                          <strong>{d.title}</strong>
-                          <span>
-                            {d.year} · {MEDIA[type].label}
-                          </span>
-                        </div>
+                        <TitleCell poster={d.poster} title={d.title}>
+                          <span>{yearAndType(d.year, type)}</span>
+                        </TitleCell>
                       </Link>
                     ) : r.isError ? (
                       <span className={s.missing}>
                         작품 정보를 불러오지 못했어요.
                       </span>
                     ) : (
-                      <div className="title-cell">
-                        <i className="poster" />
-                        <i style={{ width: "50%" }} />
-                      </div>
+                      <TitleCellSkeleton />
                     )}
                   </td>
                   <td className="col-rating">{d && d.rating.toFixed(1)}</td>

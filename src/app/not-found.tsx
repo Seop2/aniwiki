@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { pageTitle } from "@/lib/site";
 
-export const metadata = { title: "페이지를 찾을 수 없어요" };
+export const metadata = {
+  title: { absolute: pageTitle("페이지를 찾을 수 없어요") },
+};
 
 export default function NotFound() {
   return (

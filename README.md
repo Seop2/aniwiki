@@ -55,7 +55,7 @@ flowchart LR
 src/
 ├── app/          라우팅만 (페이지, API 라우트, @modal 인터셉트 모달, sitemap)
 ├── server/       서버 전용 (TMDB 요청 · 넷플릭스 오리지널 목록 · 사이트맵)
-├── lib/          상수 · 순수 함수 (정렬/국가 카탈로그, 주소 파싱, 공유, 숨은 명작 점수)
+├── lib/          상수 · 순수 함수 (정렬/국가 카탈로그, 사이트 주소 · 제목, 다크 색, 주소 파싱, 공유, 숨은 명작 점수)
 ├── hooks/        React Query 훅 등
 ├── stores/       zustand (내 TOP 10, UI 상태)
 ├── components/   랭킹 화면(Home · Filters · RankingTable)과 기능별 폴더 (detail · top10 · discover · layout · common)

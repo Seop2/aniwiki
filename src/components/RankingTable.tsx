@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { AnimeSummary, MediaType } from "@/types";
+import { TitleCellSkeleton } from "@/components/common/TitleCell";
 import RankingRow from "./RankingRow";
 import s from "./RankingTable.module.css";
 
@@ -20,10 +21,7 @@ function SkeletonRows({ count = 8 }) {
         <i style={{ width: 16 }} />
       </td>
       <td>
-        <div className="title-cell">
-          <i className="poster" />
-          <i style={{ width: "50%" }} />
-        </div>
+        <TitleCellSkeleton />
       </td>
       <td className={s.year}>
         <i style={{ width: 36 }} />

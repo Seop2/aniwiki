@@ -30,6 +30,10 @@ export const posterUrl = (path: string | null | undefined, size = "w92") =>
 
 export const today = () => new Date().toISOString().slice(0, 10);
 
+export const releasedParams = (type: MediaType) => ({
+  [`${MEDIA[type].dateParam}.lte`]: today(),
+});
+
 interface Sortable {
   rating: number;
   popularity: number;
@@ -55,14 +59,11 @@ export const SORTS = {
   },
   latest: {
     label: "최신순",
-    params: (type) => {
-      const key = MEDIA[type].dateParam;
-      return {
-        sort_by: `${key}.desc`,
-        [`${key}.lte`]: today(),
-        "vote_count.gte": 10,
-      };
-    },
+    params: (type) => ({
+      sort_by: `${MEDIA[type].dateParam}.desc`,
+      ...releasedParams(type),
+      "vote_count.gte": 10,
+    }),
     compare: (a, b) => (b.date ?? "").localeCompare(a.date ?? ""),
   },
 } satisfies Record<

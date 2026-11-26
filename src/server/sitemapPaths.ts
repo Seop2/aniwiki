@@ -1,9 +1,9 @@
 import "server-only";
 import type { MediaType, SortKey } from "@/types";
 import { SEEDS } from "@/data/seeds";
-import { ANIMATION_GENRE_ID, SORTS } from "@/lib/catalog";
+import { SORTS } from "@/lib/catalog";
 import { detailPath } from "@/lib/paths";
-import { REVALIDATE, tmdbGet } from "./tmdb";
+import { discoverAnime, REVALIDATE } from "./tmdb";
 
 const LISTS: [MediaType, SortKey, number][] = [
   ["tv", "rating", 5],
@@ -13,14 +13,11 @@ const LISTS: [MediaType, SortKey, number][] = [
 ];
 
 async function fetchIds(type: MediaType, sort: SortKey, page: number) {
-  const params = {
-    with_genres: ANIMATION_GENRE_ID,
-    page,
-    ...SORTS[sort].params(type),
-  };
-  const data = await tmdbGet(`/discover/${type}`, params, {
-    revalidate: REVALIDATE.daily,
-  });
+  const data = await discoverAnime(
+    type,
+    { page, ...SORTS[sort].params(type) },
+    { revalidate: REVALIDATE.daily },
+  );
   return data.results.map((r) => detailPath(type, r.id));
 }
 

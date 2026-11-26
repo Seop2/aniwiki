@@ -3,12 +3,12 @@ import type { NextRequest } from "next/server";
 import type { MediaType } from "@/types";
 import { posterUrl } from "@/lib/catalog";
 import { DARK as C } from "@/lib/colors";
-import { parseShareUrl } from "@/lib/share";
+import { ownerOf, parseShareUrl, TOP10_HEADLINE } from "@/lib/share";
+import { SITE_HOST } from "@/lib/site";
 import { fetchAnimeDetail, REVALIDATE } from "@/server/tmdb";
 
 const SANS = "Noto Sans KR";
 const DISPLAY = "Barlow Condensed";
-const HEADLINE = "인생 애니 TOP 10";
 
 async function loadGoogleFont(family: string, weight: 600 | 800, text: string) {
   const css = await fetch(
@@ -32,11 +32,11 @@ async function loadGoogleFont(family: string, weight: 600 | 800, text: string) {
 
 const loadFonts = (owner: string) =>
   Promise.all([
-    loadGoogleFont(SANS, 800, owner + HEADLINE),
+    loadGoogleFont(SANS, 800, owner + TOP10_HEADLINE),
     loadGoogleFont(
       DISPLAY,
       600,
-      "ANIME / INDEX MY TOP 10 aniwiki.link 0123456789",
+      `ANIME / INDEX MY TOP 10 ${SITE_HOST} 0123456789`,
     ),
   ]);
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
   const shared = parseShareUrl(request.nextUrl.search);
   if (!shared) return new Response("Bad Request", { status: 400 });
 
-  const owner = `${shared.name.trim() || "나"}의`;
+  const owner = ownerOf(shared.name);
   const [fonts, posters] = await Promise.all([
     loadFonts(owner).catch((e) => {
       console.warn(
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
               {owner}
             </span>
             <span style={{ fontSize: 48, whiteSpace: "nowrap" }}>
-              {HEADLINE}
+              {TOP10_HEADLINE}
             </span>
           </div>
           <div
@@ -149,7 +149,7 @@ export async function GET(request: NextRequest) {
               letterSpacing: 1,
             }}
           >
-            aniwiki.link
+            {SITE_HOST}
           </div>
         </div>
 

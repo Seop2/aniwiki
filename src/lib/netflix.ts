@@ -1,9 +1,16 @@
+import type { MediaType } from "@/types";
+
 export const NETFLIX_NETWORK = 213;
 const NETFLIX_COMPANIES = [178464, 185004, 171251, 145174, 192478];
-export const NETFLIX_PROVIDERS = [8, 1796];
+export const NETFLIX_ID = 8;
+export const NETFLIX_ADS_ID = 1796;
+export const NETFLIX_PROVIDERS = [NETFLIX_ID, NETFLIX_ADS_ID];
 const WORLDWIDE_RELEASE_COUNTRIES = 15;
 const THEATRICAL_GRACE_DAYS = 7;
 const DAY = 24 * 60 * 60 * 1000;
+
+export const originalAppend = (type: MediaType) =>
+  type === "movie" ? ["release_dates"] : [];
 
 interface ReleaseDate {
   type: number;
